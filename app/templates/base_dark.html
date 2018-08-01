@@ -1,0 +1,40 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block head %}
+    <script crossorigin="anonymous" src="https://app.launchdarkly.com/snippet/ldclient.min.js"></script>
+    <script>
+            var user = {
+            "key": "my-user-id",
+            "custom": {
+                "groups": ["VIP"]
+                }
+            };
+            var ldclient = LDClient.initialize('5ac3e3380b0fdd2cbd70c711', user, options = {
+                bootstrap: {{ all_flags | safe }}                
+            });
+    </script>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SupportService</title>
+
+  <!-- Bootstrap core CSS-->
+  <link href="{{ url_for('static', filename='dark/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="{{ url_for('static', filename='dark/vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+  <!-- Page level plugin CSS-->
+  <link href="{{ url_for('static', filename='dark/vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="{{ url_for('static', filename='dark/css/sb-admin.css') }}" rel="stylesheet">
+
+
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}

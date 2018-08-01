@@ -1,0 +1,51 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block head %}
+    <script crossorigin="anonymous" src="https://app.launchdarkly.com/snippet/ldclient.min.js"></script>
+    <script>
+            var user = {
+            "key": "my-user-id",
+            "custom": {
+                "groups": ["VIP"]
+                }
+            };
+            var ldclient = LDClient.initialize('5ac3e3380b0fdd2cbd70c711', user, options = {
+                bootstrap: {{ all_flags | safe }}                
+            });
+    </script>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SupportService</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../static/light/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="../../static/light/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../../static/light/dist/css/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="../../static/light/vendor/morrisjs/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="../../static/light/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
