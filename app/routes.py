@@ -27,7 +27,6 @@ def index():
             "privateAttributes": ["account_type", "state"],
         }
     
-    all_flags = json.dumps(ld_client.all_flags(user))
 
     showWidgets = ld_client.variation("show-widgets", user, False)
     if showWidgets:
@@ -47,6 +46,8 @@ def index():
     
     darkTheme = ld_client.variation("dark-theme", user, False)
     
+    all_flags = json.dumps(ld_client.all_flags(user))
+
     posts = [
         {
             'author': {'username': 'Feature Flag Off'},
