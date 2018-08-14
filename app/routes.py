@@ -1,15 +1,11 @@
 from flask import render_template, request, redirect, url_for, flash
-from app import app, db
-import ldclient
+from app import app, db,ld_client
 import json
-import os
 from flask_login import current_user, login_user, login_required, logout_user
 from app.models import User
 from werkzeug.urls import url_parse
 
-ldclient.set_sdk_key(os.getenv("LD_CLIENT_KEY"))
-#ldclient.set_config(ldclient.Config(sdk_key='sdk-8929dfb7-7edd-4bec-9856-db3bd80a6661', stream_uri="18.236.106.41:8030"))
-ld_client = ldclient.get()
+
 
 @app.route('/')
 @app.route('/index')
@@ -17,16 +13,16 @@ ld_client = ldclient.get()
 def index():
     
     user = {
-            'key': 'user@test.com',
+            'key': '82148974',
             "custom": {
                 'account_type': 'Standard',
                 'user_type': 'Beta_tester',
                 'state': 'Ca',
+                'country': 'Canada',
                 'theme': 'dark',
             },
             "privateAttributes": ["account_type", "state"],
         }
-    
 
     showWidgets = ld_client.variation("show-widgets", user, False)
     if showWidgets:
