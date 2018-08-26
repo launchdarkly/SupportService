@@ -5,65 +5,66 @@ from flask_login import current_user, login_user, login_required, logout_user
 from app.models import User
 from werkzeug.urls import url_parse
 
-
-
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
-    
-    user = {
-            'key': '82148974',
-            "custom": {
-                'account_type': 'Standard',
-                'user_type': 'Beta_tester',
-                'state': 'Ca',
-                'country': 'Canada',
-                'theme': 'dark',
-            },
-            "privateAttributes": ["account_type", "state"],
-        }
 
-    showWidgets = ld_client.variation("show-widgets", user, False)
+    showWidgets = ld_client.variation('show-widgets', current_user.get_ld_user(), False)
+    
     if showWidgets:
         display_widgets = True
     else:
         display_widgets = False
         
-    """
-    showWidgets = ld_client.variation("switch-feature", {"key": "user@test.com"}, False)
+    '''
+    showWidgets = ld_client.variation("switch-feature", {'key': 'user@test.com'}, False)
     if showWidgets == 'Red':
         display_widgets = 'Red'
     elif showWidgets == 'Blue':
         display_widgets = 'Blue'
     elif showWidgets == 'Green':
         display_widgets = 'Green'
-    """
-    
-    darkTheme = ld_client.variation("dark-theme", user, False)
-    
-    all_flags = json.dumps(ld_client.all_flags(user))
+    ''' 
+    all_flags = json.dumps(ld_client.all_flags(current_user.get_ld_user()))
 
-    posts = [
-        {
-            'author': {'username': 'Feature Flag Off'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The avengers movie was great!'
-        },        
-    ]
-    if darkTheme:
-        return render_template('index_dark.html', title='Home', user=user,
-        posts=posts, display_widgets=display_widgets, all_flags=all_flags)
+    beta_features = ld_client.variation('dark-theme', current_user.get_ld_user(), False)
+    
+    print('here is the value of set_path: ' + current_user.set_path)
+    set_theme = '{0}/index.html'.format(current_user.set_path)
+
+    return render_template(set_theme, title='Home',
+    display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features)
+
+@app.route('/updateTheme')
+def updateTheme():
+    if current_user.set_path == 'default':
+        current_user.set_path ='beta'
+        print(current_user.set_path)
     else:
-        return render_template('index_light.html',title='Home', user=user,
-        posts=posts, display_widgets=display_widgets, all_flags=all_flags)
+        current_user.set_path = 'default'
+    db.session.commit()
+    return redirect(url_for('index'))
 
 @app.route('/dark')
 def darkTheme():
-    return render_template('index_dark.html', title='Dark Theme')
+    return render_template(set_theme, title='Dark Theme')
+
+@app.route('/experiments')
+def experiments():
+    return render_template('default/exp.html', title='Experiments')
+
+@app.route('/operational')
+def operational():
+    return render_template('default/operation.html', title='Operational')
+
+@app.route('/release')
+def release():
+    return render_template('default/release.html', title='Dark Theme')
+
+@app.route('/entitlement')
+def entitlement():
+    return render_template('default/entitlement.html', title='entitlement')
 
 # I decided to take out a payday loan on this shit. 
 # http://flask.pocoo.org/docs/1.0/quickstart/?highlight=post#http-methods
