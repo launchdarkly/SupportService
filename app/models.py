@@ -11,7 +11,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     #account_types = Personal, Professional, Business, Premium
     account_type = db.Column(db.String(120), default='Business')
-    user_type = db.Column(db.String(120), default='Standard')
+    user_type = db.Column(db.String(120), default='Beta')
     state = db.Column(db.String(120), default='Ca')
     country = db.Column(db.String(120), default='USA')
     set_path = db.Column(db.String(120), default='default')
