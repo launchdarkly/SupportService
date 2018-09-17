@@ -18,7 +18,8 @@ SupportService is a simple application built in flask, that can be used to demon
 * Copy `.env.example` to `.env` and fill in the correct values
     * `export DATABASE_URL='postgresql:://localhost/supportService'`
     * `export LD_CLIENT_KEY=$YOUR_SDK_KEY`
+* Source the environment variables `source .env`
 * Upgrade database to latest version `flask db upgrade`
-* Start the app with `source .env && flask run`
+* Start the app with `flask run`
 
 The app should now be running on localhost:5000 
