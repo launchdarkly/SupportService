@@ -26,3 +26,4 @@ htmlcov/
 *.swp
 *.db
 venv/
+*.env
