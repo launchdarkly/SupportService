@@ -10,6 +10,10 @@ from werkzeug.urls import url_parse
 @login_required
 def index():
 
+    theme = request.args.get("theme")
+    if theme:
+        updateTheme(theme)
+    
     showWidgets = ld_client.variation('show-widgets', current_user.get_ld_user(), False)
     
     if showWidgets:
@@ -30,21 +34,20 @@ def index():
 
     beta_features = ld_client.variation('dark-theme', current_user.get_ld_user(), False)
     
-    print('here is the value of set_path: ' + current_user.set_path)
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
     return render_template(set_theme, title='Home',
     display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features)
 
-@app.route('/updateTheme')
-def updateTheme():
-    if current_user.set_path == 'default':
-        current_user.set_path ='beta'
-        print(current_user.set_path)
+
+def updateTheme(theme):
+
+    if theme == "dark":
+        current_user.set_path = 'beta'
     else:
         current_user.set_path = 'default'
+
     db.session.commit()
-    return redirect(url_for('index'))
 
 @app.route('/dark')
 def darkTheme():
@@ -87,10 +90,10 @@ def register():
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
-    return render_template('auth/register.html', title='Support Request')
+    return render_template('beta/auth/register.html', title='Support Request')
 
 @app.route('/login', methods=['GET', 'POST'])
-def login():
+def login(theme='default'):
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -103,7 +106,10 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
-    return render_template('login.html', title='Sign In')
+    '''
+
+    '''
+    return render_template('beta/auth/login.html', title='Sign In')
 
 @app.route('/logout')
 def logout():

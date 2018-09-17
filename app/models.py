@@ -39,6 +39,7 @@ class User(UserMixin, db.Model):
                 'state': self.state,
                 'country': self.country,
                 'app_version': app_version,
+                
             },
             'privateAttributes': ['account_type', 'state'],
         }

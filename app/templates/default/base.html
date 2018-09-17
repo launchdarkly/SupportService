@@ -67,7 +67,8 @@
 
         <!-- /.navbar-header -->
         <ul class="nav navbar-top-links navbar-right">
-                <!--    
+            <!-- 
+            {# 
                 {% if show_beta %}
                 <li>
                     <a href="{{ url_for('updateTheme') }}">
@@ -75,7 +76,8 @@
                     </a>
                 </li>
                 {% endif %}
-                -->
+            #}
+            -->
             <!-- /.dropdown -->
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -275,13 +277,13 @@
                     <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li> 
                     {% if show_beta %}
-                    <li><a href="{{ url_for('updateTheme') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
+                    <li><a href="{{ url_for('index', theme='dark') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
                     </li>
                     {% endif %}
                     <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                     </li>
                     <li class="divider"></li>
-                    <li><a href="{{ url_for('static', filename='light/pages/login.html') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    <li><a href="{{ url_for('logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                     </li>
                 </ul>
                 <!-- /.dropdown-user -->

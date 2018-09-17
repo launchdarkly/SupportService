@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  support-service:
+    build: SupportService
+    volumes:
+      - SupportService: user/src/app
+
+
