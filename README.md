@@ -16,7 +16,7 @@ SupportService is a simple application built in flask, that can be used to demon
 * Create a python virtual environment `virtualenv -p python3 venv`
 * Activate the virtual environment `source venv/bin/activate`
 * Copy `.env.example` to `.env` and fill in the correct values
-    * `export DATABASE_URL='postgresql:://localhost/supportService'`
+    * `export DATABASE_URL='postgresql://localhost/supportService'`
     * `export LD_CLIENT_KEY=$YOUR_SDK_KEY`
 * Source the environment variables `source .env`
 * Upgrade database to latest version `flask db upgrade`
