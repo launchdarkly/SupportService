@@ -9,10 +9,10 @@ services:
     working_dir: /app
     environment:
       - FLASK_APP=supportService.py
-      - DATABASE_URL=postgresql://supportService:supportService@db/supportService
+      - DATABASE_URL=$DATABASE_URL
       - FLASK_ENV=development
       - LD_CLIENT_KEY=$LD_CLIENT_KEY
-    command: bash -c "sleep 5 && pip install -r requirements.txt && flask db upgrade && flask run --host=0.0.0.0"
+    command: bash run.sh
     depends_on:
       - db
     
