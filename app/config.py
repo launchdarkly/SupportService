@@ -53,7 +53,7 @@ class TestingConfig(Config):
             db.create_all()
 
             from ldclient.config import Config as __config
-            ldclient.set_config(__config(offiline=True))
+            ldclient.set_config(__config(offline=True))
 
 
 class ProductionConfig(Config):
