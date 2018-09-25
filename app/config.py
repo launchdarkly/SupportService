@@ -5,7 +5,11 @@ class Config(object):
     """Base Config"""
     VERSION = '1.0.2'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess-this'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')  
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
+        'postgresql://{0}:{0}@{1}/{0}'.format(
+            'supportService',
+            'localhost'
+        )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
 

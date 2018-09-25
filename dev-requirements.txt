@@ -1,0 +1,5 @@
+coverage
+flake8
+pylint
+unittest-xml-reporting
+codecov
