@@ -1,12 +1,17 @@
-from flask import render_template, request, redirect, url_for, flash
-from app import app, db,ld_client
 import json
-from flask_login import current_user, login_user, login_required, logout_user
-from app.models import User
+
+import ldclient
+from flask import flash, redirect, render_template, request, url_for, Blueprint
+from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
-@app.route('/')
-@app.route('/index')
+from app.factory import db
+from app.models import User
+
+core = Blueprint('core', __name__)
+
+@core.route('/')
+@core.route('/index')
 @login_required
 def index():
 
@@ -14,7 +19,7 @@ def index():
     if theme:
         updateTheme(theme)
     
-    showWidgets = ld_client.variation('show-widgets', current_user.get_ld_user(), False)
+    showWidgets = ldclient.get().variation('show-widgets', current_user.get_ld_user(), False)
     
     if showWidgets:
         display_widgets = True
@@ -30,9 +35,9 @@ def index():
     elif showWidgets == 'Green':
         display_widgets = 'Green'
     ''' 
-    all_flags = json.dumps(ld_client.all_flags(current_user.get_ld_user()))
+    all_flags = json.dumps(ldclient().all_flags(current_user.get_ld_user()))
 
-    beta_features = ld_client.variation('dark-theme', current_user.get_ld_user(), False)
+    beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
     
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
@@ -49,29 +54,29 @@ def updateTheme(theme):
 
     db.session.commit()
 
-@app.route('/dark')
+@core.route('/dark')
 def darkTheme():
     return render_template(set_theme, title='Dark Theme')
 
-@app.route('/experiments')
+@core.route('/experiments')
 def experiments():
     return render_template('default/exp.html', title='Experiments')
 
-@app.route('/operational')
+@core.route('/operational')
 def operational():
     return render_template('default/operation.html', title='Operational')
 
-@app.route('/release')
+@core.route('/release')
 def release():
     return render_template('default/release.html', title='Dark Theme')
 
-@app.route('/entitlement')
+@core.route('/entitlement')
 def entitlement():
     return render_template('default/entitlement.html', title='entitlement')
 
 # I decided to take out a payday loan on this shit. 
 # http://flask.pocoo.org/docs/1.0/quickstart/?highlight=post#http-methods
-@app.route('/register', methods=['GET', 'POST'])
+@core.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -92,7 +97,7 @@ def register():
         return redirect(url_for('login'))
     return render_template('beta/auth/register.html', title='Support Request')
 
-@app.route('/login', methods=['GET', 'POST'])
+@core.route('/login', methods=['GET', 'POST'])
 def login(theme='default'):
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -111,7 +116,7 @@ def login(theme='default'):
     '''
     return render_template('beta/auth/login.html', title='Sign In')
 
-@app.route('/logout')
+@core.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))

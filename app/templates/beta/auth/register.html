@@ -6,7 +6,7 @@
     <div class="card card-register mx-auto mt-5">
       <div class="card-header">Register an Account</div>
       <div class="card-body">
-        <form action="{{ url_for('register') }}" method="post">
+        <form action="{{ url_for('core.register') }}" method="post">
           <div class="form-group">
             <label for="userEmail">Email address</label>
             <input class="form-control" id="userEmail" name="userEmail" type="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -26,7 +26,7 @@
           <input type="submit" value="submit" class="btn btn-primary btn-block"></input>
         </form>
         <div class="text-center">
-          <a class="d-block small mt-3" href="{{ url_for('login') }}">Login Page</a>
+          <a class="d-block small mt-3" href="{{ url_for('core.login') }}">Login Page</a>
         </div>
         <hr>
         <div>
