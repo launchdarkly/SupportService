@@ -21,4 +21,4 @@ run:
 	flask run --host=0.0.0.0
 
 test:
-	set -e coverage run tests/main.py
+	set -e && coverage run tests/main.py
