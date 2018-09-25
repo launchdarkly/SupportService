@@ -1,7 +1,7 @@
 import json
 
 import ldclient
-from flask import flash, redirect, render_template, request, url_for, Blueprint
+from flask import flash, redirect, render_template, request, url_for, Blueprint, current_app
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
@@ -14,7 +14,6 @@ core = Blueprint('core', __name__)
 @core.route('/index')
 @login_required
 def index():
-
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
@@ -35,7 +34,7 @@ def index():
     elif showWidgets == 'Green':
         display_widgets = 'Green'
     ''' 
-    all_flags = json.dumps(ldclient().all_flags(current_user.get_ld_user()))
+    all_flags = json.dumps(ldclient.get().all_flags(current_user.get_ld_user()))
 
     beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
     
@@ -79,37 +78,37 @@ def entitlement():
 @core.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('core.index'))
     if request.method == 'POST':
         user = User(email=request.form['userEmail'])
         # check if userName exist
         if User.query.filter_by(email = request.form['userEmail']).first() is not None:
             flash('Email is already taken. Please choose another email')
-            return redirect(url_for('register'))
+            return redirect(url_for('core.register'))
         # check if passwords match
         if request.form['inputPassword'] != request.form['confirmPassword']:
             flash('Passwords must match')
-            return redirect(url_for('register'))
+            return redirect(url_for('core.register'))
         user.set_password(request.form['inputPassword'])
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
+        return redirect(url_for('core.login'))
     return render_template('beta/auth/register.html', title='Support Request')
 
 @core.route('/login', methods=['GET', 'POST'])
 def login(theme='default'):
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('core.index'))
     if request.method == 'POST':
         user = User.query.filter_by(email=request.form['userEmail']).first()
         if user is None or not user.check_password(request.form['inputPassword']):
             flash('Invalid username or password')
-            return redirect(url_for('login'))
+            return redirect(url_for('core.login'))
         login_user(user)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+            next_page = url_for('core.index')
         return redirect(next_page)
     '''
 
@@ -119,4 +118,4 @@ def login(theme='default'):
 @core.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('core.index'))
