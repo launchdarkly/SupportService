@@ -8,7 +8,7 @@ services:
       - .:/app
     working_dir: /app
     environment:
-      - FLASK_APP=supportService.py
+      - FLASK_APP=run.py
       - DATABASE_URL=$DATABASE_URL
       - FLASK_ENV=development
       - LD_CLIENT_KEY=$LD_CLIENT_KEY
