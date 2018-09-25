@@ -1,5 +1,7 @@
 import os
 import ldclient
+import logging
+import sys
 
 class Config(object):
     """Base Config"""
@@ -15,6 +17,14 @@ class Config(object):
 
     # LaunchDarkly
     ldclient.set_sdk_key(os.environ.get("LD_CLIENT_KEY"))
+
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    root.addHandler(ch)
 
     @staticmethod
     def init_app(app):
