@@ -8,7 +8,6 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from app.config import config
-from app.models import AnonymousUser
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -33,6 +32,7 @@ def create_app(config_name):
     migrate.init_app(app, db)
     login.init_app(app)
     login.login_view = 'core.login'
+    from app.models import AnonymousUser
     login.anonymous_user = AnonymousUser
 
     from app.routes import core
