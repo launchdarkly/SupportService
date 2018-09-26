@@ -27,7 +27,7 @@
                 "groups": ["VIP"]
                 }
             };
-            var ldclient = LDClient.initialize(LD_FRONTEND_KEY, user, options = {
+            var ldclient = LDClient.initialize("{{ LD_FRONTEND_KEY }}", user, options = {
                 bootstrap: {{ all_flags | safe }}                
             });
     </script>
@@ -63,7 +63,6 @@
             </button>
             <a class="navbar-brand" href="index">SupportService</a>
         </div>
-
 
         <!-- /.navbar-header -->
         <ul class="nav navbar-top-links navbar-right">
