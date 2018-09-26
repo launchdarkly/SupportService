@@ -27,3 +27,7 @@ services:
     ports:
       - "5432:5432"
 
+  cache:
+    image: redis
+    ports:
+      - "6379:6379"

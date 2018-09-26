@@ -11,7 +11,9 @@ setup(
         'flask-login',
         'flask-bootstrap',
         'flask-wtf',
+        'flask-caching',
         'psycopg2-binary',
+        'redis',
         'ldclient-py',
         'gunicorn'
     ]
