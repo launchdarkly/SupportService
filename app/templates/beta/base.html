@@ -3,13 +3,7 @@
 {% block head %}
     <script crossorigin="anonymous" src="https://app.launchdarkly.com/snippet/ldclient.min.js"></script>
     <script>
-            var user = {
-            "key": "my-user-id",
-            "custom": {
-                "groups": ["VIP"]
-                }
-            };
-            var ldclient = LDClient.initialize('5ac3e3380b0fdd2cbd70c711', user, options = {
+            var ldclient = LDClient.initialize("{{ LD_FRONTEND_KEY }}", {{ current_user.get_ld_user() | safe }}, options = {
                 bootstrap: {{ all_flags | safe }}                
             });
     </script>

@@ -17,6 +17,7 @@ class Config(object):
 
     # LaunchDarkly
     ldclient.set_sdk_key(os.environ.get("LD_CLIENT_KEY"))
+    LD_FRONTEND_KEY = os.environ.get("LD_FRONTEND_KEY")
 
     root = logging.getLogger()
     root.setLevel(logging.DEBUG)
