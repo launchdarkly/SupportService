@@ -5,13 +5,14 @@ from flask import flash, redirect, render_template, request, url_for, Blueprint,
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
-from app.factory import db
+from app.factory import db, CACHE_TIMEOUT, CACHING_DISABLED
 from app.models import User
 
 core = Blueprint('core', __name__)
 
 @core.route('/')
 @core.route('/index')
+@cache.cached(timeout=CACHE_TIMEOUT, unless=CACHING_DISABLED)
 @login_required
 def index():
     theme = request.args.get("theme")
