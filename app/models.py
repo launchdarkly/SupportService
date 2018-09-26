@@ -1,7 +1,7 @@
 import hashlib
 
 from flask import current_app
-from flask_login import UserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.factory import db, login
@@ -52,3 +52,21 @@ class User(UserMixin, db.Model):
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+
+class AnonymousUser(AnonymousUserMixin):
+
+    def __init__(self):
+        super(AnonymousUserMixin, self).__init__()
+
+    def get_ld_user(self):
+        app_version = current_app.config['VERSION']
+        user = {
+            "key": "anonymous",
+            "custom": {
+                "app_version": app_version
+            },
+            "anomymous": True
+        }
+
+        return user
