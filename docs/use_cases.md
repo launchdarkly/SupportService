@@ -16,7 +16,7 @@ the application.
 With feature flags, you are able to dynamically change the logging level of 
 your application without having to restart it. 
 
-#### Create Feature Flag in LaunchDarkly 
+#### Try It Out
 You can try out this use case with the following steps. 
 
 1. In LaunchDarkly, create a new multivariate feature flag called `set-logging-level` 
