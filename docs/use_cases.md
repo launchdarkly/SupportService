@@ -72,8 +72,11 @@ request it changes the log level for the application.
 The use case described above is interesting in its own right. But there are also
 some other neat things worth discussing. LaunchDarkly has a concept of a "user" 
 which in a traditional web application will refer to the human being that is 
-using the application. However, in operational use cases, there may not be a 
-human on the other end of the request. 
+using the application. 
+
+However, in operational use cases, there may not be a human on the other 
+end of the request. In these cases you can think about the "user" object 
+as simply the current request context.
 
 In the example code above, we make a call to the `getLdMachineUser` function to 
 get a "machine" user that refers to the server where the app is running.  
