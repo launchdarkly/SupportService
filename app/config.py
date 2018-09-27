@@ -21,12 +21,7 @@ class Config(object):
     LD_FRONTEND_KEY = os.environ.get("LD_FRONTEND_KEY")
 
     root = logging.getLogger()
-    root.setLevel(logging.DEBUG)
-    ch = logging.StreamHandler(sys.stdout)
-    ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    root.addHandler(ch)
+    root.setLevel(logging.INFO)
 
     @staticmethod
     def init_app(app):

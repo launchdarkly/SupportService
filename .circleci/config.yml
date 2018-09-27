@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/python
       - image: circleci/postgres
@@ -52,3 +52,49 @@ jobs:
 
       - store_artifacts:
           path: test-reports
+
+  build_docker:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install Docker client
+          command: |
+            curl -fsSL get.docker.com -o get-docker.sh
+            sudo sh get-docker.sh
+      - run:
+          name: Build Image
+          command: |
+            docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
+            docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
+            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+            docker push levlaz/supportservice
+
+  deploy:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - run:
+          name: Deploy to Production
+          command: ./scripts/deploy.sh
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - test
+      - build_docker:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - build_docker
+          filters:
+            branches:
+              only: master
