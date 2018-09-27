@@ -56,10 +56,10 @@ def create_app(config_name):
 
         Logging levels are integer values based on the standard Logging library
         in python: https://docs.python.org/3/library/logging.html#logging-levels 
-        
+
         This is an operational feature flag.
         """
-        logLevel = ldclient.get().variation("set-logging-level", {"key": "any"}, 20)
+        logLevel = ldclient.get().variation("set-logging-level", {"key": "any"}, logging.INFO)
 
         app.logger.info("Log level is {0}".format(logLevel))
 
