@@ -1,7 +1,7 @@
 version: '3'
 services:
   support-service:
-    hostname: supportservice.docker
+    hostname: supportservice.dev
     build: .
     ports:
       - "5000:5000"
@@ -17,6 +17,7 @@ services:
     command: bash run.sh
     depends_on:
       - db
+      - cache
     
   db:
     image: postgres:alpine
