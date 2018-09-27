@@ -10,6 +10,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 from app.config import config
+from app.util import getLdMachineUser
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -18,8 +19,8 @@ login = LoginManager()
 cache = Cache(config={'CACHE_TYPE': 'redis'})
 
 # Operational Feature Flags
-CACHE_TIMEOUT = lambda : ldclient.get().variation('cache-timeout', {'key': 'any'}, 50)
-CACHING_DISABLED = lambda : ldclient.get().variation('caching-disabled', {'key': 'any'}, False)
+CACHE_TIMEOUT = lambda : ldclient.get().variation('cache-timeout', getLdMachineUser(), 50)
+CACHING_DISABLED = lambda : ldclient.get().variation('caching-disabled', getLdMachineUser(), False)
 
 def create_app(config_name):
     """Flask application factory.
@@ -47,7 +48,7 @@ def create_app(config_name):
     app.register_blueprint(core)
 
     @app.before_request
-    def set_logging_level():
+    def setLoggingLevel():
         """Set Logging Level Based on Feature Flag
 
         This uses LaunchDarkly to update the logging level dynamically.
@@ -59,7 +60,8 @@ def create_app(config_name):
 
         This is an operational feature flag.
         """
-        logLevel = ldclient.get().variation("set-logging-level", {"key": "any"}, logging.INFO)
+        from flask import request
+        logLevel = ldclient.get().variation("set-logging-level", getLdMachineUser(request), logging.INFO)
 
         app.logger.info("Log level is {0}".format(logLevel))
 
