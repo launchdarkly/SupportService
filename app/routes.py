@@ -14,7 +14,6 @@ core = Blueprint('core', __name__)
 
 @core.route('/')
 @core.route('/index')
-# TODO fix this, it does not seem to bypass the cache properly
 @cache.cached(timeout=CACHE_TIMEOUT(), unless=CachingDisabled())
 @login_required
 def index():

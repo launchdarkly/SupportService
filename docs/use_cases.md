@@ -4,6 +4,48 @@ Run book for Feature Flagging use cases in the SupportService project
 
 ## Operational 
 
+### Disable Cache Dynamically
+There is a [famous quote](https://martinfowler.com/bliki/TwoHardThings.html) in computer science. 
+
+> There are only two hard things in Computer Science: cache invalidation and naming things.
+> 
+> -- Phil Karlton
+
+Caching is really great, until its not. With feature flags you are able to 
+dynamically change the caching layer of your application without having to 
+clear the cache, or restart your service. 
+
+#### Try It Out 
+You can try out this use case with the following steps. 
+
+1. In LaunchDarkly, create a new boolean feature flag called `caching-disabled`
+2. Under the feature flag targeting rules select "false" as the variation to 
+serve when targeting is turned off. 
+3. Turn on targeting. You should now see that the cache is bypassed in 
+the SupportService application. 
+4. Turn off targeting. You should now see that the cache is used in the 
+SupportService application.
+
+#### How It Works
+The SupportService application uses the [Flask Caching](https://flask-caching.readthedocs.io) library backed by redis. This exposes 
+a decorator that you can use on your routes to cache things. The decorator takes an argument called `unless` which expects a callable that returns a boolean 
+value. We have a configuration level feature flag in our application factory 
+that allows you determine if caching should be disabled. 
+
+```python
+class CachingDisabled:
+    def __call__(self):
+        return ldclient.get().variation('caching-disabled', getLdMachineUser(), False)
+```
+
+```python
+@cache.cached(timeout=CACHE_TIMEOUT(), unless=CachingDisabled())
+```
+
+When you change the LaunchDarkly feature flag, it updates the 
+variation in local memory to disable caching. This causes the callable to 
+return True and bypasses the caching system for all requests. 
+
 ### Change Logging Level Dynamically 
 Debug logs provide a large amount of information to help teams figure out 
 the issue when things go wrong. However, running an application in debug 
