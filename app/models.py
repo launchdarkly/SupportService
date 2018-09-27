@@ -1,4 +1,5 @@
 import hashlib
+import uuid
 
 from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
@@ -8,7 +9,7 @@ from app.factory import db, login
 
 
 class User(UserMixin, db.Model):
-    
+
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
@@ -18,37 +19,43 @@ class User(UserMixin, db.Model):
     state = db.Column(db.String(120), default='Ca')
     country = db.Column(db.String(120), default='USA')
     set_path = db.Column(db.String(120), default='default')
-    
+
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
-    
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
+
     def get_email_hash(self):
         return hashlib.md5(self.email.encode()).hexdigest()
 
-    def get_ld_user(self):
+    def get_ld_user(self, random=None):
         app_version = current_app.config['VERSION']
+
+        if random:
+            user_key = str(uuid.uuid1())
+        else:
+            user_key = self.get_email_hash()
+
         user = {
-            'key': self.get_email_hash(),
+            'key': user_key,
             "custom": {
                 'account_type': self.account_type,
                 'user_type': self.user_type,
                 'state': self.state,
                 'country': self.country,
                 'app_version': app_version,
-                
+
             },
             'privateAttributes': ['account_type', 'state'],
         }
 
         return user
-    
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
