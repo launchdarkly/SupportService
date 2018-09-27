@@ -7,7 +7,7 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
-from app.factory import CACHE_TIMEOUT, CACHING_DISABLED, cache, db
+from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
 from app.models import User
 
 core = Blueprint('core', __name__)
@@ -15,7 +15,7 @@ core = Blueprint('core', __name__)
 @core.route('/')
 @core.route('/index')
 # TODO fix this, it does not seem to bypass the cache properly
-# @cache.cached(timeout=CACHE_TIMEOUT(), unless=CACHING_DISABLED())
+@cache.cached(timeout=CACHE_TIMEOUT(), unless=CachingDisabled())
 @login_required
 def index():
     theme = request.args.get("theme")

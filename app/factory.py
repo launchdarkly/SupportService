@@ -20,7 +20,10 @@ cache = Cache(config={'CACHE_TYPE': 'redis'})
 
 # Operational Feature Flags
 CACHE_TIMEOUT = lambda : ldclient.get().variation('cache-timeout', getLdMachineUser(), 50)
-CACHING_DISABLED = lambda : ldclient.get().variation('caching-disabled', getLdMachineUser(), False)
+
+class CachingDisabled:
+    def __call__(self):
+        return ldclient.get().variation('caching-disabled', getLdMachineUser(), False)
 
 def create_app(config_name):
     """Flask application factory.
