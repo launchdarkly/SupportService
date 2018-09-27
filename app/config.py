@@ -14,6 +14,7 @@ class Config(object):
         )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
+    CACHE_REDIS_HOST = os.environ.get('REDIS_HOST') or 'cache'
 
     # LaunchDarkly
     ldclient.set_sdk_key(os.environ.get("LD_CLIENT_KEY"))
