@@ -6,7 +6,7 @@ SupportService is a simple application built in flask, that can be used to demon
 
 ### Requirements 
 
-* Python 3 
+* Python 3.6 (Until https://github.com/launchdarkly/ld-openapi/issues/8 is fixed).
 * The `virtualenv` package (`pip install virtualenv`)
 * PostgreSQL Database called 'supportService'
 
