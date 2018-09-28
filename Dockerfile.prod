@@ -1,7 +1,8 @@
-FROM python:3
+FROM python:3.6
 
 WORKDIR /usr/src/app
 
 COPY . .
 
 RUN pip install --upgrade -e .
+RUN pip install -e lib/api-client-python
