@@ -24,7 +24,7 @@ CACHE_TIMEOUT = lambda : ldclient.get().variation('cache-timeout', getLdMachineU
 
 class CachingDisabled:
     def __call__(self):
-        return ldclient.get().variation('caching-disabled', getLdMachineUser(), False)
+        return ldclient.get().variation('disable-caching', getLdMachineUser(), True)
 
 def create_app(config_name):
     """Flask application factory.

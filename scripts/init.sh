@@ -3,7 +3,7 @@
 # SupportService Init Script 
 # used by cli.py LightSailApi.provisionInstance() as the user data 
 sudo yum upgrade -y
-sudo yum install -y wget unzip git htop vim epel-release
+sudo yum install -y wget unzip git htop tmux vim epel-release
 
 curl -fsSL get.docker.com -o get-docker.sh
 sudo sh get-docker.sh

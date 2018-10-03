@@ -102,8 +102,41 @@ class LightSailApi():
         self.accessKey = accessKey
         self.secret = secret
         self.keyPairName = keyPairName
+        self.region = os.environ.get('AWS_DEFAULT_REGION')
+        self.hostedZoneId = os.environ.get('AWS_HOSTED_ZONE_ID')
         self.logger = logging.getLogger()
         self.client = boto3.client('lightsail')
+        self.dns = boto3.client('route53')
+
+    def upsertDnsRecord(self, instanceIp, hostname):
+        """Create or Update DNS Record for Instance.
+        
+        :param instanceIp: IP address of new instnace.
+        :param hostname: hostname to use for new instance.
+        """
+        response = self.dns.change_resource_record_sets(
+            HostedZoneId=self.hostedZoneId,
+            ChangeBatch={
+                'Changes': [
+                    {
+                        'Action': 'UPSERT',
+                        'ResourceRecordSet': {
+                            'Name': hostname,
+                            'Type': 'A',
+                            'TTL': 300,
+                            'ResourceRecords': [
+                                {
+                                    'Value': instanceIp
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        )
+
+        self.logger.debug(response)
+        return response
 
     def getCentosBlueprint(self):
         """Get first CentOS Blueprint."""
@@ -169,23 +202,29 @@ def deploy_command():
     envs = l.getEnvironments('support-service')
 
     for env in envs:
+        # create instance if needed
         a.checkProvisionedInstance(env['hostname'])
+
+        # get instance IP address
         ipAddress = a.getInstanceIp(env['hostname'])
 
+        # upset Route 53 record for instance
+        a.upsertDnsRecord(ipAddress, env['hostname'])
+
+        # generate secrets
         secrets_generator = SecretsGenerator(env['api_key'], env['client_id'])
         secrets_generator.generate_template()
 
+        # run reploy script
         subprocess.run(["./scripts/deploy.sh", "{0}".format(ipAddress)], check=True)
 
 if __name__ == '__main__':
     root = logging.getLogger()
-    root.setLevel(logging.INFO)
+    root.setLevel(logging.DEBUG)
     ch = logging.StreamHandler(sys.stdout)
-    ch.setLevel(logging.INFO)
+    ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     ch.setFormatter(formatter)
     root.addHandler(ch)
 
-    # deploy_command()
-    s = SecretsGenerator('test1', 'test2')
-    s.generate_template()
+    deploy_command()
