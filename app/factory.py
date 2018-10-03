@@ -11,6 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app.config import config
 from app.util import getLdMachineUser
+from app.cli import deploy_command
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -23,7 +24,7 @@ CACHE_TIMEOUT = lambda : ldclient.get().variation('cache-timeout', getLdMachineU
 
 class CachingDisabled:
     def __call__(self):
-        return ldclient.get().variation('caching-disabled', getLdMachineUser(), False)
+        return ldclient.get().variation('disable-caching', getLdMachineUser(), True)
 
 def create_app(config_name):
     """Flask application factory.
@@ -74,5 +75,9 @@ def create_app(config_name):
         logging.getLogger('werkzeug').setLevel(logLevel)
         # set root
         logging.getLogger().setLevel(logLevel)
+    
+    @app.cli.command()
+    def deploy():
+        deploy_command()
         
     return app

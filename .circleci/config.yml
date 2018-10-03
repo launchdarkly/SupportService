@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/python
+      - image: circleci/python:3.6
       - image: circleci/postgres
         environment:
           POSTGRES_USER: supportService
@@ -24,6 +24,7 @@ jobs:
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
+            pip install -e lib/api-client-python
 
       - save_cache:
           paths:
@@ -55,7 +56,7 @@ jobs:
 
   build_docker:
     docker:
-      - image: circleci/python
+      - image: circleci/python:3.6
     steps:
       - checkout
       - setup_remote_docker
@@ -75,12 +76,32 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/python
+      - image: circleci/python:3.6
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "setup.py" }}
+            - v1-dependencies-
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r dev-requirements.txt
+            pip install -e .
+            pip install -e lib/api-client-python
+            sudo apt-get install -y rsync
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Deploy to Production
-          command: ./scripts/deploy.sh
+          command: |
+            . venv/bin/activate
+            make deploy
 
 workflows:
   version: 2

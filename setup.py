@@ -15,6 +15,7 @@ setup(
         'psycopg2-binary',
         'redis',
         'ldclient-py',
-        'gunicorn'
+        'gunicorn',
+        'boto3'
     ]
 )

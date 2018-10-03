@@ -1,4 +1,5 @@
 import os
+import sys
 import unittest
 import xmlrunner
 
@@ -8,4 +9,7 @@ if __name__ == '__main__':
     package_tests = test_loader.discover(start_dir=root_dir)
 
     testRunner = xmlrunner.XMLTestRunner(output='test-reports')
-    testRunner.run(package_tests)
+    results = testRunner.run(package_tests)
+
+    if (len(results.failures) > 0 or len(results.errors) > 0):
+        sys.exit(1)
