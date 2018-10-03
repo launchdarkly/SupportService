@@ -8,6 +8,35 @@ import boto3
 
 import launchdarkly_api
 
+from jinja2 import Environment, PackageLoader
+
+class SecretsGenerator():
+    """Generate scripts/secrets.sh file"""
+    
+    def __init__(self, sdk_key, frontend_key):
+        """Instantiate new SecretsGenerator()
+
+        :param sdk_key: LaunchDarkly SDK key 
+        :param frontend_key: LaunchDarkly Frontend ID
+        """
+        self.database_url = "postgresql://supportService:supportService@db/supportService"
+        self.sdk_key = sdk_key
+        self.frontend_key = frontend_key
+        self.env = Environment(
+            loader=PackageLoader('app', 'templates')
+        )
+        self.template = self.env.get_template('secrets.jinja')
+
+    def generate_template(self):
+        """Generate a new Secrets File."""
+        with open('scripts/secrets.sh', 'w') as secrets_file:
+            t = self.template.render(
+                database_url=self.database_url, 
+                ld_sdk_key=self.sdk_key, 
+                ld_frontend_key=self.frontend_key)
+            secrets_file.write(t)
+        
+        return None
 
 class LaunchDarklyApi():
     """Interface to LaunchDarkly API"""
@@ -143,6 +172,9 @@ def deploy_command():
         a.checkProvisionedInstance(env['hostname'])
         ipAddress = a.getInstanceIp(env['hostname'])
 
+        secrets_generator = SecretsGenerator(env['api_key'], env['client_id'])
+        secrets_generator.generate_template()
+
         subprocess.run(["./scripts/deploy.sh", "{0}".format(ipAddress)], check=True)
 
 if __name__ == '__main__':
@@ -154,4 +186,6 @@ if __name__ == '__main__':
     ch.setFormatter(formatter)
     root.addHandler(ch)
 
-    deploy_command()
+    # deploy_command()
+    s = SecretsGenerator('test1', 'test2')
+    s.generate_template()

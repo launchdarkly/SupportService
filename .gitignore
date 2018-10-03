@@ -29,3 +29,4 @@ test-reports/
 *.db
 venv/
 *.env
+secrets.sh
