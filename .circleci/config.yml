@@ -35,7 +35,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            make test
+            set -e && make test
 
       - run:
           name: generate coverage report
