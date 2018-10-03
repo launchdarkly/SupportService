@@ -14,6 +14,10 @@ docs:
 dev:
 	./scripts/make_dev.sh
 
+deploy:
+	export FLASK_APP=run.py && \
+	flask deploy
+	
 run:
 	export FLASK_APP=run.py && \
 	export FLASK_DEBUG=true && \

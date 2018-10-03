@@ -1,10 +1,12 @@
+import logging
 import os
-import sys 
+import subprocess
+import sys
+import time
 
 import boto3
 
 import launchdarkly_api
-import logging
 
 
 class LaunchDarklyApi():
@@ -88,6 +90,19 @@ class LightSailApi():
             data = initScript.read()
             return data
 
+    def getInstanceIp(self, instanceName):
+        """Return IP address for instance.
+
+        :param instanceName: name of LightSail isntance
+        """
+        response = self.client.get_instance(instanceName=instanceName)
+
+        while len(response['instance']['publicIpAddress']) < 0:
+            self.logger.info("IP for {0} not yet assigned, sleeping".format(instanceName))
+            time.sleep(1)
+
+        return response['instance']['publicIpAddress']
+
     def provisionInstance(self, hostname):
         """Create new Lightsail Instance.
 
@@ -117,6 +132,18 @@ class LightSailApi():
         except self.client.exceptions.NotFoundException:
             self.provisionInstance(hostname)
 
+def deploy_command():
+    """Deploy to LightSail."""
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    a = LightSailApi(keyPairName='SupportService')
+
+    envs = l.getEnvironments('support-service')
+
+    for env in envs:
+        a.checkProvisionedInstance(env['hostname'])
+        ipAddress = a.getInstanceIp(env['hostname'])
+
+        subprocess.run(["./scripts/deploy.sh", "{0}".format(ipAddress)], check=True)
 
 if __name__ == '__main__':
     root = logging.getLogger()
@@ -126,12 +153,5 @@ if __name__ == '__main__':
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     ch.setFormatter(formatter)
     root.addHandler(ch)
-    # this will become the entry point to the 
-    # flask provision custom command
-    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
-    a = LightSailApi(keyPairName='SupportService')
 
-    envs = l.getEnvironments('support-service')
-
-    for env in envs:
-        a.checkProvisionedInstance(env['hostname'])
+    deploy_command()
