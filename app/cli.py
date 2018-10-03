@@ -159,7 +159,7 @@ class LightSailApi():
         """
         response = self.client.get_instance(instanceName=instanceName)
 
-        while len(response['instance']['publicIpAddress']) < 0:
+        while ('publicIpAddress' not in response['instance']) or (len(response['instance']['publicIpAddress']) < 0):
             self.logger.info("IP for {0} not yet assigned, sleeping".format(instanceName))
             time.sleep(1)
 
