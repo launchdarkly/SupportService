@@ -1,0 +1,48 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block head %}
+
+    <!-- Header: This head section could be it's own partial or just live here-->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="LaunchDarkly SupportService Demo Site">
+    <meta name="author" content="Sales Engineering Team">
+
+    <title>SupportService</title>
+
+    <!-- CSS: -->
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ url_for('static', filename='light/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{{ url_for('static', filename='light/vendor/metisMenu/metisMenu.min.css') }}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='light/dist/css/sb-admin-2.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='shared/css/custom.css') }}" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="{{ url_for('static', filename='light/vendor/morrisjs/morris.css') }}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{{ url_for('static', filename='light/vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+
+    <!-- In Child Templates Additional CSS will be added here
+
+    // Utilize the following code for a Child Theme: 
+    // {% 'extends main.html' %}
+    // {% block head %}
+    //  {{ super() }}
+    // ** your additional CSS files will be inserted heere ** 
+    // {% endblock head %}
+
+    // -->
+
+{% endblock head %}
+
+<!-- Nav -->
+{%  include 'partials/nav.html' %}
+
+<!-- Footer -->
+{% include 'partials/footer.html' %}
