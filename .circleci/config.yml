@@ -24,7 +24,7 @@ jobs:
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
-            pip install -e lib/launchdarkly_api
+            pip install -e lib/api-client-python
 
       - save_cache:
           paths:
@@ -91,7 +91,7 @@ jobs:
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
-            pip install -e lib/launchdarkly_api
+            pip install -e lib/api-client-python
             sudo apt-get install -y rsync
       - save_cache:
           paths:
