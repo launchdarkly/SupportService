@@ -64,19 +64,43 @@ def darkTheme():
 
 @core.route('/experiments')
 def experiments():
-    return render_template('default/exp.html', title='Experiments')
+    theme = request.args.get("theme")
+    if theme:
+        updateTheme(theme)
+    
+    set_theme = '{0}/exp.html'.format(current_user.set_path)
+  
+    return render_template(set_theme, title='Experiments')
 
 @core.route('/operational')
 def operational():
-    return render_template('default/operation.html', title='Operational')
+    theme = request.args.get("theme")
+    if theme:
+        updateTheme(theme)
+    
+    set_theme = '{0}/operation.html'.format(current_user.set_path)
+ 
+    return render_template(set_theme, title='Operational')
 
 @core.route('/release')
 def release():
-    return render_template('default/release.html', title='Dark Theme')
+    theme = request.args.get("theme")
+    if theme:
+        updateTheme(theme)
+    
+    set_theme = '{0}/release.html'.format(current_user.set_path)
+
+    return render_template(set_theme, title='Dark Theme')
 
 @core.route('/entitlement')
 def entitlement():
-    return render_template('default/entitlement.html', title='entitlement')
+    theme = request.args.get("theme")
+    if theme:
+        updateTheme(theme)
+    
+    set_theme = '{0}/entitlement.html'.format(current_user.set_path)
+
+    return render_template(set_theme, title='entitlement')
 
 # I decided to take out a payday loan on this shit. 
 # http://flask.pocoo.org/docs/1.0/quickstart/?highlight=post#http-methods

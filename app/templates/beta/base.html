@@ -29,7 +29,7 @@
   {% block navbar %}
   {% if current_user.is_authenticated %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-        <a class="navbar-brand" href="index.html">SupportService</a>
+        <a class="navbar-brand" href="{{ url_for('core.index') }}">SupportService</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -37,31 +37,31 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-              <a class="nav-link" href="index.html">
+              <a class="nav-link" href="{{ url_for('core.index') }}"> 
                 <i class="fa fa-fw fa-dashboard"></i>
                 <span class="nav-link-text">Dashboard</span>
               </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Experimentation">
-              <a class="nav-link" href="{{ url_for('static', filename='dark/pages/charts.html') }}">
+              <a class="nav-link" href="{{ url_for('core.experiments') }}">
                 <i class="fa fa-fw fa-flask"></i>
                 <span class="nav-link-text">Experimentation</span>
               </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Operational">
-              <a class="nav-link" href="{{ url_for('static', filename='dark/pages/tables.html') }}">
+              <a class="nav-link" href="{{ url_for('core.operational') }}">
                 <i class="fa fa-fw fa-gear fa-spin"></i>
                 <span class="nav-link-text">Operational</span>
               </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Release Management">
-              <a class="nav-link" href="#collapseComponents">
+              <a class="nav-link" href="{{ url_for('core.release') }}">
                 <i class="fa fa-fw fa-clock-o"></i>
                 <span class="nav-link-text">Release Management</span>
               </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Entitlement">
-              <a class="nav-link" href="#collapseExamplePages">
+              <a class="nav-link" href="{{ url_for('core.entitlement') }}">
                 <i class="fa fa-fw fa-power-off "></i>
                 <span class="nav-link-text">Entitlement</span>
               </a>
