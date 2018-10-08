@@ -30,3 +30,5 @@ test-reports/
 venv/
 *.env
 secrets.sh
+lambda/
+*.zip

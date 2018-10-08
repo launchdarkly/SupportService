@@ -26,3 +26,7 @@ run:
 
 test:
 	set -e && coverage run tests/main.py
+
+update:
+	zip -g LdLambda.zip LdLambda.py && \
+	scripts/update_lambda.sh

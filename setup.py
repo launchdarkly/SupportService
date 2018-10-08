@@ -16,6 +16,7 @@ setup(
         'redis',
         'ldclient-py',
         'gunicorn',
-        'boto3'
+        'boto3',
+        'circleci'
     ]
 )
