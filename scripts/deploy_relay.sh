@@ -10,7 +10,7 @@ deploy()
     done
 
     # Send Generated Docker Compose File to Production Server
-    scp -o StrictHostKeyChecking=no relay/docker-compose.prod.yml $PROD_SERVER:/var/www/relay/docker-compose.yml
+    scp -o StrictHostKeyChecking=no relay/docker-compose.yml $PROD_SERVER:/var/www/relay/docker-compose.yml
 
     # Log into Production Server, Pull and Restart Docker
     ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/relay && docker-compose pull'

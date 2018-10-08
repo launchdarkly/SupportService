@@ -102,6 +102,7 @@ jobs:
           command: |
             . venv/bin/activate
             make deploy
+            make deploy-relay
 
 workflows:
   version: 2
