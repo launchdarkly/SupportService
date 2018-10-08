@@ -15,9 +15,11 @@ dev:
 	./scripts/make_dev.sh
 
 deploy:
-	export FLASK_APP=run.py && \
-	flask deploy
+	python cli.py deploy
 	
+deploy-relay:
+	python cli.py deploy-relay
+
 run:
 	export FLASK_APP=run.py && \
 	export FLASK_DEBUG=true && \

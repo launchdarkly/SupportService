@@ -32,3 +32,6 @@ venv/
 secrets.sh
 lambda/
 *.zip
+
+# Relay 
+relay/docker-compose.yml
