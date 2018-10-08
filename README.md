@@ -15,11 +15,11 @@ more information on specific feature flags and use cases.
 ### Instructions 
 
 * Clone the repo locally `git clone https://github.com/manuelPartida/SupportService.git`
-* Copy `.env.example` to `.env` and fill in the correct values
+* Copy `.env.example` to `.env` and fill in the correct values:
 
-    export DATABASE_URL=postgresql://supportService:supportService@db/supportService
-    export LD_CLIENT_KEY=$YOUR_SDK_KEY
-    export LD_FRONTEND_KEY=$YOUR_FRONTEND_ID
+        export DATABASE_URL=postgresql://supportService:supportService@db/supportService
+        export LD_CLIENT_KEY=$YOUR_SDK_KEY
+        export LD_FRONTEND_KEY=$YOUR_FRONTEND_ID
 
 * Source the environment variables `source .env`
 * Start up the stack with `docker-compose up`
