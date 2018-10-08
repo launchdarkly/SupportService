@@ -25,3 +25,23 @@ more information on specific feature flags and use cases.
 * Start up the stack with `docker-compose up`
 
 The app should now be running on localhost:5000 
+
+## Running in Production 
+
+**Note: this section only applies to LaunchDarkly employees.**
+
+There is a production instance of this application running for every 
+environment that is defined in the `support-service` project in our demo 
+environment.
+
+If you need your own environment simply make a new environment inside of this 
+project. This will trigger a deployment via CircleCI that will provision a 
+new instance on AWS Lightsail. 
+
+After a few minutes will be available at `$YOUR_ENVIRONMENT_KEY.ldsolutions.tk`.
+
+### Updating in Production 
+
+Every time that there is a commit to the master branch of this repo, a deployment 
+runs via CircleCI to update all existing instances on AWS LightSail to the latest
+version of master.
