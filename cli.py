@@ -5,10 +5,32 @@ import sys
 import time
 
 import boto3
+import click
+from jinja2 import Environment, PackageLoader
 
 import launchdarkly_api
 
-from jinja2 import Environment, PackageLoader
+
+class RelayConfigGenerator():
+    """Generates ld-relay configuration"""
+
+    def __init__(self, environments):
+        self.environments = environments
+        self.env = Environment(
+            loader=PackageLoader('relay', 'templates')
+        )
+        self.template = self.env.get_template('docker-compose.jinja')
+
+    def generate_template(self):
+        """Generate docker compose file."""
+        with open('relay/docker-compose.yml', 'w') as docker_compose_file:
+            t = self.template.render(
+                envs = self.environments
+            )
+            docker_compose_file.write(t)
+
+        return None
+
 
 class SecretsGenerator():
     """Generate scripts/secrets.sh file"""
@@ -37,6 +59,7 @@ class SecretsGenerator():
             secrets_file.write(t)
         
         return None
+
 
 class LaunchDarklyApi():
     """Interface to LaunchDarkly API"""
@@ -195,7 +218,24 @@ class LightSailApi():
         except self.client.exceptions.NotFoundException:
             self.provisionInstance(hostname)
 
-def deploy_command():
+@click.group()
+def cli():
+    pass
+
+@click.command()
+def deploy_relay():
+    """Deploy LD Relay to LightSail."""
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    envs = l.getEnvironments('support-service')
+    r = RelayConfigGenerator(environments = envs)
+
+    r.generate_template()
+    subprocess.run(
+        ["./scripts/deploy_relay.sh"]
+    )
+
+@click.command()
+def deploy():
     """Deploy to LightSail."""
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
     a = LightSailApi(keyPairName='SupportService')
@@ -219,13 +259,8 @@ def deploy_command():
         # run reploy script
         subprocess.run(["./scripts/deploy.sh", "{0}".format(ipAddress)], check=True)
 
-if __name__ == '__main__':
-    root = logging.getLogger()
-    root.setLevel(logging.DEBUG)
-    ch = logging.StreamHandler(sys.stdout)
-    ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    root.addHandler(ch)
+cli.add_command(deploy_relay)
+cli.add_command(deploy)
 
-    deploy_command()
+if __name__ == '__main__':
+    cli()
