@@ -17,6 +17,7 @@ setup(
         'ldclient-py',
         'gunicorn',
         'boto3',
-        'circleci'
+        'circleci',
+        'faker'
     ]
 )
