@@ -26,6 +26,24 @@ more information on specific feature flags and use cases.
 
 The app should now be running on localhost:5000 
 
+## Using the CLI 
+
+There is a `cli.py` that exposes some deployment functionality. This allows you 
+to run the same deployment locally that CircleCI is running for this project. 
+
+In order to use it in a standalone way you need to add some additional environment
+varibales to your `.env` file: 
+
+    ```
+    export LD_API_KEY=
+    export AWS_ACCESS_KEY_ID=
+    export AWS_SECRET_ACCESS_KEY=
+    export AWS_DEFAULT_REGION=
+    export AWS_HOSTED_ZONE_ID=
+    ```
+
+You can run `python cli.py` to see the help for the cli. 
+
 ## Running in Production 
 
 **Note: this section only applies to LaunchDarkly employees.**
