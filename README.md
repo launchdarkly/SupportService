@@ -16,11 +16,11 @@ more information on specific feature flags and use cases.
 
 * Clone the repo locally `git clone https://github.com/manuelPartida/SupportService.git`
 * Copy `.env.example` to `.env` and fill in the correct values
-    ```
+
     export DATABASE_URL=postgresql://supportService:supportService@db/supportService
     export LD_CLIENT_KEY=$YOUR_SDK_KEY
     export LD_FRONTEND_KEY=$YOUR_FRONTEND_ID
-    ```
+
 * Source the environment variables `source .env`
 * Start up the stack with `docker-compose up`
 
@@ -34,13 +34,11 @@ to run the same deployment locally that CircleCI is running for this project.
 In order to use it in a standalone way you need to add some additional environment
 varibales to your `.env` file: 
 
-    ```
     export LD_API_KEY=
     export AWS_ACCESS_KEY_ID=
     export AWS_SECRET_ACCESS_KEY=
     export AWS_DEFAULT_REGION=
     export AWS_HOSTED_ZONE_ID=
-    ```
 
 You can run `python cli.py` to see the help for the cli. 
 
