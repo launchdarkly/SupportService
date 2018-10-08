@@ -11,7 +11,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app.config import config
 from app.util import getLdMachineUser
-from app.cli import deploy_command
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -75,9 +74,5 @@ def create_app(config_name):
         logging.getLogger('werkzeug').setLevel(logLevel)
         # set root
         logging.getLogger().setLevel(logLevel)
-    
-    @app.cli.command()
-    def deploy():
-        deploy_command()
         
     return app
