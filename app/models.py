@@ -52,6 +52,7 @@ class User(UserMixin, db.Model):
                 'user_type': self.user_type,
                 'state': self.state,
                 'country': self.country,
+                'company': self.company,
                 'app_version': app_version,
 
             },
