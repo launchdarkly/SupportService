@@ -1,11 +1,13 @@
 import os
+import subprocess
 import ldclient
 import logging
 import sys
 
 class Config(object):
     """Base Config"""
-    VERSION = '1.0.2'
+    # VERSION refers to the latest git SHA1
+    VERSION = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('utf-8').rstrip()
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess-this'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'postgresql://{0}:{0}@{1}/{0}'.format(
@@ -23,7 +25,7 @@ class Config(object):
     root = logging.getLogger()
     root.setLevel(logging.INFO)
 
-    @staticmethod
+    @staticmethod  
     def init_app(app):
         pass
 

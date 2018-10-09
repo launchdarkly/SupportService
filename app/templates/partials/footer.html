@@ -1,7 +1,7 @@
 {% block footer %}
-
     <!-- ** *Note* LaunchDarkly is initialized in the header ** -->
     
+    <small>Support Service Version: {{ config['VERSION'] }}</small>
     <!-- Bootstrap Core JavaScript -->
     <script src="{{ url_for('static', filename='light/vendor/bootstrap/css/bootstrap.min.css') }}"></script>
 

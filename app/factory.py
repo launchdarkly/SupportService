@@ -39,6 +39,8 @@ def create_app(config_name):
 
     config[config_name].init_app(app)
 
+    app.logger.info("APP VERSION: " + app.config['VERSION'])
+    
     bootstrap.init_app(app)
     migrate.init_app(app, db)
     cache.init_app(app)
