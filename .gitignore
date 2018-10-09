@@ -34,4 +34,4 @@ lambda/
 *.zip
 
 # Relay 
-relay/docker-compose.yml
+docker-compose.relay.yml
