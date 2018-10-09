@@ -1,5 +1,7 @@
 # SupportService
 
+[![CircleCI](https://circleci.com/gh/launchdarkly/SupportService.svg?style=shield)](https://circleci.com/gh/launchdarkly/SupportService)
+
 SupportService is a simple application built in flask, that can be used to demonstrate the use of feature flags in action. All of the source code can be downloaded from github and run locally your machine. The following are instructions on how to install the application and how to configure it so you can run the demo environment on your local machinge. 
 
 Please refer to the [wiki](https://github.com/launchdarkly/SupportService/wiki) for 
