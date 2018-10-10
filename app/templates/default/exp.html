@@ -1,4 +1,9 @@
-{% extends "default/base.html" %}
+{% extends "main.html" %}
+
+{% block navbar %}
+    <!-- Nav -->
+    {%  include 'partials/nav.html' %}
+{%- endblock navbar %}
 
 {% block content %}
 <div id="wrapper">

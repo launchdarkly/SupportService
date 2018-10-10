@@ -28,15 +28,7 @@ def index():
     else:
         display_widgets = False
         
-    '''
-    showWidgets = ld_client.variation("switch-feature", {'key': 'user@test.com'}, False)
-    if showWidgets == 'Red':
-        display_widgets = 'Red'
-    elif showWidgets == 'Blue':
-        display_widgets = 'Blue'
-    elif showWidgets == 'Green':
-        display_widgets = 'Green'
-    ''' 
+
     all_flags = json.dumps(ldclient.get().all_flags(current_user.get_ld_user()))
 
     beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
