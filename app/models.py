@@ -1,6 +1,6 @@
 import hashlib
 import uuid
-import datetime
+import time
 
 from flask import current_app
 from flask_login import UserMixin, AnonymousUserMixin
@@ -36,8 +36,8 @@ class User(UserMixin, db.Model):
 
     def get_ld_user(self, random=None):
         app_version = current_app.config['VERSION']
-        currentDateTime = datetime.datetime.now()
-        
+        millis = int(round(time.time() * 1000))
+
         if random:
             user_key = str(uuid.uuid1())
         else:
@@ -52,7 +52,7 @@ class User(UserMixin, db.Model):
                 'state': self.state,
                 'country': self.country,
                 'app_version': app_version,
-                'date': (str(currentDateTime))
+                'date': millis
             },
             'privateAttributes': ['account_type', 'state'],
         }

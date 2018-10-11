@@ -35,10 +35,8 @@ def index():
     
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
-    LD_FRONTEND_KEY = current_app.config["LD_FRONTEND_KEY"]
-
     return render_template(set_theme, title='Home',
-    display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features, LD_FRONTEND_KEY=LD_FRONTEND_KEY)
+    display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features)
 
 
 def updateTheme(theme):
