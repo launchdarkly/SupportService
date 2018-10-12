@@ -117,9 +117,7 @@ workflows:
             - test
           filters:
             branches:
-              only: 
-                - master
-                - machine
+              only: master
       - deploy:
           requires:
             - build_docker
