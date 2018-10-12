@@ -1,0 +1,33 @@
+{% extends "main.html" %}
+
+{% block head %}
+    {{ super() }}
+    <!-- Page level plugin CSS-->
+    <link href="{{ url_for('static', filename='dark/vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+    <!-- Custom styles for this template-->
+    <link href="{{ url_for('static', filename='dark/css/sb-admin.css') }}" rel="stylesheet">
+{% endblock %}
+
+<!-- THIS NAV STUFF IS NOT WORKING CORRECTLY, FIX ME -->
+{% block navbar %}
+    <!-- Nav -->
+    {%  include 'partials/nav-dark.html' %}
+{%- endblock navbar %}
+
+{% block content %}
+  <!-- New Dark Theme Beta Content-->
+{% endblock %}
+
+{% block footer %}
+    {{ super() }}
+    <!-- Core plugin JavaScript-->
+    <script src="{{ url_for('static', filename='dark/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="{{ url_for('static', filename='dark/vendor/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dark/vendor/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ url_for('static', filename='dark/vendor/datatables/dataTables.bootstrap4.js') }}"></script>
+
+    <!-- Custom scripts for this page-->
+    <script src="{{ url_for('static', filename='dark/js/sb-admin-datatables.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dark/js/sb-admin-charts.min.js') }}"></script>
+{% endblock %}
