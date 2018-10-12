@@ -1,7 +1,6 @@
 <!doctype html>
 
 {% block head %}
-    <!-- Header: This head section could be it's own partial or just live here-->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +8,9 @@
     <meta name="author" content="Sales Engineering Team">
 
     <title>SupportService - {{ title }}</title>
+{% endblock head %}
 
+{% block css %}
     <!-- Bootstrap Core CSS -->
     <link href="{{ url_for('static', filename='light/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
@@ -25,7 +26,9 @@
 
     <!-- Custom Fonts -->
     <link href="{{ url_for('static', filename='light/vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+{% endblock css %}
 
+{% block headerJS %}
     <!-- jQuery -->
     <script src="{{ url_for('static', filename='light/vendor/jquery/jquery.min.js') }}"></script>
 
@@ -37,8 +40,7 @@
     <script>
             var ldclient = LDClient.initialize("{{ config['LD_FRONTEND_KEY'] }}", {{ current_user.get_ld_user() | safe }} );
     </script>
-
-{% endblock head %}
+{% endblock headerJS %}
 
 {% block navbar %}
     <!-- Nav -->
