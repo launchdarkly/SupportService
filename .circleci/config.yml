@@ -59,11 +59,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Docker client
-          command: |
-            curl -fsSL get.docker.com -o get-docker.sh
-            sudo sh get-docker.sh
-      - run:
           name: Install Docker Compose
           command: sudo pip install docker-compose
       - run:
@@ -71,11 +66,14 @@ jobs:
           command: |
             docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
             docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
-            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
-            docker push levlaz/supportservice
       - run:
           name: Test Stack
           command: docker-compose -f docker-compose.prod.yml up
+      - run:
+          name: Push Image
+          command: |
+            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+            docker push levlaz/supportservice
 
   deploy:
     docker:
