@@ -70,7 +70,7 @@ jobs:
           name: Test Stack
           command: |
             export DATABASE_URL=postgresql://supportService:supportService@db/supportService
-            docker-compose -f docker-compose.prod.yml up
+            docker-compose -f docker-compose.prod.yml up -d
       - run:
           name: Push Image
           command: |
