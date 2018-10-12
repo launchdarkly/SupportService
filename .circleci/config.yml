@@ -55,22 +55,25 @@ jobs:
           path: test-reports
 
   build_docker:
-    docker:
-      - image: circleci/python:3.6
+    machine: true
     steps:
       - checkout
-      - setup_remote_docker
-      # removing because docker aleady exists in circleci/python
-      # - run:
-      #     name: Install Docker client
-      #     command: |
-      #       curl -fsSL get.docker.com -o get-docker.sh
-      #       sudo sh get-docker.sh
+      - run:
+          name: Install Docker Compose
+          command: sudo pip install docker-compose
       - run:
           name: Build Image
           command: |
             docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
             docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
+      - run:
+          name: Test Stack
+          command: |
+            export DATABASE_URL=postgresql://supportService:supportService@db/supportService
+            docker-compose -f docker-compose.prod.yml up -d
+      - run:
+          name: Push Image
+          command: |
             docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
             docker push levlaz/supportservice
 
