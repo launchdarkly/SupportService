@@ -55,7 +55,7 @@ jobs:
           path: test-reports
 
   build_docker:
-    machine:
+    machine: true
     steps:
       - checkout
       - run:
