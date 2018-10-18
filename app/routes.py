@@ -28,25 +28,15 @@ def index():
     else:
         display_widgets = False
         
-    '''
-    showWidgets = ld_client.variation("switch-feature", {'key': 'user@test.com'}, False)
-    if showWidgets == 'Red':
-        display_widgets = 'Red'
-    elif showWidgets == 'Blue':
-        display_widgets = 'Blue'
-    elif showWidgets == 'Green':
-        display_widgets = 'Green'
-    ''' 
+
     all_flags = json.dumps(ldclient.get().all_flags(current_user.get_ld_user()))
 
     beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
     
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
-    LD_FRONTEND_KEY = current_app.config["LD_FRONTEND_KEY"]
-
     return render_template(set_theme, title='Home',
-    display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features, LD_FRONTEND_KEY=LD_FRONTEND_KEY)
+    display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features)
 
 
 def updateTheme(theme):

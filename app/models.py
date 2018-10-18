@@ -1,12 +1,12 @@
 import hashlib
+import time
 import uuid
 
+from app.factory import db, login
 from faker import Faker
 from flask import current_app
 from flask_login import AnonymousUserMixin, UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
-
-from app.factory import db, login
 
 fake = Faker()
 
@@ -23,7 +23,6 @@ class User(UserMixin, db.Model):
     set_path = db.Column(db.String(120), default='default')
     company = db.Column(db.String(255), default=fake.company())
 
-
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -38,6 +37,7 @@ class User(UserMixin, db.Model):
 
     def get_ld_user(self, random=None):
         app_version = current_app.config['VERSION']
+        milliseconds = int(round(time.time() * 1000))
 
         if random:
             user_key = str(uuid.uuid1())
@@ -52,13 +52,12 @@ class User(UserMixin, db.Model):
                 'user_type': self.user_type,
                 'state': self.state,
                 'country': self.country,
-                'company': self.company,
                 'app_version': app_version,
-
+                'company': self.company,
+                'date': milliseconds
             },
             'privateAttributes': ['account_type', 'state'],
         }
-
         return user
 
 @login.user_loader

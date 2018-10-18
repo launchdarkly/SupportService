@@ -1,4 +1,4 @@
-{% extends "default/base.html" %}
+{% extends "main.html" %}
 
 {% block content %}
 <div id="wrapper">
@@ -309,9 +309,6 @@
                         <!-- /.panel-body -->
                     </div>
 
-                <!-- Chat -->
-                {%  include 'partials/chat.html' %}
-
                 </div>
                 <!-- /.col-lg-4 -->
             </div>
@@ -321,7 +318,5 @@
 
     </div>
     <!-- /#wrapper -->
-
-    {% include 'partials/footer.html' %}
     
 {% endblock %}
