@@ -8,6 +8,7 @@ from flask_caching import Cache
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from elasticapm.contrib.flask import ElasticAPM
 
 from app.config import config
 from app.util import getLdMachineUser
@@ -17,6 +18,7 @@ migrate = Migrate()
 bootstrap =  Bootstrap()
 login = LoginManager()
 cache = Cache(config={'CACHE_TYPE': 'redis'})
+apm = ElasticAPM()
 
 # Operational Feature Flags
 CACHE_TIMEOUT = lambda : ldclient.get().variation('cache-timeout', getLdMachineUser(), 50)

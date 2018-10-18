@@ -5,6 +5,28 @@ Generates templates using jinja.
 from jinja2 import Environment, PackageLoader
 
 
+class ConfigGenerator():
+    """Abstract configuration generator using Jinja"""
+
+    def __init__(self):
+        self.env = Environment(
+            loader=PackageLoader('cli', 'templates')
+        )
+    
+    def generate_relay_config(self, template, environments):
+        """Generate docker-compose.relay.yml."""
+        template = self.env.get_template(template)
+
+        with open('docker-compose.relay.yml', 'w') as docker_compose_file:
+            t = template.render(
+                envs = environments
+            )
+            docker_compose_file.write(t)
+    
+    def generate_prod_config(self, template, environment):
+        """Generate production docker-compose."""
+        template = self.env.get_template(template)
+
 class RelayConfigGenerator():
     """Generates docker-compose.relay.yml configuration"""
 

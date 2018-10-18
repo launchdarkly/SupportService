@@ -18,6 +18,7 @@ setup(
         'gunicorn',
         'boto3',
         'circleci',
-        'faker'
+        'faker',
+        'elastic-apm[flask]'
     ]
 )

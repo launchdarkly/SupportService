@@ -10,7 +10,7 @@ import ldclient
 
 import click
 
-from cli.generators import RelayConfigGenerator, SecretsGenerator
+from cli.generators import RelayConfigGenerator, SecretsGenerator, ElkConfigGenerator
 from cli.ld import LaunchDarklyApi
 from cli.aws import AwsApi
 

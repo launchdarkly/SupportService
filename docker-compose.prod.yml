@@ -15,6 +15,7 @@ services:
     depends_on:
       - db
       - cache
+      - apm
     
   db:
     image: postgres:alpine
@@ -39,3 +40,8 @@ services:
       - "80:80"
     depends_on:
       - app
+
+  apm:
+    image: elastic/apm-server
+    ports:
+      - "8200:8200"
