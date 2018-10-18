@@ -1,13 +1,14 @@
 import hashlib
-import uuid
 import time
-
-from flask import current_app
-from flask_login import UserMixin, AnonymousUserMixin
-from werkzeug.security import check_password_hash, generate_password_hash
+import uuid
 
 from app.factory import db, login
+from faker import Faker
+from flask import current_app
+from flask_login import AnonymousUserMixin, UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
 
+fake = Faker()
 
 class User(UserMixin, db.Model):
 
@@ -17,10 +18,10 @@ class User(UserMixin, db.Model):
     #account_types = Personal, Professional, Business, Premium
     account_type = db.Column(db.String(120), default='Business')
     user_type = db.Column(db.String(120), default='Beta')
-    state = db.Column(db.String(120), default='Ca')
-    country = db.Column(db.String(120), default='USA')
+    state = db.Column(db.String(120), default=fake.state_abbr())
+    country = db.Column(db.String(120), default=fake.country_code(representation="alpha-2"))
     set_path = db.Column(db.String(120), default='default')
-
+    company = db.Column(db.String(255), default=fake.company())
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -36,7 +37,7 @@ class User(UserMixin, db.Model):
 
     def get_ld_user(self, random=None):
         app_version = current_app.config['VERSION']
-        millis = int(round(time.time() * 1000))
+        milliseconds = int(round(time.time() * 1000))
 
         if random:
             user_key = str(uuid.uuid1())
@@ -52,7 +53,8 @@ class User(UserMixin, db.Model):
                 'state': self.state,
                 'country': self.country,
                 'app_version': app_version,
-                'date': millis
+                'company': self.company,
+                'date': milliseconds
             },
             'privateAttributes': ['account_type', 'state'],
         }
