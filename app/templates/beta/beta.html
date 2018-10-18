@@ -1,0 +1,69 @@
+{% extends "main.html" %}
+
+{% block css %}
+  <!-- Bootstrap core CSS-->
+  <link href="{{ url_for('static', filename='dark/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="{{ url_for('static', filename='dark/vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+  <!-- Page level plugin CSS-->
+  <link href="{{ url_for('static', filename='dark/vendor/datatables/dataTables.bootstrap4.css') }}" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="{{ url_for('static', filename='dark/css/sb-admin.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+    <!-- Nav -->
+    {%  include 'partials/nav-dark.html' %}
+{%- endblock navbar %}
+
+{% block content %}
+  <!-- New Dark Theme Beta Content-->
+{% endblock %}
+
+{% block footer %}
+    <!-- Bootstrap core JavaScript-->
+    <script src="{{ url_for('static', filename='dark/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dark/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="{{ url_for('static', filename='dark/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="{{ url_for('static', filename='light/vendor/metisMenu/metisMenu.min.js') }}"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="{{ url_for('static', filename='dark/vendor/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dark/vendor/datatables/jquery.dataTables.js') }}"></script>
+    <script src="{{ url_for('static', filename='dark/vendor/datatables/dataTables.bootstrap4.js') }}"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="{{ url_for('static', filename='dark/js/sb-admin.min.js') }}"></script>
+    <!-- Custom scripts for this page-->
+    <script src="{{ url_for('static', filename='dark/js/sb-admin-datatables.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='dark/js/sb-admin-charts.min.js') }}"></script>
+    
+    <script>
+        var displayWidget = document.getElementById('widgets');
+    
+        var renderButton = function() {
+            var showFeature = ldclient.variation("show-widgets", false);
+    
+            if (showFeature) {
+                console.log("this is my current style: " + displayWidget.className);
+                //displayWidget.className = 'row'
+                //$("#displayWidget").addClass('row');
+                displayWidget.style.display = "flex";
+            } else {
+                displayWidget.className = 'row'
+                displayWidget.style.display = "none";
+            }
+        }
+    
+        ldclient.on('ready', function() {
+            console.log("It's now safe to request feature flags");
+            console.log(ldclient);
+            renderButton();
+        });
+    
+        ldclient.on('change', function() {
+            console.log('this should change')
+            renderButton();
+        });
+        </script> 
+{% endblock %}

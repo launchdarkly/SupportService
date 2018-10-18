@@ -1,17 +1,16 @@
-{% extends 'bootstrap/base.html' %}
+<!doctype html>
 
 {% block head %}
-
-    <!-- Header: This head section could be it's own partial or just live here-->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="LaunchDarkly SupportService Demo Site">
     <meta name="author" content="Sales Engineering Team">
 
-    <title>SupportService</title>
+    <title>SupportService - {{ title }}</title>
+{% endblock head %}
 
-    <!-- CSS: -->
+{% block css %}
     <!-- Bootstrap Core CSS -->
     <link href="{{ url_for('static', filename='light/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
@@ -19,7 +18,7 @@
     <link href="{{ url_for('static', filename='light/vendor/metisMenu/metisMenu.min.css') }}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="{{ url_for('static', filename='light/dist/css/sb-admin-2.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='light/dist/css/sb-admin-2.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='shared/css/custom.css') }}" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
@@ -27,23 +26,35 @@
 
     <!-- Custom Fonts -->
     <link href="{{ url_for('static', filename='light/vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+{% endblock css %}
 
-    <!-- In Child Templates Additional CSS will be added here
+{% block headerJS %}
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='light/vendor/jquery/jquery.min.js') }}"></script>
 
-    // Utilize the following code for a Child Theme: 
-    // {% 'extends main.html' %}
-    // {% block head %}
-    //  {{ super() }}
-    // ** your additional CSS files will be inserted heere ** 
-    // {% endblock head %}
+   <!-- Custom Theme JavaScript -->
+   <script src="{{ url_for('static', filename='light/dist/js/sb-admin-2.min.js') }}"></script>
 
-    // -->
 
-{% endblock head %}
+    <script crossorigin="anonymous" src="https://app.launchdarkly.com/snippet/ldclient.min.js"></script>
+    <script>
+            var ldclient = LDClient.initialize("{{ config['LD_FRONTEND_KEY'] }}", {{ current_user.get_ld_user() | safe }} );
+    </script>
+{% endblock headerJS %}
 
-<!-- Nav -->
-{%  include 'partials/nav.html' %}
+{% block navbar %}
+    <!-- Nav -->
+    {%  include 'partials/nav.html' %}
+{%- endblock navbar %}
 
-<!-- Footer -->
-{% include 'partials/footer.html' %}
-<small>Support Service Version: {{ config['VERSION'] }}</small>
+{% block content %}
+    <!-- Content -->
+{% endblock content %}
+
+<!-- Chat -->
+{%  include 'partials/chat.html' %}
+
+{% block footer %}
+    <!-- Footer -->
+    {% include 'partials/footer.html' %}
+{% endblock footer %}
