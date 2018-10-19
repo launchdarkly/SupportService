@@ -10,7 +10,7 @@ import ldclient
 
 import click
 
-from cli.generators import RelayConfigGenerator, SecretsGenerator, ElkConfigGenerator
+from cli.generators import ConfigGenerator
 from cli.ld import LaunchDarklyApi
 from cli.aws import AwsApi
 
@@ -27,9 +27,10 @@ def deploy_relay():
     """Deploy LD Relay to LightSail."""
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
     envs = l.getEnvironments('support-service')
-    r = RelayConfigGenerator(environments = envs)
+    c = ConfigGenerator()
 
-    r.generate_template()
+    c.generate_relay_config(envs)
+
     subprocess.run(
         ["./scripts/deploy_relay.sh"]
     )
@@ -44,7 +45,9 @@ def deploy():
     """
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
     a = AwsApi(keyPairName='SupportService')
+    c = ConfigGenerator()
 
+    c.generate_apm_config()
     envs = l.getEnvironments('support-service')
 
     for env in envs:
@@ -69,9 +72,8 @@ def deploy():
             # upset Route 53 record for instance
             a.upsertDnsRecord(ipAddress, hostname)
 
-            # generate secrets
-            secrets_generator = SecretsGenerator(env['api_key'], env['client_id'])
-            secrets_generator.generate_template()
+            # generate docker-compose file 
+            c.generate_prod_config(env)
 
             # run reploy script
             subprocess.run(["./scripts/deploy.sh", "{0}".format(ipAddress)], check=True)

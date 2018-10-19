@@ -2,6 +2,7 @@
 
 Generates templates using jinja. 
 """
+import os
 from jinja2 import Environment, PackageLoader
 
 
@@ -13,9 +14,9 @@ class ConfigGenerator():
             loader=PackageLoader('cli', 'templates')
         )
     
-    def generate_relay_config(self, template, environments):
+    def generate_relay_config(self, environments):
         """Generate docker-compose.relay.yml."""
-        template = self.env.get_template(template)
+        template = self.env.get_template('docker-compose.relay.jinja')
 
         with open('docker-compose.relay.yml', 'w') as docker_compose_file:
             t = template.render(
@@ -23,63 +24,24 @@ class ConfigGenerator():
             )
             docker_compose_file.write(t)
     
-    def generate_prod_config(self, template, environment):
+    def generate_prod_config(self, environment):
         """Generate production docker-compose."""
-        template = self.env.get_template(template)
+        template = self.env.get_template('docker-compose.prod.jinja')
 
-class RelayConfigGenerator():
-    """Generates docker-compose.relay.yml configuration"""
-
-    def __init__(self, environments):
-        """Instantiate new RelayConfigGenerator
-
-        :param environments: Dictionary of environments
-        """
-        self.environments = environments
-        self.env = Environment(
-            loader=PackageLoader('cli', 'templates')
-        )
-        self.template = self.env.get_template('docker-compose.jinja')
-
-    def generate_template(self):
-        """Generate docker compose file.
-        
-        Passes in sdk keys, client ID, and proper prefixes for running
-        the relay.
-        """
-        with open('docker-compose.relay.yml', 'w') as docker_compose_file:
-            t = self.template.render(
-                envs = self.environments
+        with open('docker-compose.prod.yml', 'w') as docker_compose_file:
+            t = template.render(
+                env = environment
             )
             docker_compose_file.write(t)
 
-        return None
+    def generate_apm_config(self):
+        """Generate apm-server.yml file."""
+        template = self.env.get_template('apm-server.jinja')
 
-
-class SecretsGenerator():
-    """Generate scripts/secrets.sh file"""
-    
-    def __init__(self, sdk_key, frontend_key):
-        """Instantiate new SecretsGenerator
-
-        :param sdk_key: LaunchDarkly SDK key 
-        :param frontend_key: LaunchDarkly Frontend ID
-        """
-        self.database_url = "postgresql://supportService:supportService@db/supportService"
-        self.sdk_key = sdk_key
-        self.frontend_key = frontend_key
-        self.env = Environment(
-            loader=PackageLoader('cli', 'templates')
-        )
-        self.template = self.env.get_template('secrets.jinja')
-
-    def generate_template(self):
-        """Generate a new Secrets File."""
-        with open('scripts/secrets.sh', 'w') as secrets_file:
-            t = self.template.render(
-                database_url=self.database_url, 
-                ld_sdk_key=self.sdk_key, 
-                ld_frontend_key=self.frontend_key)
-            secrets_file.write(t)
-        
-        return None
+        with open('apm-server.yml', 'w') as apm_server_file:
+            t = template.render(
+                elk_host = os.environ.get('ELK_HOST'),
+                elk_username = os.environ.get('ELK_USERNAME'),
+                elk_password = os.environ.get('ELK_PASSWORD')
+            )
+            apm_server_file.write(t)

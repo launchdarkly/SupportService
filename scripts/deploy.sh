@@ -12,12 +12,13 @@ deploy()
     # Send Latest Scripts to Production Server
     rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $PROD_SERVER:/var/www/app/scripts/
     rsync -e "ssh -o StrictHostKeyChecking=no" -avz etc/ $PROD_SERVER:/var/www/app/etc/
+    scp -o StrictHostKeyChecking=no apm-server.yml $PROD_SERVER:/var/www/app/apm-server.yml
     scp -o StrictHostKeyChecking=no docker-compose.prod.yml $PROD_SERVER:/var/www/app/docker-compose.yml
 
     # Log into Production Server, Pull and Restart Docker
     ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose pull'
     ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose build'
-    ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && source scripts/secrets.sh && docker-compose up -d'
+    ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose up -d'
 }
 
 deploy "$1"

@@ -33,5 +33,7 @@ secrets.sh
 lambda/
 *.zip
 
-# Relay 
+# Generated YML Files
 docker-compose.relay.yml
+docker-compose.prod.yml
+apm-server.yml
