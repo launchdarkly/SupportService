@@ -17,7 +17,7 @@ services:
       - cache
     
   db:
-    image: postgres:alpine
+    image: postgres:10-alpine
     environment:
       - POSTGRES_USER=supportService
       - POSTGRES_PASSWORD=supportService
