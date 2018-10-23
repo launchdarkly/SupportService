@@ -34,3 +34,13 @@ class ConfigGenerator():
                 env = environment
             )
             docker_compose_file.write(t)
+    
+    def generate_nginx_config(self, environment):
+        """Generate Nginx Config."""
+        template = self.env.get_template('nginx.conf.jinja')
+
+        with open('etc/nginx/nginx.conf', 'w') as nginx_file:
+            t = template.render(
+                env = environment
+            )
+            nginx_file.write(t)
