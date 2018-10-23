@@ -62,15 +62,6 @@ jobs:
           name: Install Docker Compose
           command: sudo pip install docker-compose
       - run:
-          name: Generate Elk Config
-          command:
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r dev-requirements.txt
-            pip install -e .
-            pip install -e lib/api-client-python
-            python cli.py deploy
-      - run:
           name: Build Image
           command: |
             docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
