@@ -47,7 +47,6 @@ def deploy():
     a = AwsApi(keyPairName='SupportService')
     c = ConfigGenerator()
 
-    c.generate_apm_config()
     envs = l.getEnvironments('support-service')
 
     for env in envs:

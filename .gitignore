@@ -36,4 +36,3 @@ lambda/
 # Generated YML Files
 docker-compose.relay.yml
 docker-compose.prod.yml
-apm-server.yml

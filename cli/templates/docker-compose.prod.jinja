@@ -1,24 +1,23 @@
 version: '3'
 services:
   app:
-    hostname: production.ldsolutions.tk
+    hostname: {{ env.hostname }}
     image: levlaz/supportservice
     environment:
       - FLASK_APP=run.py
       - DATABASE_URL=postgresql://supportService:supportService@db/supportService
       - FLASK_ENV=production
-      - LD_CLIENT_KEY=5ba035689cf5aa16ab905b5f
-      - LD_FRONTEND_KEY=sdk-66da9eb8-9d94-4288-9571-6097f4ad8df4
+      - LD_CLIENT_KEY={{ env.client_id }}
+      - LD_FRONTEND_KEY={{ env.api_key }}
     ports:
       - "8000:8000"
     command: ./scripts/start.sh
     depends_on:
       - db
       - cache
-      - apm
     
   db:
-    image: postgres:10-alpine
+    image: postgres:alpine
     environment:
       - POSTGRES_USER=supportService
       - POSTGRES_PASSWORD=supportService
@@ -41,9 +40,9 @@ services:
     depends_on:
       - app
 
-  apm:
-    image: elastic/apm-server:6.4.2
+  logs:
+    image: logdna/logspout
     volumes:
-      - ./apm-server.yml:/usr/share/apm-server/apm-server.yml
-    ports:
-      - "8200:8200"
+        - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+        - LOGDNA_KEY={{ env.logdna_key }}
