@@ -46,6 +46,14 @@ def create_app(config_name):
     bootstrap.init_app(app)
     migrate.init_app(app, db)
     cache.init_app(app)
+
+    app.config['ELASTIC_APM'] = {
+        'SERVICE_NAME': 'supportService',
+        'SERVER_URL': 'apm:8200',
+        'DEBUG': True
+    }
+    apm.init_app(app)
+
     login.init_app(app)
     login.login_view = 'core.login'
     from app.models import AnonymousUser

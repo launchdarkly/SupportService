@@ -33,3 +33,10 @@ services:
     image: redis
     ports:
       - "6379:6379"
+
+  apm:
+    image: elastic/apm-server:6.4.2
+    volumes:
+      - ./apm-server.yml:/usr/share/apm-server/apm-server.yml
+    ports:
+      - "8200:8200"
