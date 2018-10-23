@@ -12,7 +12,6 @@ deploy()
     # Send Latest Scripts to Production Server
     rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $PROD_SERVER:/var/www/app/scripts/
     rsync -e "ssh -o StrictHostKeyChecking=no" -avz etc/ $PROD_SERVER:/var/www/app/etc/
-    scp -o StrictHostKeyChecking=no apm-server.yml $PROD_SERVER:/var/www/app/apm-server.yml
     scp -o StrictHostKeyChecking=no docker-compose.prod.yml $PROD_SERVER:/var/www/app/docker-compose.yml
 
     # Log into Production Server, Pull and Restart Docker
