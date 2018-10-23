@@ -1,14 +1,14 @@
 version: '3'
 services:
   app:
-    hostname: supportservice.prod
+    hostname: {{ env.hostname }}
     image: levlaz/supportservice
     environment:
       - FLASK_APP=run.py
-      - DATABASE_URL=$DATABASE_URL
+      - DATABASE_URL=postgresql://supportService:supportService@db/supportService
       - FLASK_ENV=production
-      - LD_CLIENT_KEY=$LD_CLIENT_KEY
-      - LD_FRONTEND_KEY=$LD_FRONTEND_KEY
+      - LD_CLIENT_KEY={{ env.client_id }}
+      - LD_FRONTEND_KEY={{ env.api_key }}
     ports:
       - "8000:8000"
     command: ./scripts/start.sh
@@ -39,3 +39,10 @@ services:
       - "80:80"
     depends_on:
       - app
+
+  logs:
+    image: logdna/logspout
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+        - LOGDNA_KEY={{ env.logdna_key }}
