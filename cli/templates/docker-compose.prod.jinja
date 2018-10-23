@@ -13,10 +13,10 @@ services:
       - "8000:8000"
     command: ./scripts/start.sh
     depends_on:
-      - db
-      - cache
+      - db-{{ env.hostname}}
+      - cache-{{ env.hostname}}
     
-  db:
+  db-{{ env.hostname }}:
     image: postgres:10-alpine
     environment:
       - POSTGRES_USER=supportService
@@ -26,12 +26,12 @@ services:
     ports:
       - "5432:5432"
 
-  cache:
+  cache-{{ env.hostname}}:
     image: redis
     ports:
       - "6379:6379"
   
-  web:
+  web-{{ env.hostname}}:
     image: nginx
     volumes: 
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
@@ -40,7 +40,7 @@ services:
     depends_on:
       - {{ env.hostname }}
 
-  logs:
+  logs-{{ env.hostname}}:
     image: logdna/logspout
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
