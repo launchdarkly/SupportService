@@ -66,11 +66,11 @@ jobs:
           command: |
             docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
             docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
-      - run:
-          name: Test Stack
-          command: |
-            export DATABASE_URL=postgresql://supportService:supportService@db/supportService
-            docker-compose -f docker-compose.prod.yml up -d
+      # - run:
+      #     name: Test Stack
+      #     command: |
+      #       export DATABASE_URL=postgresql://supportService:supportService@db/supportService
+      #       docker-compose -f docker-compose.prod.yml up -d
       - run:
           name: Push Image
           command: |
