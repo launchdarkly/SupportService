@@ -10,7 +10,56 @@
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+
+            <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+            Launch demo modal
+        </button>
+        
+        <!-- Modal -->
+        {% if show_nps %}
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                    NPS A
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary">Close</button>
+                    <button id = "nps_a" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
+        {% else %}
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                    NPS B
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id = "nps_b" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
         <!-- /#page-wrapper -->
-    </div> 
+</div> 
 {% endblock %}
