@@ -23,6 +23,19 @@ def cli():
     pass
 
 @click.command()
+def generate_hosts():
+    """Generate hosts file used by Selenium."""
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    envs = l.getEnvironments('support-service')
+
+    if os.path.exists("webdriver/hosts.txt"):
+        os.remove("webdriver/hosts.txt")
+
+    with open('webdriver/hosts.txt', 'w') as hosts:
+        for env in envs:
+            hosts.write(env['hostname'] + '\n')
+
+@click.command()
 def deploy_relay():
     """Deploy LD Relay to LightSail."""
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
@@ -74,7 +87,7 @@ def deploy():
             # generate docker-compose file 
             c.generate_prod_config(env)
             c.generate_nginx_config(env)
-            
+
             # run reploy script
             subprocess.run(["./scripts/deploy.sh", "{0}".format(ipAddress)], check=True)
         else:
@@ -82,6 +95,7 @@ def deploy():
 
 cli.add_command(deploy_relay)
 cli.add_command(deploy)
+cli.add_command(generate_hosts)
 
 if __name__ == '__main__':
     cli()

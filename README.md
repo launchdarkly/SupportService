@@ -63,3 +63,11 @@ After a few minutes will be available at `$YOUR_ENVIRONMENT_KEY.ldsolutions.tk`.
 Every time that there is a commit to the master branch of this repo, a deployment 
 runs via CircleCI to update all existing instances on AWS LightSail to the latest
 version of master.
+
+## Simulator 
+
+There is a selenium based "simulator" that lives under the `webdriver` directory.
+This is used to provide a steady stream of activities against all current demo 
+sites so that the insights graphs for various feature flags are populated. 
+
+<!-- TODO: Document this piece better  -->
