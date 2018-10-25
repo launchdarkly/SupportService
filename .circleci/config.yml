@@ -66,6 +66,9 @@ jobs:
           command: |
             docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
             docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
+            
+            cd webdriver && docker build -t levlaz/ld-ss-simulator:$CIRCLE_SHA1 .
+            cd webdriver && docker tag levlaz/ss-ld-simulator:$CIRCLE_SHA1 levlaz/ld-ss-simulator:latest
       # - run:
       #     name: Test Stack
       #     command: |
@@ -76,6 +79,7 @@ jobs:
           command: |
             docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
             docker push levlaz/supportservice
+            docker push levlaz/ld-ss-simulator
 
   deploy:
     docker:
@@ -117,7 +121,9 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              only: 
+                - master
+                - selenium
       - deploy:
           requires:
             - build_docker
