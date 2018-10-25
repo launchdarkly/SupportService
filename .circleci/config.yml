@@ -121,9 +121,7 @@ workflows:
             - test
           filters:
             branches:
-              only: 
-                - master
-                - selenium
+              only: selenium
       - deploy:
           requires:
             - build_docker
