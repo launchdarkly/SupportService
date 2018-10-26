@@ -62,22 +62,10 @@ jobs:
           name: Install Docker Compose
           command: sudo pip install docker-compose
       - run:
-          name: Generate Hosts File
-          command: |
-            virtualenv -p python3 venv
-            . venv/bin/activate
-            pip install -r dev-requirements.txt
-            pip install -e .
-            pip install -e lib/api-client-python
-            python cli.py generate-hosts
-      - run:
           name: Build Image
           command: |
             docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
             docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
-            
-            cd webdriver && docker build -t levlaz/ld-ss-simulator:$CIRCLE_SHA1 .
-            cd webdriver && docker tag levlaz/ss-ld-simulator:$CIRCLE_SHA1 levlaz/ld-ss-simulator:latest
       # - run:
       #     name: Test Stack
       #     command: |
@@ -88,7 +76,6 @@ jobs:
           command: |
             docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
             docker push levlaz/supportservice
-            docker push levlaz/ld-ss-simulator
 
   deploy:
     docker:
@@ -99,7 +86,6 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "setup.py" }}
             - v1-dependencies-
-
       - run:
           name: install dependencies
           command: |
@@ -150,10 +136,6 @@ workflows:
   version: 2
   build_test_deploy:
     jobs:
-      - simulate:
-          filters:
-            branches:
-              only: selenim
       - test
       - build_docker:
           requires:
@@ -167,3 +149,16 @@ workflows:
           filters:
             branches:
               only: master
+  
+  # Run simulator every hour
+  simulator:
+    triggers:
+      - schedule:
+          cron: "0 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+                - selenim
+    jobs:
+      - simulate
