@@ -123,24 +123,26 @@ jobs:
   simulate:
     docker:
       - image: circleci/openjdk:8-node-browsers
-      - run:
-          name: install dependencies and create hosts file
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r dev-requirements.txt
-            pip install -e .
-            pip install -e lib/api-client-python
-            python cli.py generate-hosts
-      - run: 
-          name: Install Simualtor 
-          command: |
-            cd webdriver
-            mvn compile assembly:single 
-      - run:
-          name: Run Simulation
-          command: |
-            java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
+      steps:
+        - checkout
+        - run:
+            name: install dependencies and create hosts file
+            command: |
+              python3 -m venv venv
+              . venv/bin/activate
+              pip install -r dev-requirements.txt
+              pip install -e .
+              pip install -e lib/api-client-python
+              python cli.py generate-hosts
+        - run: 
+            name: Install Simualtor 
+            command: |
+              cd webdriver
+              mvn compile assembly:single 
+        - run:
+            name: Run Simulation
+            command: |
+              java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 workflows:
   version: 2
