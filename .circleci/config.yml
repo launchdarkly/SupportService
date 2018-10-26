@@ -112,15 +112,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: install dependencies and create hosts file
+          name: Install LD API Library
           command: |
-            sudo apt install python3-venv
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r dev-requirements.txt
-            pip install -e .
-            pip install -e lib/api-client-python
-            python cli.py generate-hosts
+            cd webdriver/lib/api-client-java
+            mvn install
       - run: 
           name: Install Simualtor 
           command: |
@@ -137,6 +132,7 @@ workflows:
   build_test_deploy:
     jobs:
       - test
+      - simulate
       - build_docker:
           requires:
             - test
@@ -159,6 +155,5 @@ workflows:
             branches:
               only:
                 - master
-                - selenim
     jobs:
       - simulate

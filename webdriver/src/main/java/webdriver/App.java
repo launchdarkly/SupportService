@@ -1,10 +1,15 @@
 package webdriver;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import com.launchdarkly.api.*;
+import com.launchdarkly.api.auth.*;
+import com.launchdarkly.api.api.ProjectsApi;
+import com.launchdarkly.api.model.Project;
+import com.launchdarkly.api.model.Environment;
+import com.launchdarkly.api.Configuration;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +25,30 @@ public class App
     private static final Logger logger =
         LoggerFactory.getLogger(App.class.getName());
     private static final int MAX_THREADS = 3;
-
-    public static void main( String[] args ) throws IOException, InterruptedException
+    private static final String PROJECT_KEY = "support-service";
+    
+    public static void main( String[] args ) throws InterruptedException
     {
-        BufferedReader br = new BufferedReader(new FileReader("hosts.txt"));
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_THREADS);
 
-        for (String line = br.readLine(); line != null; line = br.readLine()) {
-            Simulator simulator = new Simulator(line);
-            executor.execute(simulator);
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        ApiKeyAuth Token = (ApiKeyAuth) defaultClient.getAuthentication("Token");
+        Token.setApiKey(System.getenv("LD_API_KEY"));
+        ProjectsApi apiInstance = new ProjectsApi();
+
+        try {
+            Project result = apiInstance.getProject(PROJECT_KEY);
+            List<Environment> environmentsList = result.getEnvironments();
+
+            for (int i = 0; i < environmentsList.size(); i++) {
+                String key = environmentsList.get(i).getKey();
+                String hostname = String.format("%s.ldsolutions.tk", key);
+                Simulator simulator = new Simulator(hostname);
+                executor.execute(simulator);
+            }
+
+        } catch (ApiException e) {
+            e.printStackTrace();
         }
 
         executor.shutdown();
