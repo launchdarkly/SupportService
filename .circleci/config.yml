@@ -120,17 +120,43 @@ jobs:
             make deploy
             make deploy-relay
 
+  simulate:
+    docker:
+      - image: circleci/openjdk:8-node-browsers
+      - run:
+          name: install dependencies and create hosts file
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r dev-requirements.txt
+            pip install -e .
+            pip install -e lib/api-client-python
+            python cli.py generate-hosts
+      - run: 
+          name: Install Simualtor 
+          command: |
+            cd webdriver
+            mvn compile assembly:single 
+      - run:
+          name: Run Simulation
+          command: |
+            java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
+
 workflows:
   version: 2
   build_test_deploy:
     jobs:
+      - simulate
+          filters:
+            branches:
+              only: selenim
       - test
       - build_docker:
           requires:
             - test
           filters:
             branches:
-              only: selenim
+              only: master
       - deploy:
           requires:
             - build_docker
