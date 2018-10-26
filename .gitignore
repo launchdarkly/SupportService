@@ -32,6 +32,7 @@ venv/
 secrets.sh
 lambda/
 *.zip
+.vscode/
 
 # Generated YML Files
 docker-compose.relay.yml

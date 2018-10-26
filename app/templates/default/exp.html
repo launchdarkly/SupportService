@@ -12,54 +12,183 @@
             </div>
 
             <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             Launch demo modal
         </button>
         
         <!-- Modal -->
         {% if show_nps %}
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">SupportService Survey</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body d-flex justify-content-center">
+                            <p class="h5 text-left">1. How likely are you to recommend SupportService to a friend or colleague?</p>
+                            <br/>
+                            <div class="text-center">
+                                <div id="nps_container" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                </div>
+                            <br/>
+                            <!-- <p>
+                                <small style="float:left">Not likely at all</small>
+                                <small>Extremely Likely</small>
+                            </p> -->
+                            <br/>
+                            <p class="h5 text-left">2. How can we improve your experience?</p>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="5" id="comment"></textarea>
+                            </div>
+                            <br/>
+                            <p class="h5 text-left">3. Which Features do you value/use the most?</p>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="5" id="comment"></textarea>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button id="style_a" type="button" data-dismiss="modal" class="btn btn-primary">Done</button>
+                        </div>
                     </div>
-                    <div class="modal-body">
-                    NPS A
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary">Close</button>
-                    <button id = "nps_a" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
-                    </div>
-                </div>
                 </div>
             </div>
-        </div>
         {% else %}
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    </div>
-                    <div class="modal-body">
-                    NPS B
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button id = "nps_b" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">SupportService Survey</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="nps_b_start" style="display:block">
+                                <p class="h3 text-center">We'd love your feedback!</p>
+                                <p class="h5 text-center">Please answer the following questions as we continually strive to improve our product/service and your input counts</p>
+                            </div>
+                            <div id="nps_b_score" style="position:relative;display:none">
+                                <p class="h5 text-left">1. How likely are you to recommend SupportService to a friend or colleague?</p>
+                                <br/>
+                                <div class="text-center">
+                                    <div id="nps_container" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                    </div>
+                                <br/>
+                                <!-- <p>
+                                    <small style="float:left">Not likely at all</small>
+                                    <small>Extremely Likely</small>
+                                </p> -->
+                                 <br/>
+                                </div>
+                            </div>
+                            <div id="nps_b_improve" style="position:relative;display:none">
+                                <p class="h5 text-left">2. How can we improve your experience?</p>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" id="comment"></textarea>
+                                </div>
+                                <br/>
+                            </div>
+                            <div id="nps_b_features" style="position:relative;display:none">
+                                <p class="h5 text-left">3. Which Features do you value/use the most?</p>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" id="comment"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                            <!-- <button type="button" class="btn btn-secondary btn-danger" data-dismiss="modal">Cancel</button> -->
+                                <button id="backButton" type="button" style="display:none;float: left;" class="fa fa-arrow-circle-o-left fa-2x"></button>
+                                <button id="nextButton" type="button" style="float: right" class="fa fa-arrow-circle-o-right fa-2x"></button>
+                                <button id="style_b" type="button" style="display:none; float: right" data-dismiss="modal" class="btn btn-primary">Done</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                </div>
-            </div>
-        </div>
-        {% endif %}
+                {% endif %}
         <!-- /#page-wrapper -->
-</div> 
+            </div> 
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{{ super() }}
+<script>
+    // Code to trigger A/B Testing
+    get_nps = document.getElementById("style_a") == null?document.getElementById("style_b") : document.getElementById("style_a")
+    console.log(get_nps)
+
+    get_nps.addEventListener('click', function() {
+        ldclient.track('nps-completed');
+        //console.log('I was clicked!');
+    });
+
+    ldclient.flush();
+
+    function generateNpsButton(number) {
+        return `
+    <label class="btn btn-primary nps-value">
+        <input type="radio" name="options" id="${number}" autocomplete="off"> ${number}
+    </label>
+    `
+    };
+
+    // JQuery to populate NPS buttons
+    $(document).ready(function() {
+                
+        for(i=1;i<=10;i++){
+            $("#nps_container").append(generateNpsButton(i));
+        }
+        
+        var cycle_div = ["nps_b_start", "nps_b_score", "nps_b_improve", "nps_b_features"],
+            current_div = 0;
+        
+        function cycle_back(){
+            if(current_div == 1){
+                document.getElementById("backButton").style.display = "none";
+            }
+            document.getElementById(cycle_div[current_div]).style.display = "none";
+            document.getElementById(cycle_div[current_div - 1]).style.display = "block";
+            current_div -= 1;
+        };
+
+        function cycle_forward(){
+            if(current_div == (cycle_div.length - 2))  {
+                document.getElementById("nextButton").style.display = "none";
+                document.getElementById("style_b").style.display = "block";
+            }
+            document.getElementById(cycle_div[current_div]).style.display = "none";
+            document.getElementById(cycle_div[current_div + 1]).style.display = "block";
+            current_div += 1;
+        };
+
+        $("#nextButton").click(function(){
+            if(current_div <= 2){
+                cycle_forward();
+            }        
+            document.getElementById("backButton").style.display = "block";
+        });
+
+        $("#backButton").click(function(){
+            if(current_div == 3){
+                document.getElementById("nextButton").style.display = "block";
+            }
+
+            if (current_div > 0) {
+            cycle_back();
+            }
+
+            if(current_div == 2){
+                document.getElementById("style_b").style.display = "none";
+            }
+
+        });   
+    });
+
+</script>
+
 {% endblock %}

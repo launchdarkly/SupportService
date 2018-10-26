@@ -1,5 +1,6 @@
 import json
 import logging
+import uuid
 
 import ldclient
 from flask import (Blueprint, current_app, flash, redirect, render_template,
@@ -28,15 +29,16 @@ def index():
     else:
         display_widgets = False
         
+    user = current_user.get_ld_user()
+    
+    all_flags = json.dumps(ldclient.get().all_flags(user))
 
-    all_flags = json.dumps(ldclient.get().all_flags(current_user.get_ld_user()))
-
-    beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
+    beta_features = ldclient.get().variation('dark-theme', user, False)
     
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
     return render_template(set_theme, title='Home',
-    display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features)
+    display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features, user=user)
 
 
 def updateTheme(theme):
@@ -54,6 +56,12 @@ def darkTheme():
 
 @core.route('/experiments')
 def experiments():
+    
+    user_key = str(uuid.uuid1())
+    user = {'key': user_key}
+
+    all_flags = json.dumps(ldclient.get().all_flags(user))
+    
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
@@ -62,7 +70,7 @@ def experiments():
 
     show_nps = ldclient.get().variation('show-nps-survery', current_user.get_ld_user(True), False)
   
-    return render_template(set_theme, title='Experiments', show_nps=show_nps)
+    return render_template(set_theme, title='Experiments', show_nps=show_nps, user=user, all_flags=all_flags)
 
 @core.route('/operational')
 def operational():

@@ -38,7 +38,7 @@
 
     <script crossorigin="anonymous" src="https://app.launchdarkly.com/snippet/ldclient.min.js"></script>
     <script>
-            var ldclient = LDClient.initialize("{{ config['LD_FRONTEND_KEY'] }}", {{ current_user.get_ld_user() | safe }} );
+            var ldclient = LDClient.initialize("{{ config['LD_FRONTEND_KEY'] }}", {{ user | safe }} );
     </script>
 {% endblock headerJS %}
 
