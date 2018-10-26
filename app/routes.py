@@ -68,7 +68,7 @@ def experiments():
     
     set_theme = '{0}/exp.html'.format(current_user.set_path)
 
-    show_nps = ldclient.get().variation('show-nps-survery', current_user.get_ld_user(True), False)
+    show_nps = ldclient.get().variation('show-nps-survery', user, False)
   
     return render_template(set_theme, title='Experiments', show_nps=show_nps, user=user, all_flags=all_flags)
 
