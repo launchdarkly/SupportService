@@ -143,7 +143,7 @@ jobs:
       - run:
           name: Run Simulation
           command: |
-            java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
+            java -jar webdriver/target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 workflows:
   version: 2
