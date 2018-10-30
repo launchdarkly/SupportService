@@ -63,3 +63,18 @@ After a few minutes will be available at `$YOUR_ENVIRONMENT_KEY.ldsolutions.tk`.
 Every time that there is a commit to the master branch of this repo, a deployment 
 runs via CircleCI to update all existing instances on AWS LightSail to the latest
 version of master.
+
+## Simulator 
+There is a selenium based "simulator" that lives under the `webdriver` directory.
+This is used to provide a steady stream of activities against all current demo 
+sites so that the insights graphs for various feature flags are populated. 
+
+Right now it runs every hour via a CircleCI job. You can see the use pattern in 
+the `.circle/config.yml` file under the `simulate` job.
+
+### Running it Locally 
+
+1. Generate hosts.txt file with: `python cli.py generate-hosts`
+2. Go to the webdriver directory: `cd webdriver`
+2. Compile the maven project: `mvn compile assembly:single`
+3. Start the simulator with: `java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar`

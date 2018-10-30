@@ -33,7 +33,14 @@ secrets.sh
 lambda/
 *.zip
 .vscode/
+hosts.txt
 
 # Generated YML Files
 docker-compose.relay.yml
 docker-compose.prod.yml
+
+# Java 
+target/
+.settings/
+.classpath
+.project
