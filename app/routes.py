@@ -1,6 +1,5 @@
 import json
 import logging
-import uuid
 
 import ldclient
 from flask import (Blueprint, current_app, flash, redirect, render_template,
@@ -57,8 +56,8 @@ def darkTheme():
 @core.route('/experiments')
 def experiments():
     
-    user_key = str(uuid.uuid1())
-    user = {'key': user_key}
+    generate_user = User()
+    user = generate_user.get_ld_user(random=True)
 
     all_flags = json.dumps(ldclient.get().all_flags(user))
     
