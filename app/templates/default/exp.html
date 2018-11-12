@@ -547,6 +547,10 @@
 {{ super() }}
 <script>
     // Code to trigger A/B Testing
+    ldclient.identify({{ current_user.get_random_ld_user() | safe }}, null, function() {
+        console.log("New user's flags available");
+    });
+    
     get_nps = document.getElementById("style_a") == null?document.getElementById("style_b") : document.getElementById("style_a")
 
     get_nps.addEventListener('click', function() {
