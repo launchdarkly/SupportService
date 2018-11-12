@@ -86,7 +86,6 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "setup.py" }}
             - v1-dependencies-
-
       - run:
           name: install dependencies
           command: |
@@ -107,11 +106,33 @@ jobs:
             make deploy
             make deploy-relay
 
+  simulate:
+    docker:
+      - image: circleci/openjdk:8-node-browsers
+    steps:
+      - checkout
+      - run:
+          name: Install LD API Library
+          command: |
+            cd webdriver/lib/api-client-java
+            mvn install
+      - run: 
+          name: Install Simualtor 
+          command: |
+            cd webdriver
+            mvn compile assembly:single 
+      - run:
+          name: Run Simulation
+          command: |
+            cd webdriver
+            java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
+
 workflows:
   version: 2
   build_test_deploy:
     jobs:
       - test
+      - simulate
       - build_docker:
           requires:
             - test
@@ -124,3 +145,15 @@ workflows:
           filters:
             branches:
               only: master
+  
+  # Run simulator every hour
+  simulator:
+    triggers:
+      - schedule:
+          cron: "0 * * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - simulate

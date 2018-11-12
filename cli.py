@@ -74,7 +74,7 @@ def deploy():
             # generate docker-compose file 
             c.generate_prod_config(env)
             c.generate_nginx_config(env)
-            
+
             # run reploy script
             subprocess.run(["./scripts/deploy.sh", "{0}".format(ipAddress)], check=True)
         else:
