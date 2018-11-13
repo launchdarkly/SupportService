@@ -35,15 +35,11 @@ class User(UserMixin, db.Model):
     def get_email_hash(self):
         return hashlib.md5(self.email.encode()).hexdigest()
 
-    def get_ld_user(self, random=None):
+    def get_ld_user(self):
         app_version = current_app.config['VERSION']
         milliseconds = int(round(time.time() * 1000))
 
-        if random:
-            user_key = str(uuid.uuid1())
-        else:
-            user_key = self.get_email_hash()
-
+        user_key = self.get_email_hash()
         user = {
             'key': user_key,
             'email': self.email,
@@ -56,8 +52,13 @@ class User(UserMixin, db.Model):
                 'company': self.company,
                 'date': milliseconds
             },
-            'privateAttributes': ['account_type', 'state'],
+            'privateAttributeNames': ['account_type', 'state'],
         }
+        
+        return user
+    
+    def get_random_ld_user(self):
+        user = {'key': str(uuid.uuid1())}
         return user
 
 @login.user_loader

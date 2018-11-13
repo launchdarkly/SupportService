@@ -20,24 +20,12 @@ def index():
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
-    
-    showWidgets = ldclient.get().variation('show-widgets', current_user.get_ld_user(), False)
-    
-    if showWidgets:
-        display_widgets = True
-    else:
-        display_widgets = False
-        
-
-    all_flags = json.dumps(ldclient.get().all_flags(current_user.get_ld_user()))
-
+            
     beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
     
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
-    return render_template(set_theme, title='Home',
-    display_widgets=display_widgets, all_flags=all_flags, show_beta=beta_features)
-
+    return render_template(set_theme, title='Home', show_beta=beta_features)
 
 def updateTheme(theme):
 
@@ -59,8 +47,12 @@ def experiments():
         updateTheme(theme)
     
     set_theme = '{0}/exp.html'.format(current_user.set_path)
+
+    random_user = current_user.get_random_ld_user()
+
+    show_nps = ldclient.get().variation('show-nps-survery', random_user, False)
   
-    return render_template(set_theme, title='Experiments')
+    return render_template(set_theme, title='Experiments', show_nps=show_nps, random_user=random_user)
 
 @core.route('/operational')
 def operational():
