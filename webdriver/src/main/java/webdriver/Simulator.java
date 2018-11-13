@@ -92,15 +92,15 @@ public class Simulator implements Runnable {
 
                 logger.info("Doing Random things with " + email + " for " + this.baseUrl + " " + this.iterations + " times.");
 
-                // for (int j = MIN; j <= this.iterations; j++) {
-                //     driver.get(this.operationalUrl);
-                //     driver.get(this.releaseUrl);
-                // }
+                for (int j = MIN; j <= this.iterations; j++) {
+                    driver.get(this.operationalUrl);
+                    driver.get(this.releaseUrl);
+                }
 
-                // for (int k = MIN; k <= this.iterations; k++) {
-                //     driver.get(this.entitlementUrl);
-                //     driver.get(this.baseUrl);
-                // }
+                for (int k = MIN; k <= this.iterations; k++) {
+                    driver.get(this.entitlementUrl);
+                    driver.get(this.baseUrl);
+                }
 
                 driver.get(this.experimentationUrl);
 
