@@ -20,13 +20,13 @@ import webdriver.Simulator;
  * Selenium Driver For SupportService
  *
  */
-public class App 
+public class App
 {
     private static final Logger logger =
         LoggerFactory.getLogger(App.class.getName());
     private static final int MAX_THREADS = 3;
     private static final String PROJECT_KEY = "support-service";
-      
+
     public static void main( String[] args ) throws InterruptedException
     {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_THREADS);
