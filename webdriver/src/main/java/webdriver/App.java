@@ -14,7 +14,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import main.java.webdriver.Simulator;
+import webdriver.Simulator;
 
 /**
  * Selenium Driver For SupportService
@@ -26,7 +26,7 @@ public class App
         LoggerFactory.getLogger(App.class.getName());
     private static final int MAX_THREADS = 3;
     private static final String PROJECT_KEY = "support-service";
-    
+      
     public static void main( String[] args ) throws InterruptedException
     {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_THREADS);
@@ -46,8 +46,7 @@ public class App
                 Simulator simulator = new Simulator(hostname);
                 executor.execute(simulator);
             }
-
-        } catch (ApiException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -1,4 +1,4 @@
-package main.java.webdriver;
+package webdriver;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,6 +16,7 @@ public class Simulator implements Runnable {
     private static final Logger logger =
         LoggerFactory.getLogger(Simulator.class.getName());
     private Faker faker = new Faker();
+    private Randomizer randomizer = new Randomizer();
 
     private static final int MIN = 1;
     private static final int MAX = 25;
@@ -49,7 +50,7 @@ public class Simulator implements Runnable {
 
             for (int i = MIN; i <= this.iterations; i++) {
                 String email = faker.internet().emailAddress();
-    
+
                 driver.get(this.registerUrl);
     
                 logger.info("Registering " + email + " for " + this.baseUrl);
@@ -79,6 +80,12 @@ public class Simulator implements Runnable {
                 for (int k = MIN; k <= this.iterations; k++) {
                     driver.get(this.entitlementUrl);
                     driver.get(this.baseUrl);
+                }
+
+                if (randomizer.getShouldView()) {
+                    System.out.println("Viewing NPS Survey");
+                } if (randomizer.getShouldConvert()) {
+                    System.out.println("Converting on NPS Survey");
                 }
     
                 logger.info("Logging Out of " + this.baseUrl);
