@@ -547,7 +547,7 @@
 {{ super() }}
 <script>
     // Code to trigger A/B Testing
-    ldclient.identify({{ current_user.get_random_ld_user() | safe }}, null, function() {
+    ldclient.identify({{ random_user | safe }}, null, function() {
         console.log("New user's flags available");
     });
     
@@ -555,6 +555,7 @@
 
     get_nps.addEventListener('click', function() {
         ldclient.track('nps-completed');
+        console.log("Track Event Sent to LD");
     });
 
     ldclient.flush();

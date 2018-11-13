@@ -21,7 +21,7 @@ def index():
     if theme:
         updateTheme(theme)
             
-    beta_features = ldclient.get().variation('dark-theme', user, False)
+    beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
     
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
@@ -48,9 +48,11 @@ def experiments():
     
     set_theme = '{0}/exp.html'.format(current_user.set_path)
 
-    show_nps = ldclient.get().variation('show-nps-survery', user, False)
+    random_user = current_user.get_random_ld_user()
+
+    show_nps = ldclient.get().variation('show-nps-survery', random_user, False)
   
-    return render_template(set_theme, title='Experiments', show_nps=show_nps)
+    return render_template(set_theme, title='Experiments', show_nps=show_nps, random_user=random_user)
 
 @core.route('/operational')
 def operational():
