@@ -3,7 +3,7 @@ version: '3'
 services:
   redis:
     image: redis
-    ports: 
+    ports:
       - "6379:6379"
   relay:
     image: launchdarkly/ld-relay
@@ -13,6 +13,7 @@ services:
       - redis
     environment:
       - USE_REDIS=1
+      - USE_EVENTS=1
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_TTL=30000
