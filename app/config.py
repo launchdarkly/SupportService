@@ -3,6 +3,7 @@ import subprocess
 import ldclient
 import logging
 import sys
+from ldclient import Config as LdConfig
 
 class Config(object):
     """Base Config"""
@@ -18,21 +19,32 @@ class Config(object):
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
     CACHE_REDIS_HOST = os.environ.get('REDIS_HOST') or 'cache'
 
-    # LaunchDarkly
-    ldclient.set_sdk_key(os.environ.get("LD_CLIENT_KEY"))
+    # LaunchDarkly Config
+    # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
+    if "LD_RELAY_URL" in os.environ:
+        config = LdConfig(
+            sdk_key = os.environ.get("LD_CLIENT_KEY"),
+            base_uri = os.environ.get("LD_RELAY_URL"),
+            events_uri = os.environ.get("LD_RELAY_URL"),
+            stream_uri = os.environ.get("LD_RELAY_URL")
+        )
+        ldclient.set_config(config)
+    else:
+        ldclient.set_sdk_key(os.environ.get("LD_CLIENT_KEY"))
+
     LD_FRONTEND_KEY = os.environ.get("LD_FRONTEND_KEY")
 
     root = logging.getLogger()
     root.setLevel(logging.INFO)
 
-    @staticmethod  
+    @staticmethod
     def init_app(app):
         pass
 
 
 class DevelopmentConfig(Config):
     """Configuration used for local development."""
-    DEBUG = True 
+    DEBUG = True
 
     @staticmethod
     def init_app(app):
@@ -47,15 +59,15 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     """Configuration used for testing and CI."""
-    TESTING = True 
-    DEBUG = True 
+    TESTING = True
+    DEBUG = True
 
     @staticmethod
     def init_app(app):
         Config.init_app(app)
 
         with app.app_context():
-            from app.factory import db 
+            from app.factory import db
             from app.models import User
 
             db.init_app(app)
