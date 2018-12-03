@@ -3,6 +3,7 @@
 Generates templates using jinja. 
 """
 import os
+import uuid
 from jinja2 import Environment, PackageLoader
 
 
@@ -20,7 +21,8 @@ class ConfigGenerator():
 
         with open('docker-compose.relay.yml', 'w') as docker_compose_file:
             t = template.render(
-                envs = environments
+                envs = environments,
+                redis_password = str(uuid.uuid4())
             )
             docker_compose_file.write(t)
     
