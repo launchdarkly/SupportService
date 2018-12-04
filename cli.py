@@ -7,18 +7,25 @@ import os
 import subprocess
 import sys
 import ldclient 
+import logging 
 
 import click
+import click_log
 
 from cli.generators import ConfigGenerator
 from cli.ld import LaunchDarklyApi
 from cli.aws import AwsApi
+
+# set up logging 
+logger = logging.getLogger(__name__)
+click_log.basic_config(logger)
 
 # key for production environment
 ldclient.set_sdk_key(os.environ.get("LD_PROD_KEY"))
 client = ldclient.get()
 
 @click.group()
+@click_log.simple_verbosity_option(logger)
 def cli():
     pass
 
@@ -36,6 +43,7 @@ def deploy_relay():
     )
 
 @click.command()
+@click_log.simple_verbosity_option(logger)
 def deploy():
     """Deploy SupportService to LightSail.
     
@@ -63,20 +71,17 @@ def deploy():
         if client.variation("auto-deploy-env", ctx, False):
             click.echo("Deploying {0}".format(hostname))
             # create instance if needed
-            a.checkProvisionedInstance(hostname)
-
-            # get instance IP address
-            ipAddress = a.getInstanceIp(hostname)
+            a.upsert_instance(hostname)
 
             # upset Route 53 record for instance
-            a.upsertDnsRecord(ipAddress, hostname)
+            a.upsertDnsRecord(hostname)
 
             # generate docker-compose file 
             c.generate_prod_config(env)
             c.generate_nginx_config(env)
 
             # run reploy script
-            subprocess.run(["./scripts/deploy.sh", "{0}".format(ipAddress)], check=True)
+            subprocess.run(["./scripts/deploy.sh", "{0}".format(hostname)], check=True)
         else:
             click.echo("Not Auto Deploying, auto-deploy-env flag is off for {0}".format(hostname))
 

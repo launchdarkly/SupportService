@@ -18,6 +18,8 @@ setup(
         'gunicorn',
         'boto3',
         'circleci',
-        'faker'
+        'faker',
+        'click',
+        'click-log'
     ]
 )
