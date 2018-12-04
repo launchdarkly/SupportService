@@ -27,13 +27,52 @@ class AwsApi():
         self.logger = logging.getLogger()
         self.client = boto3.client('lightsail')
         self.dns = boto3.client('route53')
+    
+    @staticmethod
+    def _format_ip(hostname):
+        return "{0}-staticIP".format(hostname)
 
-    def upsertDnsRecord(self, instanceIp, hostname):
+    def _ip_match(self, hostname):
+        static_ip_name = self._format_ip(hostname)
+        try:
+            static_ip = self.client.get_static_ip(staticIpName=static_ip_name)
+        except self.client.exceptions.NotFoundException:
+            return False
+        return static_ip['staticIp']['ipAddress'] == self.getInstanceIp(hostname)
+
+    def setStaticIP(self, hostname):
+        """Allocate and Attach StaticIP to Instance
+
+        :param hostname: hostname for instance.
+        """
+        staticIPName = "{0}-staticIP".format(hostname)
+
+        try:
+            staticIP = self.client.get_static_ip(
+                staticIpName = staticIPName
+            )
+        except:
+            staticIP = self.client.allocate_static_ip(
+                staticIpName = staticIPName
+            )
+
+        response = self.client.attach_static_ip(
+            staticIpName = staticIPName,
+            instanceName = hostname
+        )
+        return response
+
+    def upsertDnsRecord(self, hostname):
         """Create or Update DNS Record for Instance.
         
         :param instanceIp: IP address of new instnace.
         :param hostname: hostname to use for new instance.
         """
+        while (self._ip_match(hostname) == False):
+            self.logger.info("IP is not static.")
+            self.setStaticIP(hostname)
+            time.sleep(1)
+
         response = self.dns.change_resource_record_sets(
             HostedZoneId=self.hostedZoneId,
             ChangeBatch={
@@ -46,7 +85,7 @@ class AwsApi():
                             'TTL': 300,
                             'ResourceRecords': [
                                 {
-                                    'Value': instanceIp
+                                    'Value': self.getInstanceIp(hostname)
                                 }
                             ]
                         }
@@ -104,8 +143,11 @@ class AwsApi():
         self.logger.info('Creating new instance called {0}'.format(hostname))
         return response
 
-    def checkProvisionedInstance(self, hostname):
-        """Check to see if an Instance Exists.
+    def upsert_instance(self, hostname):
+        """Upsert Lightsail Instance 
+
+        Check to see if instance exists, if not 
+        create a new instance. 
 
         :param hostnames: list of hostnames to check
         """
