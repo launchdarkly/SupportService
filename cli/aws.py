@@ -68,6 +68,8 @@ class AwsApi():
         :param instanceIp: IP address of new instnace.
         :param hostname: hostname to use for new instance.
         """
+        ip = self.getInstanceIp(hostname) 
+        
         while (self._ip_match(hostname) == False):
             self.logger.info("IP is not static.")
             self.setStaticIP(hostname)
