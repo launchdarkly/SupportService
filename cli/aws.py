@@ -149,7 +149,7 @@ class AwsApi():
         Check to see if instance exists, if not 
         create a new instance. 
 
-        :param hostnames: list of hostnames to check
+        :param hostname: hostname to check
         """
         try:
             instance = self.client.get_instance(instanceName=hostname)
