@@ -27,12 +27,12 @@ services:
       - "5432:5432"
 
   cache-{{ env.hostname}}:
-    image: redis
+    image: redis:alpine
     ports:
       - "6379:6379"
   
   web-{{ env.hostname}}:
-    image: nginx
+    image: nginx:alpine
     volumes: 
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
