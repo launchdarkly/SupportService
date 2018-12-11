@@ -5,15 +5,13 @@ Wrapper for the AWS boto SDK
 import os
 import time
 import boto3
-import logging
-
 
 class AwsApi():
     """Interface to AWS API"""
     BUNDLE_ID = "nano_2_0"
     AVAILABILITY_ZONE = "us-west-2a"
 
-    def __init__(self, accessKey=None, secret=None, keyPairName=None):
+    def __init__(self, logger, accessKey=None, secret=None, keyPairName=None):
         """Instantiate a new LightSailApi instance. 
 
         :param accessKey: AWS Access Key ID
@@ -24,7 +22,7 @@ class AwsApi():
         self.keyPairName = keyPairName
         self.region = os.environ.get('AWS_DEFAULT_REGION')
         self.hostedZoneId = os.environ.get('AWS_HOSTED_ZONE_ID')
-        self.logger = logging.getLogger()
+        self.logger = logger
         self.client = boto3.client('lightsail')
         self.dns = boto3.client('route53')
     
@@ -151,7 +149,7 @@ class AwsApi():
         Check to see if instance exists, if not 
         create a new instance. 
 
-        :param hostnames: list of hostnames to check
+        :param hostname: hostname to check
         """
         try:
             instance = self.client.get_instance(instanceName=hostname)

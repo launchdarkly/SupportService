@@ -52,7 +52,7 @@ def deploy():
     the support-service project. 
     """
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
-    a = AwsApi(keyPairName='SupportService')
+    a = AwsApi(logger, keyPairName='SupportService')
     c = ConfigGenerator()
 
     envs = l.getEnvironments('support-service')
