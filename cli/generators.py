@@ -19,7 +19,7 @@ class ConfigGenerator():
         """Generate docker-compose.relay.yml."""
         template = self.env.get_template('docker-compose.relay.jinja')
 
-        with open('docker-compose.relay.yml', 'w') as docker_compose_file:
+        with open('docker-compose.relay.yml', 'w+') as docker_compose_file:
             t = template.render(
                 envs = environments,
                 redis_host = os.environ.get("LD_RELAY_REDIS_HOST")
@@ -31,7 +31,7 @@ class ConfigGenerator():
         template = self.env.get_template('docker-compose.prod.jinja')
         environment['logdna_key'] = os.environ.get("LOGDNA_KEY")
 
-        with open('docker-compose.prod.yml', 'w') as docker_compose_file:
+        with open('docker-compose.prod.yml', 'w+') as docker_compose_file:
             t = template.render(
                 env = environment
             )
@@ -41,7 +41,7 @@ class ConfigGenerator():
         """Generate Nginx Config."""
         template = self.env.get_template('nginx.conf.jinja')
 
-        with open('etc/nginx/nginx.conf', 'w') as nginx_file:
+        with open('etc/nginx/nginx.conf', 'w+') as nginx_file:
             t = template.render(
                 env = environment
             )

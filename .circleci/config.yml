@@ -104,7 +104,6 @@ jobs:
           command: |
             . venv/bin/activate
             make deploy
-            make deploy-relay
 
   simulate:
     docker:
