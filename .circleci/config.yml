@@ -58,9 +58,9 @@ jobs:
     machine: true
     steps:
       - checkout
-      - run:
-          name: Install Docker Compose
-          command: sudo pip install docker-compose
+      # - run:
+      #     name: Install Docker Compose
+      #     command: sudo pip install docker-compose
       - run:
           name: Build Image
           command: |
