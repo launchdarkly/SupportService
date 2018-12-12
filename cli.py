@@ -102,6 +102,7 @@ def deploy():
 @click.argument('hostname')
 @click_log.simple_verbosity_option(logger)
 def deploy_instance(hostname):
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
     a = AwsApi(logger, keyPairName='SupportService')
     c = ConfigGenerator()
 
