@@ -82,7 +82,9 @@ def deploy():
             click.echo("Deploying {0}".format(hostname))
             # create instance if needed
             a.upsert_instance(hostname)
-
+            
+            # get instace IP address 
+            ip = a.getInstanceIp(hostname)
             # upset Route 53 record for instance
             a.upsertDnsRecord(hostname)
 
@@ -91,7 +93,7 @@ def deploy():
             c.generate_nginx_config(env)
 
             # run reploy script
-            subprocess.run(["./scripts/deploy.sh", "{0}".format(hostname)], check=True)
+            subprocess.run(["./scripts/deploy.sh", "{0}".format(ip)], check=True)
         else:
             click.echo("Not Auto Deploying, auto-deploy-env flag is off for {0}".format(hostname))
 
