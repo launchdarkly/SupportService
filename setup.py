@@ -12,7 +12,7 @@ setup(
         'flask-bootstrap',
         'flask-wtf',
         'flask-caching',
-        'psycopg2-binary',
+        'psycopg2',
         'redis',
         'ldclient-py',
         'gunicorn',
