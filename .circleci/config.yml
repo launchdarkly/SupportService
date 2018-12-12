@@ -160,7 +160,6 @@ workflows:
   build_test_deploy:
     jobs:
       - test
-      - simulate
       - build_docker:
           requires:
             - test
