@@ -14,8 +14,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "setup.py" }}
-            - v1-dependencies-
+            - v2-dependencies-{{ checksum "setup.py" }}
+            - v2-dependencies-
 
       - run:
           name: install dependencies
@@ -29,7 +29,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "setup.py" }}
+          key: v2-dependencies-{{ checksum "setup.py" }}
 
       - run:
           name: run tests
@@ -84,8 +84,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "setup.py" }}
-            - v1-dependencies-
+            - v2-dependencies-{{ checksum "setup.py" }}
+            - v2-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -98,7 +98,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "setup.py" }}
+          key: v2-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Deploy to Production
           command: |
@@ -112,8 +112,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "setup.py" }}
-            - v1-dependencies-
+            - v2-dependencies-{{ checksum "setup.py" }}
+            - v2-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -126,7 +126,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v1-dependencies-{{ checksum "setup.py" }}
+          key: v2-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Deploy to Production
           command: |
