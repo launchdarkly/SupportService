@@ -12,6 +12,7 @@ import logging
 import click
 import click_log
 
+from circleci.api import Api
 from cli.generators import ConfigGenerator
 from cli.ld import LaunchDarklyApi
 from cli.aws.aws import AwsApi
@@ -64,6 +65,7 @@ def deploy():
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
     a = AwsApi(logger, keyPairName='SupportService')
     c = ConfigGenerator()
+    ci = Api(os.environ.get('CIRCLE_TOKEN'))
 
     envs = l.getEnvironments('support-service')
 
@@ -78,24 +80,46 @@ def deploy():
             }
         }
 
+        params = {
+            "build_parameters": {
+                "CIRCLE_JOB": "deploy_instance",
+                "HOSTNAME": hostname
+            }
+        }
+
         if client.variation("auto-deploy-env", ctx, False):
-            click.echo("Deploying {0}".format(hostname))
-            # create instance if needed
-            a.upsert_instance(hostname)
-            
-            # get instace IP address 
-            ip = a.getInstanceIp(hostname)
-            # upset Route 53 record for instance
-            a.upsertDnsRecord(hostname)
-
-            # generate docker-compose file 
-            c.generate_prod_config(env)
-            c.generate_nginx_config(env)
-
-            # run reploy script
-            subprocess.run(["./scripts/deploy.sh", "{0}".format(ip)], check=True)
+            # run deploy job for environment 
+            ci.trigger_build(
+                'launchdarkly',
+                'SupportService',
+                branch='split_deploy',
+                params=params
+            )
         else:
             click.echo("Not Auto Deploying, auto-deploy-env flag is off for {0}".format(hostname))
+
+@click.command
+@click_log.simple_verbosity_option(logger)
+@click.argument('hostname')
+def deploy_instance(hostname):
+    a = AwsApi(logger, keyPairName='SupportService')
+    c = ConfigGenerator()
+
+    click.echo("Deploying {0}".format(hostname))
+    # create instance if needed
+    a.upsert_instance(hostname)
+    
+    # get instace IP address 
+    ip = a.getInstanceIp(hostname)
+    # upset Route 53 record for instance
+    a.upsertDnsRecord(hostname)
+
+    # generate docker-compose file 
+    c.generate_prod_config(env)
+    c.generate_nginx_config(env)
+
+    # run reploy script
+    subprocess.run(["./scripts/deploy.sh", "{0}".format(ip)], check=True)
 
 cli.add_command(deploy_relay)
 cli.add_command(deploy)

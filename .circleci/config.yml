@@ -105,6 +105,34 @@ jobs:
             . venv/bin/activate
             make deploy
 
+  deploy_instance:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "setup.py" }}
+            - v1-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r dev-requirements.txt
+            pip install -e .
+            pip install -e lib/api-client-python
+            sudo apt-get install -y rsync
+      - save_cache:
+          paths:
+            - ./venv
+          key: v1-dependencies-{{ checksum "setup.py" }}
+      - run:
+          name: Deploy to Production
+          command: |
+            . venv/bin/activate
+            python cli.py deploy-instance $HOSTNAME
+            
   simulate:
     docker:
       - image: circleci/openjdk:8-node-browsers
