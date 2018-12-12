@@ -92,7 +92,7 @@ def deploy():
             ci.trigger_build(
                 'launchdarkly',
                 'SupportService',
-                branch='split_deploy',
+                branch='master',
                 params=params
             )
         else:
