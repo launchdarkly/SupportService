@@ -1,21 +1,14 @@
 version: '3'
 
 services:
-  redis:
-    image: redis
-    command: redis-server --requirepass {{ redis_password }}
-    ports:
-      - "6379:6379"
   relay:
     image: launchdarkly/ld-relay
     ports:
       - "8030:8030"
-    depends_on:
-      - redis
     environment:
       - USE_REDIS=1
       - USE_EVENTS=1
-      - REDIS_HOST=":{{ redis_password }}@redis"
+      - REDIS_HOST="{{redis_host}}"
       - REDIS_PORT=6379
       - REDIS_TTL=30000
       {% for env in envs -%}

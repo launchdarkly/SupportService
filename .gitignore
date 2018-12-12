@@ -35,9 +35,10 @@ lambda/
 .vscode/
 hosts.txt
 
-# Generated YML Files
+# Generated Files
 docker-compose.relay.yml
 docker-compose.prod.yml
+etc/nginx/nginx.conf
 
 # Java 
 target/

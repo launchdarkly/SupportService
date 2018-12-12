@@ -14,7 +14,8 @@ import click_log
 
 from cli.generators import ConfigGenerator
 from cli.ld import LaunchDarklyApi
-from cli.aws import AwsApi
+from cli.aws.aws import AwsApi
+from cli.aws.ec2 import EC2Client
 
 # set up logging 
 logger = logging.getLogger(__name__)
@@ -35,12 +36,21 @@ def deploy_relay():
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
     envs = l.getEnvironments('support-service')
     c = ConfigGenerator()
+    a = EC2Client(logger)
 
     c.generate_relay_config(envs)
 
-    subprocess.run(
-        ["./scripts/deploy_relay.sh"]
-    )
+    relays = a.getRelayInstances()
+    # run reploy script
+    for relay in relays:
+        subprocess.run(["./scripts/deploy_relay.sh", "{0}".format(relay['PublicIpAddress'])], check=True)
+
+@click.command()
+def restart_relays():
+    """Restart Relay Instances."""
+    a = EC2Client(logger)
+    for r in a.getRelayInstances():
+        subprocess.run(["./scripts/restart_relay.sh", "{0}".format(r['PublicIpAddress'])], check=True)
 
 @click.command()
 @click_log.simple_verbosity_option(logger)
@@ -72,7 +82,9 @@ def deploy():
             click.echo("Deploying {0}".format(hostname))
             # create instance if needed
             a.upsert_instance(hostname)
-
+            
+            # get instace IP address 
+            ip = a.getInstanceIp(hostname)
             # upset Route 53 record for instance
             a.upsertDnsRecord(hostname)
 
@@ -81,12 +93,13 @@ def deploy():
             c.generate_nginx_config(env)
 
             # run reploy script
-            subprocess.run(["./scripts/deploy.sh", "{0}".format(hostname)], check=True)
+            subprocess.run(["./scripts/deploy.sh", "{0}".format(ip)], check=True)
         else:
             click.echo("Not Auto Deploying, auto-deploy-env flag is off for {0}".format(hostname))
 
 cli.add_command(deploy_relay)
 cli.add_command(deploy)
+cli.add_command(restart_relays)
 
 if __name__ == '__main__':
     cli()

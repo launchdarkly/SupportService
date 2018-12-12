@@ -22,7 +22,7 @@ class ConfigGenerator():
         with open('docker-compose.relay.yml', 'w') as docker_compose_file:
             t = template.render(
                 envs = environments,
-                redis_password = str(uuid.uuid4())
+                redis_host = os.environ.get("LD_RELAY_REDIS_HOST")
             )
             docker_compose_file.write(t)
     
