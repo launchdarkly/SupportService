@@ -98,9 +98,9 @@ def deploy():
         else:
             click.echo("Not Auto Deploying, auto-deploy-env flag is off for {0}".format(hostname))
 
-@click.command
-@click_log.simple_verbosity_option(logger)
+@click.command()
 @click.argument('hostname')
+@click_log.simple_verbosity_option(logger)
 def deploy_instance(hostname):
     a = AwsApi(logger, keyPairName='SupportService')
     c = ConfigGenerator()
