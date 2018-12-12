@@ -83,7 +83,7 @@ def deploy():
         params = {
             "build_parameters": {
                 "CIRCLE_JOB": "deploy_instance",
-                "HOSTNAME": hostname
+                "LD_HOST": hostname
             }
         }
 
@@ -104,6 +104,9 @@ def deploy():
 def deploy_instance(hostname):
     a = AwsApi(logger, keyPairName='SupportService')
     c = ConfigGenerator()
+
+    envs = l.getEnvironments('support-service')
+    env = [env for env in envs if env['hostname'] == hostname][0]
 
     click.echo("Deploying {0}".format(hostname))
     # create instance if needed

@@ -55,3 +55,8 @@ class LaunchDarklyApi():
             envs.append(env)
         
         return envs
+    
+    def getEnvironment(self, projectKey, environmentKey):
+        resp = self.client.get_project(projectKey)
+
+        return resp.environments.get(key, environmentKey)

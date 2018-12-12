@@ -130,9 +130,10 @@ jobs:
       - run:
           name: Deploy to Production
           command: |
+            echo $LD_HOST
             . venv/bin/activate
-            python cli.py deploy-instance $HOSTNAME
-            
+            python cli.py deploy-instance $LD_HOST
+
   simulate:
     docker:
       - image: circleci/openjdk:8-node-browsers
