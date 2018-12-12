@@ -89,12 +89,14 @@ def deploy():
 
         if client.variation("auto-deploy-env", ctx, False):
             # run deploy job for environment 
-            ci.trigger_build(
+            resp = ci.trigger_build(
                 'launchdarkly',
                 'SupportService',
                 branch='master',
                 params=params
             )
+            click.echo("Sending Deploy Job to CircleCI for {0}".format(hostname))
+            click.echo("CircleCI Build URL: {0}".format(resp['build_url']))
         else:
             click.echo("Not Auto Deploying, auto-deploy-env flag is off for {0}".format(hostname))
 
