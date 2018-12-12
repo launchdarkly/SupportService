@@ -124,6 +124,7 @@ def deploy_instance(hostname):
 cli.add_command(deploy_relay)
 cli.add_command(deploy)
 cli.add_command(restart_relays)
+cli.add_command(deploy_instance)
 
 if __name__ == '__main__':
     cli()
