@@ -68,7 +68,6 @@ def create_app(config_name):
         from flask import request
         logLevel = ldclient.get().variation("set-logging-level", getLdMachineUser(request), logging.INFO)
 
-        app.logger.info(ldclient.get())
         app.logger.info("Log level is {0}".format(logLevel))
 
         # set app 
