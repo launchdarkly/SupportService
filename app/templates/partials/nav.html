@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index">SupportService</a>
+            <a class="navbar-brand" href="{{ url_for('core.index') }}">SupportService</a>
         </div>
 
         <!-- /.navbar-header -->
@@ -221,7 +221,7 @@
                     <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    <li><a href="{{ url_for('core.profile') }}"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li> 
                     {% if show_beta %}
                     <li><a href="{{ url_for('core.index', theme='dark') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
@@ -268,6 +268,9 @@
                     </li>
                     <li>
                         <a href="{{ url_for('core.entitlement') }}"><i class="fa fa-power-off fa-fw"></i> Entitlement</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('core.people') }}"><i class="fa fa-users"></i> People </a>
                     </li>
                 </ul>
                     </li>

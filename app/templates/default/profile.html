@@ -1,0 +1,42 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div id="wrapper">
+        <!-- Navigation -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header">Your Profile</h3>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">User Information</div>
+                    <div class="panel-body">
+                        <p>Here is all the information that we know about you.</p>
+                    </div>
+
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            Email: {{ user.email }}
+                        </li>
+                        <li class="list-group-item">
+                            Type: {{ user.user_type }}
+                        </li>
+                        <li class="list-group-item">
+                            Company: {{ user.company }}
+                        </li>
+                        <li class="list-group-item">
+                            State: {{ user.state }}
+                        </li>
+                        <li class="list-group-item">
+                            Country: {{ user.country }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-wrapper -->
+    </div> 
+{% endblock %}
