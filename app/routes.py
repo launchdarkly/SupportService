@@ -130,3 +130,21 @@ def login(theme='default'):
 def logout():
     logout_user()
     return redirect(url_for('core.index'))
+
+@core.route('/profile')
+@login_required
+def profile():
+    user = User.query.filter_by(id=current_user.id).first()
+    return render_template(
+        'default/profile.html',
+        user=user
+    )
+
+@core.route('/people')
+@login_required
+def people():
+    users = User.query.order_by(User.id).all()
+    return render_template(
+        'default/people.html',
+        users=users
+    )
