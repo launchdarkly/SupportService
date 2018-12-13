@@ -14,7 +14,6 @@ core = Blueprint('core', __name__)
 
 @core.route('/')
 @core.route('/index')
-@cache.cached(timeout=CACHE_TIMEOUT(), unless=CachingDisabled())
 @login_required
 def index():
     theme = request.args.get("theme")
@@ -141,6 +140,7 @@ def profile():
     )
 
 @core.route('/people')
+@cache.cached(timeout=CACHE_TIMEOUT(), unless=CachingDisabled())
 @login_required
 def people():
     users = User.query.order_by(User.id).all()
