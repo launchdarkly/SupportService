@@ -52,6 +52,10 @@ def create_app(config_name):
     from app.routes import core
     app.register_blueprint(core)
 
+    with app.app_context():
+        from app.models import Plan
+        Plan._init_plans()
+
     @app.before_request
     def setLoggingLevel():
         """Set Logging Level Based on Feature Flag

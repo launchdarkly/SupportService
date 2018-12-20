@@ -12,6 +12,7 @@ setup(
         'flask-bootstrap',
         'flask-wtf',
         'flask-caching',
+        'flask-fixtures',
         'psycopg2',
         'redis',
         'ldclient-py',
