@@ -8,7 +8,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
-from app.models import User
+from app.models import User, Plan
 
 core = Blueprint('core', __name__)
 
@@ -148,3 +148,21 @@ def people():
         'default/people.html',
         users=users
     )
+
+@core.route('/settings')
+@login_required
+def settings():
+    plans = Plan.query.all()
+
+    return render_template(
+        'default/settings.html',
+        plans=plans
+    )
+
+@core.route('/upgrade')
+@login_required
+def upgrade():
+    current_user.plan_id = request.args.get('plan')
+    db.session.commit()
+
+    return redirect(request.referrer)

@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+
+{% block content %}
+<div id="wrapper">
+        <!-- Navigation -->
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header">Settings</h3>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Plan Settings</div>
+                    <div class="panel-body">
+                        <p>Hi there! You can change your plan information here.
+                        </p>
+                        <div class="row">
+                        {% for plan in plans %}
+                            <div class="col-sm-3 col-md-3">
+                                <div class="thumbnail">
+                                    <div class="caption">
+                                        <h3> {{ plan.name }} </h3>
+                                        <p> {{ plan.description }} </p>
+                                        <p> ${{ plan.get_plan_cost() }} per month.</p>
+                                        {% if plan.name == current_user.plan.name %}
+                                        <p>
+                                            <a href="#" class="btn btn-primary" role="button">Current Plan</a>
+                                        </p>
+                                        {% else %}
+                                        <p>
+                                            <a href="{{ url_for('core.upgrade', plan=plan.id) }}" class="btn btn-success" role="button">Select This Plan</a>
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-wrapper -->
+    </div> 
+{% endblock %}

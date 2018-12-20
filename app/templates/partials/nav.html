@@ -227,7 +227,7 @@
                     <li><a href="{{ url_for('core.index', theme='dark') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
                     </li>
                     {% endif %}
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                    <li><a href="{{ url_for('core.settings')}}"><i class="fa fa-cogs fa-fw"></i> Settings</a>
                     </li>
                     <li class="divider"></li>
                     <li><a href="{{ url_for('core.logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
