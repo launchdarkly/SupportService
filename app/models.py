@@ -56,7 +56,7 @@ class User(UserMixin, db.Model):
                 'state': self.state,
                 'country': self.country,
                 'app_version': app_version,
-                'company': self.company,
+                'company': self.company or 'None',
                 'date': milliseconds,
                 'plan': self.plan.name
             },
