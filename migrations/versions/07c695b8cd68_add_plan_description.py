@@ -21,7 +21,7 @@ def upgrade():
     op.add_column('plan', sa.Column('description', sa.String(length=250), nullable=True))
     op.create_index(op.f('ix_plan_description'), 'plan', ['description'], unique=False)
     # give everyone a free plan by default
-    op.execute('UPDATE user SET plan_id=1')
+    op.execute('UPDATE public.user SET plan_id=1')
     # ### end Alembic commands ###
 
 
