@@ -103,28 +103,5 @@ class Plan(db.Model):
     created_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     updated_date = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
-    @staticmethod
-    def _init_plans():
-        default_plans = [
-            [1, 'free', 'All the basic features of SupportService.', 0],
-            [2, 'bronze', 'Everything in free and email support.', 25],
-            [3, 'silver', 'Everything in bronze and chat support.', 50],
-            [4, 'gold', 'Everything in silver and 99.999% uptime SLA!', 100]
-        ]
-
-        current_app.logger.info("Checking Plans.")
-        try:
-            if len(Plan.query.all()) != len(default_plans):
-                current_app.logger.info("Creating New Plans.")
-
-                for plan in default_plans:
-                    p = Plan(id=plan[0], name=plan[1], description=plan[2], cost=plan[3])
-                    db.session.add(p)
-                    db.session.commit()
-            else:
-                current_app.logger.info("Plans already exist, doing nothing.")
-        except:
-            current_app.logger.info("Unable to create plans, run migrations?")
-
     def get_plan_cost(self):
         return "{:,.2f}".format(self.cost)
