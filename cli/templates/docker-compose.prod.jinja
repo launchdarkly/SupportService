@@ -9,6 +9,7 @@ services:
       - FLASK_ENV=production
       - LD_CLIENT_KEY={{ env.api_key }}
       - LD_FRONTEND_KEY={{ env.client_id }}
+      - REDIS_HOST=cache-{{ env.hostname}}
     ports:
       - "8000:8000"
     command: ./scripts/start.sh
