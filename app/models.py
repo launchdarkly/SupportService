@@ -25,7 +25,7 @@ class User(UserMixin, db.Model):
     company = db.Column(db.String(255), default=fake.company())
     plan_id = db.Column(db.Integer, db.ForeignKey('plan.id'), default=1)
 
-    plan = db.relationship("Plan", backref="user")
+    plan = db.relationship("Plan", backref="user", lazy="subquery")
 
     def _set_default_plan(self):
         return Plan.query.filter_by(name='free').first()
