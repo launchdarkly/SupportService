@@ -27,6 +27,7 @@ class Config(object):
             base_uri = os.environ.get("LD_RELAY_URL"),
             events_uri = os.environ.get("LD_RELAY_URL"),
             stream_uri = os.environ.get("LD_RELAY_URL")
+            enable-threads = true
         )
         ldclient.set_config(config)
     else:
