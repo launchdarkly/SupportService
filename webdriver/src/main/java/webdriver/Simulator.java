@@ -34,7 +34,6 @@ public class Simulator implements Runnable {
     private String logoutUrl;
     private String releaseUrl;
     private String operationalUrl;
-    private String entitlementUrl;
     private String experimentationUrl;
 
     public Simulator(String hostname) {
@@ -44,7 +43,6 @@ public class Simulator implements Runnable {
         this.logoutUrl = String.format("%s/logout", this.baseUrl);
         this.releaseUrl = String.format("%s/release", this.baseUrl);
         this.operationalUrl = String.format("%s/operational", this.baseUrl);
-        this.entitlementUrl = String.format("%s/entitlement", this.baseUrl);
         this.experimentationUrl = String.format("%s/experiments", this.baseUrl);
         this.iterations = ThreadLocalRandom.current().nextInt(MIN, MAX + 1);
     }
@@ -98,7 +96,6 @@ public class Simulator implements Runnable {
                 }
 
                 for (int k = MIN; k <= this.iterations; k++) {
-                    driver.get(this.entitlementUrl);
                     driver.get(this.baseUrl);
                 }
 

@@ -73,16 +73,6 @@ def release():
 
     return render_template(set_theme, title='Dark Theme')
 
-@core.route('/entitlement')
-def entitlement():
-    theme = request.args.get("theme")
-    if theme:
-        updateTheme(theme)
-    
-    set_theme = '{0}/entitlement.html'.format(current_user.set_path)
-
-    return render_template(set_theme, title='entitlement')
-
 # I decided to take out a payday loan on this shit. 
 # http://flask.pocoo.org/docs/1.0/quickstart/?highlight=post#http-methods
 @core.route('/register', methods=['GET', 'POST'])
