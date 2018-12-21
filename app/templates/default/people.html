@@ -37,7 +37,12 @@
                         {% endfor %}
                     </tbody>
                 </table>
-
+                {% if prev_url %}
+                    <strong><a class="btn btn-default" href="{{ prev_url }}"><i class="fas fa-arrow-left"></i> Previous Users</a></strong>
+                {% endif %}
+                {% if next_url %}
+                    <strong><a class="btn btn-default pull-right" href="{{ next_url }}">Next Users <i class="fas fa-arrow-right"></i></a></strong>
+                {% endif %}
             </div>
         </div>
         <!-- /#page-wrapper -->

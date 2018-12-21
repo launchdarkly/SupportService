@@ -144,13 +144,17 @@ def profile():
 @cache.cached(timeout=CACHE_TIMEOUT(), unless=CachingDisabled())
 @login_required
 def people():
-    users = cache.get('all-users')
-    if users is None:
-        users = User.query.order_by(User.id).all()
-        cache.set('all-users', users, timeout=300)
+    page = request.args.get('page', 1, type=int)
+    users = User.query.order_by(User.id).paginate(page, 15, False)
+    next_url = url_for('core.people', page=users.next_num) \
+        if users.has_next else None
+    prev_url = url_for('core.people', page=users.prev_num) \
+        if users.has_prev else None
     return render_template(
         'default/people.html',
-        users=users
+        users=users.items,
+        next_url=next_url,
+        prev_url=prev_url
     )
 
 @core.route('/settings')
