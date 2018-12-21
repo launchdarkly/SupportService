@@ -144,7 +144,10 @@ def profile():
 @cache.cached(timeout=CACHE_TIMEOUT(), unless=CachingDisabled())
 @login_required
 def people():
-    users = User.query.order_by(User.id).all()
+    users = cache.get('all-users')
+    if users is None:
+        users = User.query.order_by(User.id).all()
+        cache.set('all-users', users, timeout=300)
     return render_template(
         'default/people.html',
         users=users
