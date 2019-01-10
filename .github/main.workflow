@@ -8,8 +8,8 @@ action "find_flags" {
     "LD_ACCESS_TOKEN",
   ]
   env = {
-    LD_PROJ_KEY = "default"
     LD_EXCLUDE = "app/static/.*"
+    LD_PROJ_KEY = "support-service"
   }
   uses = "docker://ldactions/git-flag-parser-gh-action:latest"
 }
