@@ -16,7 +16,7 @@ more information on specific feature flags and use cases.
 
 ### Instructions 
 
-* Clone the repo locally `git clone https://github.com/manuelPartida/SupportService.git`
+* Clone the repo locally `git clone https://github.com/launchdarkly/SupportService.git`
 * Copy `.env.example` to `.env` and fill in the correct values:
 
         export DATABASE_URL=postgresql://supportService:supportService@db/supportService
