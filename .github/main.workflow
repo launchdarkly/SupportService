@@ -2,6 +2,7 @@ workflow "Find flag references" {
   on = "push"
   resolves = ["find_flags"]
 }
+
 action "find_flags" {
   secrets = [
     "LD_ACCESS_TOKEN",
