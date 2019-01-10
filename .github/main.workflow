@@ -9,6 +9,7 @@ action "find_flags" {
   ]
   env = {
     LD_PROJ_KEY = "default"
+    LD_EXCLUDE = "app/static/*"
   }
   uses = "docker://ldactions/git-flag-parser-gh-action:latest"
 }
