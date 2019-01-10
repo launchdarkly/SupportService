@@ -10,6 +10,7 @@ action "find_flags" {
   env = {
     LD_EXCLUDE = "app/static/.*"
     LD_PROJ_KEY = "support-service"
+    LD_CONTEXT_LINES = "3"
   }
   uses = "docker://ldactions/git-flag-parser-gh-action:latest"
 }
