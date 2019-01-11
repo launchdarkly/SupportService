@@ -7,7 +7,6 @@ action "find_flags" {
   secrets = [
     "LD_ACCESS_TOKEN",
   ]
-  
   env = {
     LD_EXCLUDE = "app/static/.*"
     LD_PROJ_KEY = "support-service"
