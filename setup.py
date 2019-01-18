@@ -21,6 +21,7 @@ setup(
         'circleci==1.1.3',
         'faker',
         'click',
-        'click-log'
+        'click-log',
+        'paramiko'
     ]
 )

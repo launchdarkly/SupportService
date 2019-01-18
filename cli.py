@@ -8,6 +8,7 @@ import subprocess
 import sys
 import ldclient 
 import logging 
+import paramiko 
 
 import click
 import click_log
@@ -17,6 +18,9 @@ from cli.generators import ConfigGenerator
 from cli.ld import LaunchDarklyApi
 from cli.aws.aws import AwsApi
 from cli.aws.ec2 import EC2Client
+from paramiko import SSHClient
+from paramiko.client import AutoAddPolicy
+from os.path import expanduser
 
 # set up logging 
 logger = logging.getLogger(__name__)
@@ -127,10 +131,45 @@ def deploy_instance(hostname):
     # run reploy script
     subprocess.run(["./scripts/deploy.sh", "{0}".format(ip)], check=True)
 
+@click.command()
+@click.argument('command')
+@click_log.simple_verbosity_option(logger)
+def run(command):
+    """Execute Command on Every Instance
+
+    :param command: command to execute on instance
+    """
+    logger.setLevel(logging.getLevelName(os.environ.get('LOG_LEVEL', default='INFO')))
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+
+    envs = l.getEnvironments('support-service')
+
+    key = paramiko.RSAKey.from_private_key_file(expanduser("~/.ssh/SupportService.pem"))
+
+    client = SSHClient()
+    client.set_missing_host_key_policy(AutoAddPolicy)
+    client.load_system_host_keys()
+
+    for env in envs:
+
+        host = env['hostname']
+        logger.info('running command on {0}'.format(host))
+
+        try:
+            client.connect(
+                hostname=host, 
+                username='centos',
+                pkey = key)
+            stdin, stdout, stderr = client.exec_command(command)
+            logger.debug(stdout.read())
+        except:
+            logger.error('Unable to SSH into {0}'.format(host))
+
 cli.add_command(deploy_relay)
 cli.add_command(deploy)
 cli.add_command(restart_relays)
 cli.add_command(deploy_instance)
+cli.add_command(run)
 
 if __name__ == '__main__':
     cli()
