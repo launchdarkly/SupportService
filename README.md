@@ -74,7 +74,6 @@ the `.circle/config.yml` file under the `simulate` job.
 
 ### Running it Locally 
 
-1. Generate hosts.txt file with: `python cli.py generate-hosts`
-2. Go to the webdriver directory: `cd webdriver`
+1. Go to the webdriver directory: `cd webdriver`
 2. Compile the maven project: `mvn compile assembly:single`
 3. Start the simulator with: `java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar`
