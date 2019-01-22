@@ -22,6 +22,8 @@ setup(
         'faker',
         'click',
         'click-log',
-        'paramiko'
-    ]
+        'paramiko',
+        'launchdarkly-api'
+    ],
+    python_requires='==3.6.*'
 )
