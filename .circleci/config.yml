@@ -57,25 +57,28 @@ jobs:
     machine: true
     steps:
       - checkout
-      # - run:
-      #     name: Install Docker Compose
-      #     command: sudo pip install docker-compose
+      - run:
+          name: Install Docker Compose
+          command: sudo pip install docker-compose
       - run:
           name: Build Image
           command: |
             docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
             docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
-      # - run:
-      #     name: Test Stack
-      #     command: |
-      #       export DATABASE_URL=postgresql://supportService:supportService@db/supportService
-      #       docker-compose -f docker-compose.prod.yml up -d
+      - run:
+          name: Test Stack
+          command: |
+            export DATABASE_URL=postgresql://supportService:supportService@db/supportService
+            docker-compose -f docker-compose.prod.yml up -d
       - run:
           name: Push Image
           command: |
-            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
-            docker push levlaz/supportservice
-
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
+              docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+              docker push levlaz/supportservice
+            else
+              echo "Branch is not master, not uploading."
+            fi
   deploy:
     docker:
       - image: circleci/python:3.6
@@ -160,9 +163,6 @@ workflows:
       - build_docker:
           requires:
             - test
-          filters:
-            branches:
-              only: master
       - deploy:
           requires:
             - build_docker
