@@ -14,8 +14,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "setup.py" }}
-            - v2-dependencies-
+            - v3-dependencies-{{ checksum "setup.py" }}
+            - v3-dependencies-
 
       - run:
           name: install dependencies
@@ -24,12 +24,11 @@ jobs:
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
-            pip install -e lib/api-client-python
 
       - save_cache:
           paths:
             - ./venv
-          key: v2-dependencies-{{ checksum "setup.py" }}
+          key: v3-dependencies-{{ checksum "setup.py" }}
 
       - run:
           name: run tests
@@ -58,25 +57,31 @@ jobs:
     machine: true
     steps:
       - checkout
-      # - run:
-      #     name: Install Docker Compose
-      #     command: sudo pip install docker-compose
+      - run:
+          name: Install Docker Compose
+          command: sudo pip install docker-compose
       - run:
           name: Build Image
           command: |
             docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
             docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
-      # - run:
-      #     name: Test Stack
-      #     command: |
-      #       export DATABASE_URL=postgresql://supportService:supportService@db/supportService
-      #       docker-compose -f docker-compose.prod.yml up -d
+      - run:
+          name: Test Stack
+          command: |
+            export DATABASE_URL=postgresql://supportService:supportService@db/supportService
+            docker-compose -f docker-compose.test.yml up -d
+      - run:
+          name: Debug Docker
+          command: docker ps -a
       - run:
           name: Push Image
           command: |
-            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
-            docker push levlaz/supportservice
-
+            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
+              docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+              docker push levlaz/supportservice
+            else
+              echo "Branch is not master, not uploading."
+            fi
   deploy:
     docker:
       - image: circleci/python:3.6
@@ -84,8 +89,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "setup.py" }}
-            - v2-dependencies-
+            - v3-dependencies-{{ checksum "setup.py" }}
+            - v3-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -93,12 +98,11 @@ jobs:
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
-            pip install -e lib/api-client-python
             sudo apt-get install -y rsync
       - save_cache:
           paths:
             - ./venv
-          key: v2-dependencies-{{ checksum "setup.py" }}
+          key: v3-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Deploy to Production
           command: |
@@ -112,8 +116,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "setup.py" }}
-            - v2-dependencies-
+            - v3-dependencies-{{ checksum "setup.py" }}
+            - v3-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -121,12 +125,11 @@ jobs:
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
-            pip install -e lib/api-client-python
             sudo apt-get install -y rsync
       - save_cache:
           paths:
             - ./venv
-          key: v2-dependencies-{{ checksum "setup.py" }}
+          key: v3-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Deploy to Production
           command: |
@@ -163,9 +166,6 @@ workflows:
       - build_docker:
           requires:
             - test
-          filters:
-            branches:
-              only: master
       - deploy:
           requires:
             - build_docker
