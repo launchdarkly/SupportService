@@ -71,6 +71,9 @@ jobs:
             export DATABASE_URL=postgresql://supportService:supportService@db/supportService
             docker-compose -f docker-compose.test.yml up -d
       - run:
+          name: Debug Docker
+          command: docker ps -a
+      - run:
           name: Push Image
           command: |
             if [[ "$CIRCLE_BRANCH" == "master" ]]; then
