@@ -142,11 +142,6 @@ jobs:
       - image: circleci/openjdk:8-node-browsers
     steps:
       - checkout
-      - run:
-          name: Install LD API Library
-          command: |
-            cd webdriver/lib/api-client-java
-            mvn install
       - run: 
           name: Install Simualtor 
           command: |
