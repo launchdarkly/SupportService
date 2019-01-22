@@ -137,6 +137,14 @@ def deploy_instance(hostname):
 def run(command):
     """Execute Command on Every Instance
 
+    This command requires the SupportService.pem file to be located in
+    ~/.ssh/SupportService.pem
+
+    To view the output execute the command with LOG_LEVEL=DEBUG 
+    i.e.
+
+        LOG_LEVEL=DEBUG python cli.py run 'free -m'
+        
     :param command: command to execute on instance
     """
     logger.setLevel(logging.getLevelName(os.environ.get('LOG_LEVEL', default='INFO')))
