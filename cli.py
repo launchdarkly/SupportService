@@ -59,7 +59,7 @@ def restart_relays():
 
 @click.command()
 @click_log.simple_verbosity_option(logger)
-def deploy():
+def deploy_old():
     """Deploy SupportService to LightSail.
 
     Uses a feature flag to disable automatically deploying specific
@@ -133,9 +133,8 @@ def deploy_instance(hostname):
 
 @click.command()
 @click_log.simple_verbosity_option(logger)
-def deploy_single():
+def deploy():
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
-    a = AwsApi(logger, keyPairName='SupportService')
     c = ConfigGenerator()
 
     envs = l.getEnvironments('support-service')
@@ -193,7 +192,7 @@ cli.add_command(deploy)
 cli.add_command(restart_relays)
 cli.add_command(deploy_instance)
 cli.add_command(run)
-cli.add_command(deploy_single)
+cli.add_command(deploy_old)
 
 if __name__ == '__main__':
     cli()

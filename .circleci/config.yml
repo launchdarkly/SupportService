@@ -107,46 +107,18 @@ jobs:
           name: Deploy to Production
           command: |
             . venv/bin/activate
-            make deploy
-
-  deploy_instance:
-    docker:
-      - image: circleci/python:3.6
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v3-dependencies-{{ checksum "setup.py" }}
-            - v3-dependencies-
-      - run:
-          name: install dependencies
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r dev-requirements.txt
-            pip install -e .
-            sudo apt-get install -y rsync
-      - save_cache:
-          paths:
-            - ./venv
-          key: v3-dependencies-{{ checksum "setup.py" }}
-      - run:
-          name: Deploy to Production
-          command: |
-            echo $LD_HOST
-            . venv/bin/activate
-            python cli.py deploy-instance $LD_HOST
+            python cli.py deploy
 
   simulate:
     docker:
       - image: circleci/openjdk:8-node-browsers
     steps:
       - checkout
-      - run: 
-          name: Install Simualtor 
+      - run:
+          name: Install Simualtor
           command: |
             cd webdriver
-            mvn compile assembly:single 
+            mvn compile assembly:single
       - run:
           name: Run Simulation
           command: |
@@ -167,7 +139,7 @@ workflows:
           filters:
             branches:
               only: master
-  
+
   # Run simulator every hour
   simulator:
     triggers:
