@@ -44,6 +44,7 @@ http {
         listen 80;
         server_name *.ldsolutions.tk;
         location / {
+            add_header Content-Type text/plain;
             return 200 "sorry, I could not find that site.";
         }
     }
