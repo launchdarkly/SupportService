@@ -13,7 +13,7 @@ services:
       - REDIS_HOST=cache
     ports:
       - "{{ env.port }}:{{ env.port }}"
-    command: ["./scripts/start.sh", "{{ env.port }}"]
+    command: ["./start.sh", "{{ env.port }}"]
     depends_on:
       - db
       - cache
