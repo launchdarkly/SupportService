@@ -13,22 +13,11 @@ services:
       - REDIS_HOST=cache
     ports:
       - "{{ env.port }}:{{ env.port }}"
-    command: ["./scripts/wait-for-postgres.sh", "gunicorn", "run:app", "-b", "0.0.0.0:{{ env.port }}"]
+    command: ["./scripts/start.sh", "{{ env.port }}"]
     depends_on:
-      - migrator
       - db
       - cache
   {% endfor %}
-
-  migrator:
-    image: levlaz/supportservice
-    environment:
-      - FLASK_APP=run.py
-      - DATABASE_URL=postgresq://supportService:supportService@db/supportService
-      - FLASK_ENV=production
-    command: ["./scripts/wait-for-postgres.sh", "flask", "db", "upgrade"]
-    depends_on:
-      - db
 
   db:
     image: postgres:11-alpine
@@ -52,6 +41,5 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - migrator
       - db
       - cache
