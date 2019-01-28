@@ -17,13 +17,8 @@ setup(
         'redis',
         'ldclient-py',
         'gunicorn',
-        'boto3',
-        'circleci==1.1.3',
         'faker',
         'click',
-        'click-log',
-        'paramiko',
-        'launchdarkly-api'
-    ],
-    python_requires='==3.6.*'
+        'click-log'
+    ]
 )

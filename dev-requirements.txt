@@ -3,3 +3,7 @@ flake8
 pylint
 unittest-xml-reporting
 codecov
+circleci==1.1.3
+launchdarkly-api
+paramiko
+boto3
