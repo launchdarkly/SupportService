@@ -82,7 +82,7 @@ class AnonymousUser(AnonymousUserMixin):
     def get_ld_user(self):
         app_version = current_app.config['VERSION']
         user = {
-            "key": "anonymous",
+            "key": str(uuid.uuid1()),
             "custom": {
                 "app_version": app_version
             },

@@ -29,7 +29,7 @@
   {% block navbar %}
   {% if current_user.is_authenticated %}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-        <a class="navbar-brand" href="{{ url_for('core.index') }}">SupportService</a>
+        <a class="navbar-brand" href="{{ url_for('core.dashboard') }}">SupportService</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -37,7 +37,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-              <a class="nav-link" href="{{ url_for('core.index') }}"> 
+              <a class="nav-link" href="{{ url_for('core.dashboard') }}"> 
                 <i class="fa fa-fw fa-dashboard"></i>
                 <span class="nav-link-text">Dashboard</span>
               </a>
@@ -162,7 +162,7 @@
                   <a class="dropdown-item" href="#">
                     <span class="text-success">
                       <strong>
-                      <a href="{{ url_for('core.index', theme='light') }}"><i class="fa fa-fw"></i>Light Theme</strong></a>
+                      <a href="{{ url_for('core.dashboard', theme='light') }}"><i class="fa fa-fw"></i>Light Theme</strong></a>
                     </span>
                   </a>
                 </div>

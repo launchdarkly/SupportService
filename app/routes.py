@@ -3,7 +3,7 @@ import logging
 
 import ldclient
 from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, url_for)
+                   request, url_for, session)
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
@@ -13,9 +13,38 @@ from app.models import User, Plan
 core = Blueprint('core', __name__)
 
 @core.route('/')
-@core.route('/index')
-@login_required
 def index():
+    """
+    Controller for Public home page. 
+
+    Includes a server side experiment for trial duration. The duration 
+    can either be 14 days or 30 days. We show a different variation to 
+    each user randomly. Then we track the registration rate as our 
+    conversion event.
+    """
+    if current_user.is_authenticated:
+        return redirect(url_for('core.dashboard'))
+
+    user = current_user.get_ld_user()
+    session['ld_user'] = user
+
+    longer_trial_duration = ldclient.get().variation(
+        'longer-trial-duration', 
+        user, 
+        False)
+
+    if longer_trial_duration: # experimentation group
+        trial_duration = 30
+    else: # control group
+        trial_duration = 14
+
+    session['trial_duration'] = trial_duration
+
+    return render_template('home.html', trial_duration=trial_duration)
+
+@core.route('/dashboard')
+@login_required
+def dashboard():
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
@@ -73,12 +102,18 @@ def release():
 
     return render_template(set_theme, title='Dark Theme')
 
-# I decided to take out a payday loan on this shit. 
-# http://flask.pocoo.org/docs/1.0/quickstart/?highlight=post#http-methods
 @core.route('/register', methods=['GET', 'POST'])
 def register():
+    # track registration attempts
+    # ld_user will be in session if user got to the registration 
+    # page by clicking a link on the home page (where they saw the ab test)
+    if session.get('ld_user'):
+        current_app.logger.info("Sending track event for {0}".format(session.get('ld_user')))
+        ldclient.get().track('started-registration', session['ld_user'])
+
     if current_user.is_authenticated:
-        return redirect(url_for('core.index'))
+        return redirect(url_for('core.dashboard'))
+
     if request.method == 'POST':
         user = User(email=request.form['userEmail'])
         # check if userName exist
@@ -93,14 +128,22 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
+
+        # track registration completion
+        # ld_user will be in session if user got to the registration 
+        # page by clicking a link on the home page (where they saw the ab test)
+        if session.get('ld_user'):
+            current_app.logger.info("Sending track event for {0}".format(session.get('ld_user')))
+            ldclient.get().track('registered', session['ld_user'])
+            
         login_user(user)
-        return redirect(url_for('core.index'))
+        return redirect(url_for('core.dashboard'))
     return render_template('beta/auth/register.html', title='Support Request')
 
 @core.route('/login', methods=['GET', 'POST'])
 def login(theme='default'):
     if current_user.is_authenticated:
-        return redirect(url_for('core.index'))
+        return redirect(url_for('core.dashboard'))
     if request.method == 'POST':
         user = User.query.filter_by(email=request.form['userEmail']).first()
         if user is None or not user.check_password(request.form['inputPassword']):
@@ -109,11 +152,8 @@ def login(theme='default'):
         login_user(user)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('core.index')
+            next_page = url_for('core.dashboard')
         return redirect(next_page)
-    '''
-
-    '''
     return render_template('beta/auth/login.html', title='Sign In')
 
 @core.route('/logout')

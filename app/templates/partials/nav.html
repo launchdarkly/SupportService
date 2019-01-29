@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{{ url_for('core.index') }}">SupportService</a>
+            <a class="navbar-brand" href="{{ url_for('core.dashboard') }}">SupportService</a>
         </div>
 
         <!-- /.navbar-header -->
@@ -224,7 +224,7 @@
                     <li><a href="{{ url_for('core.profile') }}"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li> 
                     {% if show_beta %}
-                    <li><a href="{{ url_for('core.index', theme='dark') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
+                    <li><a href="{{ url_for('core.dashboard', theme='dark') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
                     </li>
                     {% endif %}
                     <li><a href="{{ url_for('core.settings')}}"><i class="fa fa-cogs fa-fw"></i> Settings</a>
@@ -254,7 +254,7 @@
                         <!-- /input-group -->
                     </li>
                     <li>
-                        <a href="{{ url_for('core.index') }}"><i class="fa fa-tachometer-alt fa-fw"></i> Dashboard</a>
+                        <a href="{{ url_for('core.dashboard') }}"><i class="fa fa-tachometer-alt fa-fw"></i> Dashboard</a>
                     </li>
                     <li>
                         <a href="{{ url_for('core.experiments') }}"><i class="fa fa-flask fa-fw"></i> Experimentation</a>
