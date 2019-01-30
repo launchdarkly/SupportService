@@ -1,13 +1,14 @@
 """SupportService CLI
 
-A CLI interface used for provisioning, deploying, and updating 
-SupportService. 
+A CLI interface used for provisioning, deploying, and updating
+SupportService.
 """
 import os
 import subprocess
 import sys
-import ldclient 
-import logging 
+import ldclient
+import logging
+import paramiko
 
 import click
 import click_log
@@ -17,8 +18,11 @@ from cli.generators import ConfigGenerator
 from cli.ld import LaunchDarklyApi
 from cli.aws.aws import AwsApi
 from cli.aws.ec2 import EC2Client
+from paramiko import SSHClient
+from paramiko.client import AutoAddPolicy
+from os.path import expanduser
 
-# set up logging 
+# set up logging
 logger = logging.getLogger(__name__)
 click_log.basic_config(logger)
 
@@ -55,12 +59,12 @@ def restart_relays():
 
 @click.command()
 @click_log.simple_verbosity_option(logger)
-def deploy():
+def deploy_old():
     """Deploy SupportService to LightSail.
-    
-    Uses a feature flag to disable automatically deploying specific 
+
+    Uses a feature flag to disable automatically deploying specific
     environments. It can be found in the production environment of
-    the support-service project. 
+    the support-service project.
     """
     l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
     a = AwsApi(logger, keyPairName='SupportService')
@@ -88,7 +92,7 @@ def deploy():
         }
 
         if client.variation("auto-deploy-env", ctx, False):
-            # run deploy job for environment 
+            # run deploy job for environment
             resp = ci.trigger_build(
                 'launchdarkly',
                 'SupportService',
@@ -114,23 +118,81 @@ def deploy_instance(hostname):
     click.echo("Deploying {0}".format(hostname))
     # create instance if needed
     a.upsert_instance(hostname)
-    
-    # get instace IP address 
+
+    # get instace IP address
     ip = a.getInstanceIp(hostname)
     # upset Route 53 record for instance
     a.upsertDnsRecord(hostname)
 
-    # generate docker-compose file 
+    # generate docker-compose file
     c.generate_prod_config(env)
     c.generate_nginx_config(env)
 
     # run reploy script
     subprocess.run(["./scripts/deploy.sh", "{0}".format(ip)], check=True)
 
+@click.command()
+@click_log.simple_verbosity_option(logger)
+def deploy():
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    c = ConfigGenerator()
+
+    envs = l.getEnvironments('support-service')
+
+    c.generate_prod_config(envs)
+    c.generate_nginx_config(envs)
+
+    # run reploy script
+    subprocess.run(["./scripts/deploy.sh"], check=True)
+
+@click.command()
+@click.argument('command')
+@click_log.simple_verbosity_option(logger)
+def run(command):
+    """Execute Command on Every Instance
+
+    This command requires the SupportService.pem file to be located in
+    ~/.ssh/SupportService.pem
+
+    To view the output execute the command with LOG_LEVEL=DEBUG
+    i.e.
+
+        LOG_LEVEL=DEBUG python cli.py run 'free -m'
+
+    :param command: command to execute on instance
+    """
+    logger.setLevel(logging.getLevelName(os.environ.get('LOG_LEVEL', default='INFO')))
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+
+    envs = l.getEnvironments('support-service')
+
+    key = paramiko.RSAKey.from_private_key_file(expanduser("~/.ssh/SupportService.pem"))
+
+    client = SSHClient()
+    client.set_missing_host_key_policy(AutoAddPolicy)
+    client.load_system_host_keys()
+
+    for env in envs:
+
+        host = env['hostname']
+        logger.info('running command on {0}'.format(host))
+
+        try:
+            client.connect(
+                hostname=host,
+                username='centos',
+                pkey = key)
+            stdin, stdout, stderr = client.exec_command(command)
+            logger.debug(stdout.read())
+        except:
+            logger.error('Unable to SSH into {0}'.format(host))
+
 cli.add_command(deploy_relay)
 cli.add_command(deploy)
 cli.add_command(restart_relays)
 cli.add_command(deploy_instance)
+cli.add_command(run)
+cli.add_command(deploy_old)
 
 if __name__ == '__main__':
     cli()

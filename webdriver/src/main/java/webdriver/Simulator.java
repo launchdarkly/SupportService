@@ -80,14 +80,6 @@ public class Simulator implements Runnable {
                 element.sendKeys("testing");
                 element.submit();
 
-                logger.info("Logging In " + email + " for " + this.baseUrl);
-                driver.get(this.baseUrl);
-                element = driver.findElement(By.name("userEmail"));
-                element.sendKeys(email);
-                element = driver.findElement(By.name("inputPassword"));
-                element.sendKeys("testing");
-                element.submit();
-
                 logger.info("Doing Random things with " + email + " for " + this.baseUrl + " " + this.iterations + " times.");
 
                 for (int j = MIN; j <= this.iterations; j++) {

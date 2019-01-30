@@ -36,20 +36,19 @@ public class App
         Token.setApiKey(System.getenv("LD_API_KEY"));
         ProjectsApi apiInstance = new ProjectsApi();
 
-        // try {
-        //     Project result = apiInstance.getProject(PROJECT_KEY);
-        //     List<Environment> environmentsList = result.getEnvironments();
+        try {
+            Project result = apiInstance.getProject(PROJECT_KEY);
+            List<Environment> environmentsList = result.getEnvironments();
 
-        //     for (int i = 0; i < environmentsList.size(); i++) {
-        //         String key = environmentsList.get(i).getKey();
-        //         String hostname = String.format("%s.ldsolutions.tk", key);
-        //         Simulator simulator = new Simulator(hostname);
-        //         executor.execute(simulator);
-        //     }
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
-        executor.execute(new Simulator("lev.ldsolutions.tk"));
+            for (int i = 0; i < environmentsList.size(); i++) {
+                String key = environmentsList.get(i).getKey();
+                String hostname = String.format("%s.ldsolutions.tk", key);
+                Simulator simulator = new Simulator(hostname);
+                executor.execute(simulator);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         executor.shutdown();
     }

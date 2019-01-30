@@ -13,7 +13,7 @@ setup(
         'flask-wtf',
         'flask-caching',
         'flask-fixtures',
-        'psycopg2',
+        'psycopg2-binary',
         'redis',
         'ldclient-py',
         'gunicorn',
@@ -21,6 +21,9 @@ setup(
         'circleci==1.1.3',
         'faker',
         'click',
-        'click-log'
-    ]
+        'click-log',
+        'paramiko',
+        'launchdarkly-api'
+    ],
+    python_requires='==3.6.*'
 )
