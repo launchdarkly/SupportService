@@ -42,6 +42,7 @@ class User(UserMixin, db.Model):
     def get_email_hash(self):
         return hashlib.md5(self.email.encode()).hexdigest()
 
+
     def get_ld_user(self):
         app_version = current_app.config['VERSION']
         milliseconds = int(round(time.time() * 1000))
@@ -62,9 +63,9 @@ class User(UserMixin, db.Model):
             },
             'privateAttributeNames': ['account_type', 'state'],
         }
-        
+
         return user
-    
+
     def get_random_ld_user(self):
         user = {'key': str(uuid.uuid1())}
         return user
@@ -94,7 +95,7 @@ class AnonymousUser(AnonymousUserMixin):
 
 class Plan(db.Model):
     """
-    Represents a plan type 
+    Represents a plan type
     """
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
     name = db.Column(db.String(120), index=True, unique=True)
