@@ -25,5 +25,4 @@ ssh -o StrictHostKeyChecking=no $PROD_SERVER 'docker system prune --force --volu
 # Log into Production Server, Pull and Restart Docker
 ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose pull'
 ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose build'
-ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose up -d'
-ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose restart web'
+ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose restart'

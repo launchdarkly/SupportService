@@ -43,3 +43,6 @@ services:
     depends_on:
       - db
       - cache
+      {% for env in envs %}
+      - {{ env.hostname }}
+      {% endfor %}
