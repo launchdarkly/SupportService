@@ -32,7 +32,8 @@ class ConfigGenerator():
 
         with open('docker-compose.prod.yml', 'w+') as docker_compose_file:
             t = template.render(
-                envs = environments
+                envs = environments,
+                circle_sha1 = os.environ.get('CIRCLE_SHA1') or 'latest'
             )
             docker_compose_file.write(t)
 

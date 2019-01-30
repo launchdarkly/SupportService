@@ -3,7 +3,7 @@ services:
   {% for env in envs %}
   {{ env.hostname }}:
     hostname: {{ env.hostname }}
-    image: levlaz/supportservice:$CIRCLE_SHA1
+    image: levlaz/supportservice:{{ circle_sha1 }}
     environment:
       - FLASK_APP=run.py
       - DATABASE_URL=postgresql://supportService:supportService@db/supportService
