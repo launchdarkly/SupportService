@@ -268,7 +268,7 @@
                     <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li> 
                     {% if show_beta %}
-                    <li><a href="{{ url_for('core.index', theme='dark') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
+                    <li><a href="{{ url_for('core.dashboard', theme='dark') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
                     </li>
                     {% endif %}
                     <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
@@ -298,7 +298,7 @@
                         <!-- /input-group -->
                     </li>
                     <li>
-                        <a href="{{ url_for('core.index') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        <a href="{{ url_for('core.dashboard') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
                     <li>
                         <a href="{{ url_for('core.experiments') }}"><i class="fa fa-flask fa-fw"></i> Experimentation</a>

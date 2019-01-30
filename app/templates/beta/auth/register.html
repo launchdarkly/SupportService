@@ -4,7 +4,11 @@
 <body class="bg-dark">
   <div class="container">
     <div class="card card-register mx-auto mt-5">
+      {% if session.get('trial_duration') %}
+      <div class="card-header">Register an Account for your <strong style="color:darkblue">free {{ session['trial_duration'] }} day</strong> trial.</div>
+      {% else %}
       <div class="card-header">Register an Account</div>
+      {% endif %}
       <div class="card-body">
         <form action="{{ url_for('core.register') }}" method="post">
           <div class="form-group">
