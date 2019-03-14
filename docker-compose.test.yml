@@ -1,19 +1,19 @@
 version: '3'
 services:
-  app.ldsolutions.tk:
+  app.ldsolutions.org:
     image: levlaz/supportservice
     environment:
       - FLASK_APP=run.py
-      - DATABASE_URL=postgresql://supportService:supportService@db.ldsolutions.tk/supportService
+      - DATABASE_URL=postgresql://supportService:supportService@db.ldsolutions.org/supportService
       - FLASK_ENV=production
     ports:
       - "8000:8000"
     command: ./scripts/start.sh
     depends_on:
-      - db.ldsolutions.tk
-      - cache.ldsolutions.tk
-    
-  db.ldsolutions.tk:
+      - db.ldsolutions.org
+      - cache.ldsolutions.org
+
+  db.ldsolutions.org:
     image: postgres:10-alpine
     environment:
       - POSTGRES_USER=supportService
@@ -23,16 +23,16 @@ services:
     ports:
       - "5432:5432"
 
-  cache.ldsolutions.tk:
+  cache.ldsolutions.org:
     image: redis:alpine
     ports:
       - "6379:6379"
-  
-  web.ldsolutions.tk:
+
+  web.ldsolutions.org:
     image: nginx:alpine
-    volumes: 
+    volumes:
       - ./etc/nginx/nginx.test.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
     depends_on:
-      - app.ldsolutions.tk
+      - app.ldsolutions.org

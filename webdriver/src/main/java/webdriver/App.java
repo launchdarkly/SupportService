@@ -42,7 +42,7 @@ public class App
 
             for (int i = 0; i < environmentsList.size(); i++) {
                 String key = environmentsList.get(i).getKey();
-                String hostname = String.format("%s.ldsolutions.tk", key);
+                String hostname = String.format("%s.ldsolutions.org", key);
                 Simulator simulator = new Simulator(hostname);
                 executor.execute(simulator);
             }

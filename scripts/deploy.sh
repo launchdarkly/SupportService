@@ -7,7 +7,7 @@
 # the latest docker image and restarts docker-compose.
 #
 
-PROD_SERVER="centos@supportservice.ldsolutions.tk"
+PROD_SERVER="centos@supportservice.ldsolutions.org"
 
 until bash -c "ssh -o StrictHostKeyChecking=no $PROD_SERVER 'docker ps'"; do
     >&2 echo "Server is not ready - sleeping"
