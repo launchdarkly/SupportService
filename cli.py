@@ -38,7 +38,7 @@ def cli():
 @click.command()
 def deploy_relay():
     """Deploy LD Relay to LightSail."""
-    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.org')
     envs = l.getEnvironments('support-service')
     c = ConfigGenerator()
     a = EC2Client(logger)
@@ -66,7 +66,7 @@ def deploy_old():
     environments. It can be found in the production environment of
     the support-service project.
     """
-    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.org')
     a = AwsApi(logger, keyPairName='SupportService')
     c = ConfigGenerator()
     ci = Api(os.environ.get('CIRCLE_TOKEN'))
@@ -108,7 +108,7 @@ def deploy_old():
 @click.argument('hostname')
 @click_log.simple_verbosity_option(logger)
 def deploy_instance(hostname):
-    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.org')
     a = AwsApi(logger, keyPairName='SupportService')
     c = ConfigGenerator()
 
@@ -134,7 +134,7 @@ def deploy_instance(hostname):
 @click.command()
 @click_log.simple_verbosity_option(logger)
 def deploy():
-    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.org')
     c = ConfigGenerator()
 
     envs = l.getEnvironments('support-service')
@@ -162,7 +162,7 @@ def run(command):
     :param command: command to execute on instance
     """
     logger.setLevel(logging.getLevelName(os.environ.get('LOG_LEVEL', default='INFO')))
-    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.tk')
+    l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.org')
 
     envs = l.getEnvironments('support-service')
 
