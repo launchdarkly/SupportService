@@ -16,7 +16,6 @@ core = Blueprint('core', __name__)
 def index():
     """
     Controller for Public home page. 
-
     Includes a server side experiment for trial duration. The duration 
     can either be 14 days or 30 days. We show a different variation to 
     each user randomly. Then we track the registration rate as our 
@@ -92,6 +91,27 @@ def operational():
  
     return render_template(set_theme, title='Operational')
 
+@core.route('/dataexport')
+def dataexport():
+    theme = request.args.get("theme")
+    if theme:
+        updateTheme(theme)
+
+    user = current_user.get_ld_user()
+    session['ld_user'] = user
+
+    show_data_export = ldclient.get().variation(
+        'data-export', 
+        user, 
+        False)
+
+    if show_data_export: # experimentation group
+        set_theme = '{0}/dataexport.html'.format(current_user.set_path)
+    else: # control group
+        set_theme = '{0}/dataexport_beta.html'.format(current_user.set_path)
+
+    return render_template(set_theme, title='dataexport')
+    
 @core.route('/release')
 def release():
     theme = request.args.get("theme")
