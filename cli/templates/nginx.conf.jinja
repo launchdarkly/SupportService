@@ -32,10 +32,20 @@ http {
         listen 80;
         server_name {{ env.hostname }};
         location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name {{ env.hostname }};
+        location / {
             proxy_pass http://{{ env.hostname }}:{{ env.port }};
 			proxy_set_header Host $host;
 			proxy_set_header X-Real-IP $remote_addr;
-			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            ssl_certificate /etc/letsencrypt/live/ldsolutions.org/fullchain.pem;
+            ssl_certificate_key /etc/letsencrypt/live/ldsolutions.org/privkey.pem;
         }
     }
     {% endfor %}
@@ -44,8 +54,18 @@ http {
         listen 80;
         server_name *.ldsolutions.org;
         location / {
+            return 301 https://$host$request_uri;
+        }
+    }
+
+    server {
+        listen 443 ssl;
+        server_name *.ldsolutions.org;
+        location / {
             add_header Content-Type text/plain;
             return 200 "sorry, I could not find that site.";
+            ssl_certificate /etc/letsencrypt/live/ldsolutions.org/fullchain.pem;
+            ssl_certificate_key /etc/letsencrypt/live/ldsolutions.org/privkey.pem;
         }
     }
 }
