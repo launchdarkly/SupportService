@@ -16,7 +16,6 @@ core = Blueprint('core', __name__)
 def index():
     """
     Controller for Public home page. 
-
     Includes a server side experiment for trial duration. The duration 
     can either be 14 days or 30 days. We show a different variation to 
     each user randomly. Then we track the registration rate as our 
