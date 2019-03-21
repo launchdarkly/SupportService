@@ -92,6 +92,27 @@ def operational():
  
     return render_template(set_theme, title='Operational')
 
+@core.route('/dataexport')
+def dataexport():
+    theme = request.args.get("theme")
+    if theme:
+        updateTheme(theme)
+
+    user = current_user.get_ld_user()
+    session['ld_user'] = user
+
+    show_data_export = ldclient.get().variation(
+        'data-export', 
+        user, 
+        False)
+
+    if show_data_export: # experimentation group
+        set_theme = '{0}/dataexport.html'.format(current_user.set_path)
+    else: # control group
+        set_theme = '{0}/dataexport_beta.html'.format(current_user.set_path)
+
+    return render_template(set_theme, title='dataexport')
+    
 @core.route('/release')
 def release():
     theme = request.args.get("theme")

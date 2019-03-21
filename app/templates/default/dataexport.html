@@ -1,0 +1,32 @@
+<head>
+        <div id="dashboardContainer"></div>
+         <!-- QuickSight -->
+         <script src="https://unpkg.com/amazon-quicksight-embedding-sdk@1.0.3/dist/quicksight-embedding-js-sdk.min.js"></script>
+
+        <script type="text/javascript">
+            var dashboard
+            function onDashboardLoad(payload) {
+                console.log("Do something when the dashboard is fully loaded.");
+            }
+
+            function onError(payload) {
+                console.log("Do something when the dashboard fails loading");
+            }
+
+            function embedDashboard() {
+                var containerDiv = document.getElementById("dashboardContainer");
+                console.log(containerDiv)
+                var options = {
+                    url: "https://us-west-2.quicksight.aws.amazon.com/embed/2deccbfcb3c545e1ad9cd46bb599ff7c/dashboards/3d69e3e3-304c-480c-8388-c26bddfa7912?isauthcode=true&identityprovider=quicksight&code=AYABeLp5eGPijeTd5ZTyygroFRcAAAABAAdhd3Mta21zAEthcm46YXdzOmttczp1cy13ZXN0LTI6OTAwNjQ5NDI3MTk2OmtleS9iYzAzMTYzMy0xYzJiLTRlMzEtYWM5ZC0yODQ2NDkwZjEyM2YAuAECAQB40gT0H6ffs2IokH0UWaT8Za9YAN433tzCnQ3c3oKHzWUBNHEWHLZkiN1Za9xdAAccwwAAAH4wfAYJKoZIhvcNAQcGoG8wbQIBADBoBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDPESpiQvoZ2xc5rzdwIBEIA7pMXLzAX-El9LKgtxjOJtfw1BMXrAD8lJ2zw76dbL4SVSpKM-JlsmbNVugbk2t2jRorsvdPgD3dCEqAgCAAAAAAwAABAAAAAAAAAAAAAAAAAAepJRn9dzcVXpldpryYE45f____8AAAABAAAAAAAAAAAAAAABAAAAm0sxRCmGhQZwNkCiA5uaZY69ilBjOi1cjACtT8wpaO-8h1Z_AS-8mQTP-SfwaOOgSuneB8Jf7dizCgetY21zL6Lnb4xJcp0ex6edCcpNeQJyMRJ0PwBdqWBS0DT_LeImAkUtwPsVBgzNL2n6sK74yAesBQxdk-1ZBxXde0jUmmNMt7vCC95h4GVyeobLI9De9OG2gSa1j5SfT4YnPKwTGVyD2uHVB9JYySzv_w%3D%3D&undoRedoDisabled=true&resetDisabled=true",
+                    container: containerDiv,
+                    scrolling: "no",
+                    height: "700px",
+                    width: "1000px"
+                };
+                dashboard = QuickSightEmbedding.embedDashboard(options);
+                dashboard.on("error", onError);
+                dashboard.on("load", onDashboardLoad);
+            }
+
+            embedDashboard();
+        </script>
