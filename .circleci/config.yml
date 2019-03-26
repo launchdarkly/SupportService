@@ -59,8 +59,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v3-dependencies-{{ checksum "setup.py" }}
-            - v3-dependencies-
+            - v4-machine-dependencies-{{ checksum "setup.py" }}
+            - v4-machine-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -73,7 +73,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v3-dependencies-{{ checksum "setup.py" }}
+          key: v4-machine-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Install Docker Compose
           command: sudo pip install docker-compose
