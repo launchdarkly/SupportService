@@ -64,8 +64,9 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            sudo apt-get install -y python3
-            /usr/bin/python3 -m venv venv
+            pyenv install 3.6.3
+            pyenv global 3.6.3
+            python -m venv venv
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
