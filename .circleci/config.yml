@@ -63,13 +63,13 @@ jobs:
       - run:
           name: Build Image
           command: |
-            docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile.prod .
+            docker build -t levlaz/supportservice:$CIRCLE_SHA1 -f Dockerfile .
             docker tag levlaz/supportservice:$CIRCLE_SHA1 levlaz/supportservice:latest
       - run:
           name: Test Stack
           command: |
             export DATABASE_URL=postgresql://supportService:supportService@db/supportService
-            docker-compose -f docker-compose.test.yml up -d
+            docker-compose -f tests/docker-compose.test.yml up -d
       - run:
           name: Debug Docker
           command: docker ps -a
@@ -107,7 +107,7 @@ jobs:
           name: Deploy to Production
           command: |
             . venv/bin/activate
-            python cli.py deploy
+            make deploy
 
   simulate:
     docker:
@@ -117,12 +117,12 @@ jobs:
       - run:
           name: Install Simualtor
           command: |
-            cd webdriver
+            cd tests/webdriver
             mvn compile assembly:single
       - run:
           name: Run Simulation
           command: |
-            cd webdriver
+            cd tests/webdriver
             java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 workflows:
