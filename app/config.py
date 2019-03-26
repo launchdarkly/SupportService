@@ -18,6 +18,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
     CACHE_REDIS_HOST = os.environ.get('REDIS_HOST') or 'cache'
+    CACHE_CONFIG = {'CACHE_TYPE': 'simple'}
 
     # LaunchDarkly Config
     # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
@@ -103,6 +104,8 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     """Configuration used for production environments."""
+    CACHE_CONFIG = {'CACHE_TYPE': 'redis'}
+
 
 config = {
     'development': DevelopmentConfig,

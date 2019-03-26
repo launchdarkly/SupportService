@@ -18,7 +18,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 bootstrap =  Bootstrap()
 login = LoginManager()
-cache = Cache(config={'CACHE_TYPE': 'redis'})
+cache = Cache()
 
 # Operational Feature Flags
 CACHE_TIMEOUT = lambda : ldclient.get().variation('cache-timeout', getLdMachineUser(), 50)
@@ -45,7 +45,7 @@ def create_app(config_name = 'default'):
     app.logger.info("APP VERSION: " + app.config['VERSION'])
 
     bootstrap.init_app(app)
-    cache.init_app(app)
+    cache.init_app(app, config=app.config['CACHE_CONFIG'])
     login.init_app(app)
     login.login_view = 'core.login'
     from app.models import AnonymousUser
