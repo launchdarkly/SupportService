@@ -18,7 +18,7 @@ dev:
 run:
 	export FLASK_APP="app.factory:create_app()" && \
 	export FLASK_DEBUG=true && \
-	flask db upgrade && \
+	export FLASK_ENV=development && \
 	flask run --host=0.0.0.0
 
 test:

@@ -50,15 +50,10 @@ def create_app(config_name = 'default'):
     login.login_view = 'core.login'
     from app.models import AnonymousUser
     login.anonymous_user = AnonymousUser
+    migrate.init_app(app, db)
 
     from app.routes import core
     app.register_blueprint(core)
-
-    with app.app_context():
-        if db.engine.url.drivername == 'sqlite':
-            migrate.init_app(app, db, render_as_batch=True)
-        else:
-            migrate.init_app(app, db)
 
     @app.before_request
     def setLoggingLevel():

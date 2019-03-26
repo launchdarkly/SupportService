@@ -16,7 +16,7 @@ done
 
 # Send Latest Scripts to Production Server
 rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $PROD_SERVER:/var/www/app/scripts/
-rsync -e "ssh -o StrictHostKeyChecking=no" -avz etc/ $PROD_SERVER:/var/www/app/etc/
+scp -o StrictHostKeyChecking=no nginx.conf $PROD_SERVER:/var/www/app/etc/nginx.conf
 scp -o StrictHostKeyChecking=no docker-compose.prod.yml $PROD_SERVER:/var/www/app/docker-compose.yml
 
 # Clean up old images

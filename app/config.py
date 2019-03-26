@@ -54,9 +54,32 @@ class DevelopmentConfig(Config):
         with app.app_context():
             from app.factory import db
             from app.models import User
+            from app.models import Plan
 
             db.init_app(app)
+            db.create_all()
 
+            # check if plans exist
+            if len(Plan.query.all()) != 4:
+                p1 = Plan(id=1, name='fee', description='All the basic features of SupportService', cost=0)
+                db.session.add(p1)
+                p2 = Plan(id=2, name='bronze', description='Everything in free and email support.', cost=25)
+                db.session.add(p2)
+                p3 = Plan(id=3, name='silver', description='Everything in bronze and chat support.', cost=50)
+                db.session.add(p3)
+                p4 = Plan(id=4, name='gold', description='Everything in silver and 99.999% uptime SLA!', cost=50)
+                db.session.add(p4)
+                db.session.commit()
+
+            # check if user exists
+            if User.query.filter_by(email='test@tester.com') is None:
+                app.logger.info("Creating test user: test@tester.com password: test")
+                u = User(email='test@tester.com')
+                u.set_password('test')
+                db.session.add(u)
+                db.session.commit()
+            else:
+                app.logger.info("You can login with user: test@tester.com password: test")
 
 class TestingConfig(Config):
     """Configuration used for testing and CI."""
