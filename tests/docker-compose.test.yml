@@ -31,7 +31,7 @@ services:
   web.ldsolutions.org:
     image: nginx:alpine
     volumes:
-      - ./tests/nginx.test.conf:/etc/nginx/nginx.conf
+      - ./nginx.test.conf:/etc/nginx/nginx.conf
     ports:
       - "80:80"
     depends_on:
