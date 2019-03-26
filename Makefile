@@ -26,4 +26,4 @@ test:
 
 generate:
 	export FLASK_APP="app.factory:create_app('production')" && \
-	flask generate &&
+	flask generate
