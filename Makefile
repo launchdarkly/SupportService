@@ -7,7 +7,7 @@ help:
 	@echo "		dev		create or update a dev environment"
 	@echo "		run		run the flask application"
 	@echo "		test		run all tests with coverage"
-	@echo "		deploy		deploy application to LightSail"
+	@echo "		generate	generate production config files"
 
 dev:
 	if [ ! -d "venv" ]; then python3 -m venv venv; fi
@@ -24,7 +24,6 @@ run:
 test:
 	set -e && coverage run tests/main.py
 
-deploy:
+generate:
 	export FLASK_APP="app.factory:create_app('production')" && \
-	flask generate && \
-	./scripts/deploy.sh
+	flask generate &&

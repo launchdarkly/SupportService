@@ -71,6 +71,11 @@ jobs:
             export DATABASE_URL=postgresql://supportService:supportService@db/supportService
             docker-compose -f tests/docker-compose.test.yml up -d
       - run:
+          name: Test Production Stack
+          command: |
+            make generate
+            docker-compose -f docker-compose.prod.yml up -d
+      - run:
           name: Debug Docker
           command: docker ps -a
       - run:
@@ -107,7 +112,8 @@ jobs:
           name: Deploy to Production
           command: |
             . venv/bin/activate
-            make deploy
+            make generate
+            ./scripts/deploy.sh
 
   simulate:
     docker:
