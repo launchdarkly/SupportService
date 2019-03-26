@@ -45,6 +45,7 @@ class Config(object):
 class DevelopmentConfig(Config):
     """Configuration used for local development."""
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///supportservice.db"
 
     @staticmethod
     def init_app(app):

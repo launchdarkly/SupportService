@@ -4,24 +4,19 @@ help:
 	@echo "This project assumes an active Python virtualev is present."
 	@echo "The following Make targets are available:"
 	@echo "		help		display this help and exit"
-	@echo "		docs		create pydocs for all relevant modules"
-	@echo "		run		run the flask application
+	@echo "		dev		create or update a dev environment"
+	@echo "		run		run the flask application"
 	@echo "		test		run all tests with coverage"
-
-docs:
-	./scripts/make_docs
+	@echo "		deploy		deploy application to LightSail"
 
 dev:
-	./scripts/make_dev.sh
-
-deploy:
-	python cli.py deploy
-	
-deploy-relay:
-	python cli.py deploy-relay
+	if [ ! -d "venv" ]; then python3 -m venv venv; fi
+	bash -c "source venv/bin/activate"
+	pip install -r dev-requirements.txt
+	pip install -e .
 
 run:
-	export FLASK_APP=run.py && \
+	export FLASK_APP="app.factory:create_app()" && \
 	export FLASK_DEBUG=true && \
 	flask db upgrade && \
 	flask run --host=0.0.0.0
@@ -29,6 +24,7 @@ run:
 test:
 	set -e && coverage run tests/main.py
 
-update:
-	zip -g LdLambda.zip LdLambda.py && \
-	scripts/update_lambda.sh
+deploy:
+	export FLASK_APP="app.factory:create_app('production')" && \
+	flask generate && \
+	./scripts/deploy.sh
