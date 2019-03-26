@@ -90,10 +90,10 @@ jobs:
       - run:
           name: Test Production Stack
           command: |
-            mkdir -p etc/nginx
-            mv nginx.conf etc/nginx
             . venv/bin/activate
             make generate
+            mkdir -p etc/nginx
+            mv nginx.conf etc/nginx
             docker-compose -f docker-compose.prod.yml up -d
       - run:
           name: Debug Docker
