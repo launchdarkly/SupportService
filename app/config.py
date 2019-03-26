@@ -1,9 +1,34 @@
+import logging
 import os
 import subprocess
-import ldclient
-import logging
 import sys
+
+import ldclient
 from ldclient import Config as LdConfig
+
+
+log = logging.getLogger()
+
+
+def env_var(key, default=None, required=False):
+    """
+    Helper function to parse environment variables.
+    """
+    if required:
+        try:
+            var = os.environ[key]
+        except KeyError:
+            log.error("ERROR: Required Environment Variable {0} is not set.".format(key))
+    else:
+        var = os.environ.get(key, default)
+        if var is None:
+            log.error("ERROR: Required Environment Variable {0} is empty.".format(var))
+
+    try:
+        return var
+    except UnboundLocalError as ex:
+        log.error("ERROR: {0}".format(ex))
+
 
 class Config(object):
     """Base Config"""
@@ -20,20 +45,22 @@ class Config(object):
     CACHE_REDIS_HOST = os.environ.get('REDIS_HOST') or 'cache'
     CACHE_CONFIG = {'CACHE_TYPE': 'simple'}
 
+    # define and set required env vars
+    LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", required=True)
+    LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", required=True)
+
     # LaunchDarkly Config
     # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
     if "LD_RELAY_URL" in os.environ:
         config = LdConfig(
-            sdk_key = os.environ.get("LD_CLIENT_KEY"),
+            sdk_key = LD_CLIENT_KEY,
             base_uri = os.environ.get("LD_RELAY_URL"),
             events_uri = os.environ.get("LD_RELAY_URL"),
             stream_uri = os.environ.get("LD_RELAY_URL")
         )
         ldclient.set_config(config)
     else:
-        ldclient.set_sdk_key(os.environ.get("LD_CLIENT_KEY"))
-
-    LD_FRONTEND_KEY = os.environ.get("LD_FRONTEND_KEY")
+        ldclient.set_sdk_key(LD_CLIENT_KEY)
 
     root = logging.getLogger()
     root.setLevel(logging.INFO)
