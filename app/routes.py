@@ -15,12 +15,13 @@ core = Blueprint('core', __name__)
 @core.route('/')
 def index():
     """
-    Controller for Public home page. 
-    Includes a server side experiment for trial duration. The duration 
-    can either be 14 days or 30 days. We show a different variation to 
-    each user randomly. Then we track the registration rate as our 
+    Controller for Public home page.
+    Includes a server side experiment for trial duration. The duration
+    can either be 14 days or 30 days. We show a different variation to
+    each user randomly. Then we track the registration rate as our
     conversion event.
     """
+    current_app.logger.info(current_app.config)
     if current_user.is_authenticated:
         return redirect(url_for('core.dashboard'))
 
@@ -28,8 +29,8 @@ def index():
     session['ld_user'] = user
 
     longer_trial_duration = ldclient.get().variation(
-        'longer-trial-duration', 
-        user, 
+        'longer-trial-duration',
+        user,
         False)
 
     if longer_trial_duration: # experimentation group
@@ -47,9 +48,9 @@ def dashboard():
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
-            
+
     beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
-    
+
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
     return render_template(set_theme, title='Home', show_beta=beta_features)
@@ -72,13 +73,13 @@ def experiments():
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
-    
+
     set_theme = '{0}/exp.html'.format(current_user.set_path)
 
     random_user = current_user.get_random_ld_user()
 
     show_nps = ldclient.get().variation('show-nps-survery', random_user, False)
-  
+
     return render_template(set_theme, title='Experiments', show_nps=show_nps, random_user=random_user)
 
 @core.route('/operational')
@@ -86,9 +87,9 @@ def operational():
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
-    
+
     set_theme = '{0}/operation.html'.format(current_user.set_path)
- 
+
     return render_template(set_theme, title='Operational')
 
 @core.route('/dataexport')
@@ -101,8 +102,8 @@ def dataexport():
     session['ld_user'] = user
 
     show_data_export = ldclient.get().variation(
-        'data-export', 
-        user, 
+        'data-export',
+        user,
         False)
 
     if show_data_export: # experimentation group
@@ -111,13 +112,13 @@ def dataexport():
         set_theme = '{0}/dataexport_beta.html'.format(current_user.set_path)
 
     return render_template(set_theme, title='dataexport')
-    
+
 @core.route('/release')
 def release():
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
-    
+
     set_theme = '{0}/release.html'.format(current_user.set_path)
 
     return render_template(set_theme, title='Dark Theme')
@@ -125,7 +126,7 @@ def release():
 @core.route('/register', methods=['GET', 'POST'])
 def register():
     # track registration attempts
-    # ld_user will be in session if user got to the registration 
+    # ld_user will be in session if user got to the registration
     # page by clicking a link on the home page (where they saw the ab test)
     if session.get('ld_user'):
         current_app.logger.info("Sending track event for {0}".format(session.get('ld_user')))
@@ -150,12 +151,12 @@ def register():
         flash('Congratulations, you are now a registered user!')
 
         # track registration completion
-        # ld_user will be in session if user got to the registration 
+        # ld_user will be in session if user got to the registration
         # page by clicking a link on the home page (where they saw the ab test)
         if session.get('ld_user'):
             current_app.logger.info("Sending track event for {0}".format(session.get('ld_user')))
             ldclient.get().track('registered', session['ld_user'])
-            
+
         login_user(user)
         return redirect(url_for('core.dashboard'))
     return render_template('beta/auth/register.html', title='Support Request')

@@ -1,5 +1,8 @@
+-r requirements.txt
+
 coverage
 flake8
 pylint
 unittest-xml-reporting
 codecov
+python-dotenv

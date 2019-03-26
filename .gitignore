@@ -24,23 +24,19 @@ htmlcov/
 *,cover
 test-reports/
 
-# Misc 
+# Misc
 *.swp
 *.db
 venv/
 *.env
-secrets.sh
-lambda/
 *.zip
 .vscode/
-hosts.txt
 
 # Generated Files
-docker-compose.relay.yml
 docker-compose.prod.yml
-etc/nginx/nginx.conf
+nginx.conf
 
-# Java 
+# Java
 target/
 .settings/
 .classpath
