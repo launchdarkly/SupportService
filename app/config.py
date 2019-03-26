@@ -19,10 +19,10 @@ def env_var(key, default=None, required=False):
             var = os.environ[key]
         except KeyError:
             log.error("ERROR: Required Environment Variable {0} is not set.".format(key))
+        if len(os.environ[key]) == 0:
+            log.error("ERROR: Required Environment Variable {0} is empty".format(key))
     else:
         var = os.environ.get(key, default)
-        if var is None:
-            log.error("ERROR: Required Environment Variable {0} is empty.".format(var))
 
     try:
         return var
