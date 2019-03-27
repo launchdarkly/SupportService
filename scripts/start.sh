@@ -7,4 +7,4 @@ done
 
 >&2 echo "Postgres is up, starting SupportService"
 flask db upgrade
-gunicorn run:app -b 0.0.0.0:$1
+gunicorn "app.factory:create_app('production')":app -b 0.0.0.0:$1
