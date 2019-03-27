@@ -5,7 +5,7 @@ services:
     hostname: {{ env.hostname }}
     image: levlaz/supportservice:{{ circle_sha1 }}
     environment:
-      - FLASK_APP=run.py
+      - FLASK_APP="app.factory:create_app('production')"
       - DATABASE_URL=postgresql://supportService:supportService@db/supportService
       - FLASK_ENV=production
       - LD_CLIENT_KEY={{ env.api_key }}
