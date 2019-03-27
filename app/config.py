@@ -133,6 +133,16 @@ class ProductionConfig(Config):
     """Configuration used for production environments."""
     CACHE_CONFIG = {'CACHE_TYPE': 'redis'}
 
+    @staticmethod
+    def init_app(app):
+        Config.init_app(app)
+
+        with app.app_context():
+            from app.factory import db
+            from app.models import User
+            from app.models import Plan
+
+            db.init_app(app)
 
 config = {
     'development': DevelopmentConfig,
