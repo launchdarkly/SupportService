@@ -11,38 +11,23 @@ more information on specific feature flags and use cases.
 
 ### Requirements
 
-* [Docker](https://www.docker.com/)
-* [docker-compose](https://docs.docker.com/compose/)
+* Python 3
+* pip
 
 ### Instructions
 
 * Clone the repo locally `git clone https://github.com/launchdarkly/SupportService.git`
 * Copy `.env.example` to `.env` and fill in the correct values:
 
-        export DATABASE_URL=postgresql://supportService:supportService@db/supportService
         export LD_CLIENT_KEY=$YOUR_SDK_KEY
         export LD_FRONTEND_KEY=$YOUR_FRONTEND_ID
 
-* Source the environment variables `source .env`
-* Start up the stack with `docker-compose up`
+* Run `make dev` to create a virtualenv and install all dependencies.
+* Run `make start` to start the application
 
-The app should now be running on localhost:5000
+The app should now be running on [localhost:5000](http://localhost:5000). You
+should be able to log in with the username `test@tester.com` and password `test`.
 
-## Using the CLI
-
-There is a `cli.py` that exposes some deployment functionality. This allows you
-to run the same deployment locally that CircleCI is running for this project.
-
-In order to use it in a standalone way you need to add some additional environment
-varibales to your `.env` file:
-
-    export LD_API_KEY=
-    export AWS_ACCESS_KEY_ID=
-    export AWS_SECRET_ACCESS_KEY=
-    export AWS_DEFAULT_REGION=
-    export AWS_HOSTED_ZONE_ID=
-
-You can run `python cli.py` to see the help for the cli.
 
 ## Running in Production
 
@@ -74,6 +59,6 @@ the `.circle/config.yml` file under the `simulate` job.
 
 ### Running it Locally
 
-1. Go to the webdriver directory: `cd webdriver`
+1. Go to the webdriver directory: `cd tests/webdriver`
 2. Compile the maven project: `mvn compile assembly:single`
 3. Start the simulator with: `java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar`
