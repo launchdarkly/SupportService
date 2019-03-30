@@ -132,6 +132,8 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     """Configuration used for production environments."""
     CACHE_CONFIG = {'CACHE_TYPE': 'redis'}
+    AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID ')
+    AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID')
 
     @staticmethod
     def init_app(app):
@@ -141,13 +143,12 @@ class ProductionConfig(Config):
             from app.factory import db
             from app.models import User
             from app.models import Plan
-
+            fw
             db.init_app(app)
 
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
-
     'default': DevelopmentConfig
 }

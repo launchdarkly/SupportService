@@ -23,7 +23,7 @@ more information on specific feature flags and use cases.
         export LD_FRONTEND_KEY=$YOUR_FRONTEND_ID
 
 * Run `make dev` to create a virtualenv and install all dependencies.
-* Run `make start` to start the application
+* Run `make run` to start the application
 
 The app should now be running on [localhost:5000](http://localhost:5000). You
 should be able to log in with the username `test@tester.com` and password `test`.

@@ -20,6 +20,7 @@ setup(
         'faker',
         'click',
         'click-log',
-        'launchdarkly-api'
+        'launchdarkly-api',
+        'boto3'
     ]
 )

@@ -23,7 +23,7 @@
                             function embedDashboard() {
                                 var containerDiv = document.getElementById("dashboardContainer");
                                 var options = {
-                                    url: "https://us-west-2.quicksight.aws.amazon.com/embed/edc664f07a2444e2b8c3d56120687b5b/dashboards/3d69e3e3-304c-480c-8388-c26bddfa7912?resetDisabled=true&undoRedoDisabled=true",
+                                    url: "{{ embedUrl }}",
                                     container: containerDiv,
                                     scrolling: "no",
                                     height: "500px",
@@ -40,5 +40,5 @@
             </div>
         </div>
         <!-- /#page-wrapper -->
-    </div>   
+    </div>
 {% endblock %}
