@@ -106,7 +106,7 @@ def dataexport():
     show_data_export = ldclient.get().variation(
         'data-export',
         user,
-        True)
+        False)
 
     if show_data_export: # experimentation group
         set_theme = '{0}/dataexport.html'.format(current_user.set_path)
