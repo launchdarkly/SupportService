@@ -11,6 +11,8 @@ services:
       - LD_CLIENT_KEY={{ env.api_key }}
       - LD_FRONTEND_KEY={{ env.client_id }}
       - REDIS_HOST=cache
+      - AWS_QUICKSIGHT_ACCESS_KEY_ID={{ AWS_QUICKSIGHT_ACCESS_KEY_ID }}
+      - AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID={{ AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID }}
     ports:
       - "{{ env.port }}:{{ env.port }}"
     command: ["./scripts/start.sh", "{{ env.port }}"]

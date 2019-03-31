@@ -1,5 +1,6 @@
 import json
 import logging
+import boto3
 
 import ldclient
 from flask import (Blueprint, current_app, flash, redirect, render_template,
@@ -9,6 +10,7 @@ from werkzeug.urls import url_parse
 
 from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
 from app.models import User, Plan
+
 
 core = Blueprint('core', __name__)
 
@@ -100,7 +102,7 @@ def dataexport():
 
     user = current_user.get_ld_user()
     session['ld_user'] = user
-
+    embedUrl = fetch_aws_embed_url() # this returns the new embedUrl
     show_data_export = ldclient.get().variation(
         'data-export',
         user,
@@ -111,7 +113,7 @@ def dataexport():
     else: # control group
         set_theme = '{0}/dataexport_beta.html'.format(current_user.set_path)
 
-    return render_template(set_theme, title='dataexport')
+    return render_template(set_theme, title='dataexport', embedUrl=embedUrl)
 
 @core.route('/release')
 def release():
@@ -120,7 +122,6 @@ def release():
         updateTheme(theme)
 
     set_theme = '{0}/release.html'.format(current_user.set_path)
-
     return render_template(set_theme, title='Dark Theme')
 
 @core.route('/register', methods=['GET', 'POST'])
@@ -212,7 +213,6 @@ def people():
 @login_required
 def settings():
     plans = Plan.query.all()
-
     return render_template(
         'default/settings.html',
         plans=plans
@@ -225,3 +225,19 @@ def upgrade():
     db.session.commit()
 
     return redirect(request.referrer)
+
+def fetch_aws_embed_url():
+    """
+    This function is used to generate a new embedded url key each time the data export page is requested
+    """
+    client = boto3.client('quicksight', region_name='us-west-2', aws_quicksight_access_key_id= AWS_QUICKSIGHT_ACCESS_KEY_ID, aws_quicksight_secret_access_key_id = AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID)
+    response = client.get_dashboard_embed_url(
+        AwsAccountId='955116512041',
+        DashboardId='3d69e3e3-304c-480c-8388-c26bddfa7912',
+        IdentityType='IAM',
+        SessionLifetimeInMinutes=100,
+        UndoRedoDisabled=True,
+        ResetDisabled=True
+    )
+    embedUrl = response.get('EmbedUrl')
+    return embedUrl

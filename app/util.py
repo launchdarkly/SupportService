@@ -12,7 +12,6 @@ def getLdMachineUser(request=None):
         request_ip = request.remote_addr
     else:
         request_ip = None
-
     user = {
         "key": socket.gethostname(),
         "ip": request_ip,
@@ -20,7 +19,5 @@ def getLdMachineUser(request=None):
             "type": "machine"
         }
     }
-
     logging.debug(user)
-
     return user

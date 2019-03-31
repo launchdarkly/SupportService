@@ -22,7 +22,9 @@ class ConfigGenerator():
         with open('docker-compose.prod.yml', 'w+') as docker_compose_file:
             t = template.render(
                 envs = environments,
-                circle_sha1 = os.environ.get('CIRCLE_SHA1') or 'latest'
+                circle_sha1 = os.environ.get('CIRCLE_SHA1') or 'latest',
+                AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID'), # from circle
+                AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID') # from circle
             )
             docker_compose_file.write(t)
 
