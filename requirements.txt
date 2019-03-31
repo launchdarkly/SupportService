@@ -11,7 +11,7 @@ flask-fixtures==0.3.8
 # Libraries
 faker==1.0.4
 
-# aws
+# Aws
 boto3==1.9.125
 
 # Database

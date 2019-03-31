@@ -143,7 +143,7 @@ class ProductionConfig(Config):
             from app.factory import db
             from app.models import User
             from app.models import Plan
-            fw
+
             db.init_app(app)
 
 config = {

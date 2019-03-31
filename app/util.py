@@ -3,7 +3,6 @@ Utility Functions
 """
 import socket
 import logging
-import time
 
 def getLdMachineUser(request=None):
     """
