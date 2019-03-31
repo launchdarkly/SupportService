@@ -64,7 +64,6 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            sudo apt install -y gcc python3-pip python3-dev 
             pyenv install 3.6.3
             pyenv global 3.6.3
             python -m venv venv
@@ -77,7 +76,7 @@ jobs:
           key: v4-machine-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Install Docker Compose
-          command: sudo pip3 install docker-compose
+          command: sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
       - run:
           name: Build Image
           command: |
