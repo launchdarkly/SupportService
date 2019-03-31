@@ -64,7 +64,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            sudo apt install -y gcc
+            sudo apt install -y gcc python3-dev python-dev
             pyenv install 3.6.3
             pyenv global 3.6.3
             python -m venv venv
