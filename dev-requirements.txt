@@ -6,4 +6,3 @@ pylint
 unittest-xml-reporting
 codecov
 python-dotenv
-boto3
