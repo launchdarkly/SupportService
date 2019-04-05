@@ -230,7 +230,7 @@ def fetch_aws_embed_url():
     """
     This function is used to generate a new embedded url key each time the data export page is requested
     """
-    client = boto3.client('quicksight', region_name='us-west-2', aws_quicksight_access_key_id= AWS_QUICKSIGHT_ACCESS_KEY_ID, aws_quicksight_secret_access_key_id = AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID)
+    client = boto3.client('quicksight', region_name='us-west-2', aws_quicksight_access_key_id= current_app.config['AWS_QUICKSIGHT_ACCESS_KEY_ID'], aws_quicksight_secret_access_key_id = current_app.config['AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID'])
     response = client.get_dashboard_embed_url(
         AwsAccountId='955116512041',
         DashboardId='3d69e3e3-304c-480c-8388-c26bddfa7912',
