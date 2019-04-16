@@ -23,7 +23,7 @@
                             function embedDashboard() {
                                 var containerDiv = document.getElementById("dashboardContainer");
                                 var options = {
-                                    url: "{{ embedUrl }}",
+                                    url: "{{ embedUrl | safe }}",
                                     container: containerDiv,
                                     scrolling: "no",
                                     height: "500px",
