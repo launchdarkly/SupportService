@@ -1,12 +1,17 @@
 /**
  * This module embeds an AWS QuickSight dashboard.
  *
- * It depends on the quicksight-embedding-js-sdk being
- * loaded in the window.
+ * global QuickSightEmbedding
  */
 (function() {
     'use strict';
 
+    /**
+     * Embed QuickSight dashboard at a specific location.
+     *
+     * @param {HTMLElement} embedLocation
+     * @param {string} embedUrl
+     */
     function embedDashboard(embedLocation, embedUrl) {
         var options = {
             url: embedUrl,
@@ -18,6 +23,7 @@
         QuickSightEmbedding.embedDashboard(options);
     }
 
+    // Embed Dashboard after the window loads.
     window.addEventListener('load', function() {
         var embedLocation = document.getElementById("dashboardContainer");
         var embedUrl = embedLocation.dataset.url;

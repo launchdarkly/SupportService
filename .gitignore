@@ -41,3 +41,6 @@ target/
 .settings/
 .classpath
 .project
+
+# JavaScript
+node_modules

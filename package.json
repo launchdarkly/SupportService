@@ -1,0 +1,15 @@
+{
+  "private": true,
+  "scripts": {
+    "vendor": "browserify app/static/shared/js/vendor.js | uglifyjs -c > app/static/shared/js/bundle.min.js"
+  },
+  "dependencies": {
+    "amazon-quicksight-embedding-sdk": "^1.0.3",
+    "jquery": "^3.4.0",
+    "startbootstrap-sb-admin-2": "^4.0.3"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "uglify": "^0.1.5"
+  }
+}
