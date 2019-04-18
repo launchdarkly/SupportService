@@ -240,7 +240,7 @@ def fetch_aws_embed_url():
 
     response = client.get_dashboard_embed_url(
         AwsAccountId='955116512041',
-        DashboardId='3d69e3e3-304c-480c-8388-c26bddfa7912',
+        DashboardId='f9877a58-e7e6-4d44-9fdc-17067b232a98',
         IdentityType='IAM',
         SessionLifetimeInMinutes=100,
         UndoRedoDisabled=True,
