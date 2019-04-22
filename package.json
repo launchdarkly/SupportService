@@ -6,10 +6,11 @@
   "dependencies": {
     "amazon-quicksight-embedding-sdk": "^1.0.3",
     "jquery": "^3.4.0",
-    "startbootstrap-sb-admin-2": "^4.0.3"
+    "startbootstrap-sb-admin-2": "^4.0.3",
+    "lodash": ">=4.17.11"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
-    "uglify": "^0.1.5"
+    "uglify-js": ">=2.6.0"
   }
 }
