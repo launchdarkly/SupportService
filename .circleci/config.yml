@@ -49,8 +49,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v5-machine-dependencies-{{ checksum "setup.py" }}
-            - v5-machine-dependencies-
+            - v6-machine-dependencies-{{ checksum "setup.py" }}
+            - v6-machine-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -61,7 +61,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v5-machine-dependencies-{{ checksum "setup.py" }}
+          key: v6-machine-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Install Docker Compose
           command: sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
