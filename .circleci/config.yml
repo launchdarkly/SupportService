@@ -8,15 +8,12 @@ jobs:
           POSTGRES_USER: supportService
           POSTGRES_DB: supportService
           POSTGRES_PASSWORD: supportService
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
             - v3-dependencies-{{ checksum "setup.py" }}
             - v3-dependencies-
-
       - run:
           name: install dependencies
           command: |
@@ -24,18 +21,15 @@ jobs:
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
-
       - save_cache:
           paths:
             - ./venv
           key: v3-dependencies-{{ checksum "setup.py" }}
-
       - run:
           name: run tests
           command: |
             . venv/bin/activate
             make test
-
       - run:
           name: generate coverage report
           when: always
@@ -43,16 +37,12 @@ jobs:
             . venv/bin/activate
             coverage html
             codecov
-
       - store_test_results:
           path: test-reports
-
       - store_artifacts:
           path: htmlcov
-
       - store_artifacts:
           path: test-reports
-
   build_docker:
     machine: true
     steps:
@@ -61,15 +51,15 @@ jobs:
           keys:
             - v4-machine-dependencies-{{ checksum "setup.py" }}
             - v4-machine-dependencies-
-      - run:
-          name: install dependencies
-          command: |
-            pyenv install 3.6.3
-            pyenv global 3.6.3
-            python -m venv venv
-            . venv/bin/activate
-            pip install -r dev-requirements.txt
-            pip install -e .
+      # - run:
+      #     name: install dependencies
+      #     command: |
+      #       pyenv install 3.6.3
+      #       pyenv global 3.6.3
+      #       python -m venv venv
+      #       . venv/bin/activate
+      #       pip install -r dev-requirements.txt
+      #       pip install -e .
       - save_cache:
           paths:
             - ./venv
