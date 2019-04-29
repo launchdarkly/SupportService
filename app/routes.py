@@ -1,6 +1,7 @@
 import json
 import logging
 import boto3
+import botocore
 
 import ldclient
 from flask import (Blueprint, current_app, flash, redirect, render_template,
@@ -96,24 +97,33 @@ def operational():
 
 @core.route('/dataexport')
 def dataexport():
+    embed_url = None
     theme = request.args.get("theme")
     if theme:
         updateTheme(theme)
 
     user = current_user.get_ld_user()
     session['ld_user'] = user
-    embedUrl = fetch_aws_embed_url() # this returns the new embedUrl
+
+    # if AWS creds are not set, don't show the dashboard
+    try:
+        embed_url = fetch_aws_embed_url()
+    except botocore.exceptions.NoCredentialsError as e:
+        current_app.logger.debug(e)
+        
     show_data_export = ldclient.get().variation(
         'data-export',
         user,
         False)
 
-    if show_data_export: # experimentation group
-        set_theme = '{0}/dataexport.html'.format(current_user.set_path)
-    else: # control group
-        set_theme = '{0}/dataexport_beta.html'.format(current_user.set_path)
+    set_theme = '{0}/dataexport.html'.format(current_user.set_path)
 
-    return render_template(set_theme, title='dataexport', embedUrl=embedUrl)
+    return render_template(
+        set_theme, 
+        title='dataexport', 
+        embed_url=embed_url,
+        show_data_export=show_data_export
+    )
 
 @core.route('/release')
 def release():
