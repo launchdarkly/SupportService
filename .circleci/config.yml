@@ -49,19 +49,16 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v6-machine-dependencies-{{ checksum "setup.py" }}
-            - v6-machine-dependencies-
+            - v7-machine-dependencies-{{ checksum "setup.py" }}
+            - v7-machine-dependencies-
       - run:
           name: install dependencies
           command: |
-            virtualenv venv
-            . venv/bin/activate
-            pip install -r dev-requirements.txt
             pip install -e .
       - save_cache:
           paths:
-            - ./venv
-          key: v6-machine-dependencies-{{ checksum "setup.py" }}
+            - ./opt/circleci/.pyenv
+          key: v7-machine-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Install Docker Compose
           command: sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -79,7 +76,6 @@ jobs:
       - run:
           name: Test Production Stack
           command: |
-            . venv/bin/activate
             make generate
             mkdir -p etc/nginx
             mv nginx.conf etc/nginx
