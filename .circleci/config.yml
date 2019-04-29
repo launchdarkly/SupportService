@@ -49,16 +49,16 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v7-machine-dependencies-{{ checksum "setup.py" }}
-            - v7-machine-dependencies-
+            - v8-machine-dependencies-{{ checksum "setup.py" }}
+            - v8-machine-dependencies-
       - run:
           name: install dependencies
           command: |
             pip install -e .
       - save_cache:
           paths:
-            - ./opt/circleci/.pyenv
-          key: v7-machine-dependencies-{{ checksum "setup.py" }}
+            - /opt/circleci/.pyenv
+          key: v8-machine-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Install Docker Compose
           command: sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
