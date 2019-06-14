@@ -13,6 +13,8 @@ services:
       - REDIS_HOST=cache
       - AWS_QUICKSIGHT_ACCESS_KEY_ID={{ AWS_QUICKSIGHT_ACCESS_KEY_ID }}
       - AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID={{ AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID }}
+      - AWS_ACCOUNT_ID={{ AWS_ACCOUNT_ID }}
+      - AWS_QUICKSIGHT_DASHBOARD_ID={{ AWS_QUICKSIGHT_DASHBOARD_ID }}
     ports:
       - "{{ env.port }}:{{ env.port }}"
     command: ["./scripts/start.sh", "{{ env.port }}"]
