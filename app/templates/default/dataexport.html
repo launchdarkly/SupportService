@@ -5,38 +5,25 @@
         <div id="page-wrapper">
             <div class="row">
                     <h1 class="page-header">Data Export Demo</h1>
+
+                        {% if show_data_export and embed_url %}
                         <!--prevent img and support service version from flickering on page load -->
                         <div id="qs-container" style="block-size: 485px;padding-left:65px">
-                            <div id="dashboardContainer"></div>
+                            <div id="dashboardContainer" data-url="{{ embed_url | safe }}"></div>
                         </div>
+
+
                         <!-- QuickSight -->
-                        <script src="https://unpkg.com/amazon-quicksight-embedding-sdk@1.0.3/dist/quicksight-embedding-js-sdk.min.js">
-                        </script>
-                        <script>
-                            var dashboard
-                            function onDashboardLoad() {
-                                console.log("dashboard loaded")
-                            }
-                            function onError() {
-                                console.log("something is wrong.");
-                            }
-                            function embedDashboard() {
-                                var containerDiv = document.getElementById("dashboardContainer");
-                                var options = {
-                                    url: "{{ embedUrl | safe }}",
-                                    container: containerDiv,
-                                    scrolling: "no",
-                                    height: "500px",
-                                    width: "850px"
-                                };
-                                dashboard = QuickSightEmbedding.embedDashboard(options);
-                                dashboard.on("load", onDashboardLoad);
-                                dashboard.on("error", onError);
-                            }
-                            embedDashboard();
-                        </script>
-                    <img src="../../static/shared/images/data_export_img.png" alt="Data Export Diagram" style="width:950px;height:230px;bottom:-192px">
-                <!-- /.col-lg-12 -->
+                        <script src="{{ url_for('static', filename='shared/js/bundle.min.js') }}"></script>
+                        <script src="{{ url_for('static', filename='shared/js/QuickSight.js') }}"></script>
+
+                        <img src="{{ url_for('static', filename='shared/images/data_export_img.png') }}" alt="Data Export Diagram" style="width:950px;height:230px;bottom:-192px">
+                        <!-- /.col-lg-12 -->
+                        {% else %}
+                        <p>
+                            The data export demo is coming soon!
+                        </p>
+                        {% endif %}
             </div>
         </div>
         <!-- /#page-wrapper -->

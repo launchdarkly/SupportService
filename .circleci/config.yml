@@ -8,15 +8,12 @@ jobs:
           POSTGRES_USER: supportService
           POSTGRES_DB: supportService
           POSTGRES_PASSWORD: supportService
-
     steps:
       - checkout
-
       - restore_cache:
           keys:
-            - v3-dependencies-{{ checksum "setup.py" }}
-            - v3-dependencies-
-
+            - v4-dependencies-{{ checksum "setup.py" }}
+            - v4-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -24,18 +21,15 @@ jobs:
             . venv/bin/activate
             pip install -r dev-requirements.txt
             pip install -e .
-
       - save_cache:
           paths:
             - ./venv
-          key: v3-dependencies-{{ checksum "setup.py" }}
-
+          key: v4-dependencies-{{ checksum "setup.py" }}
       - run:
           name: run tests
           command: |
             . venv/bin/activate
             make test
-
       - run:
           name: generate coverage report
           when: always
@@ -43,37 +37,28 @@ jobs:
             . venv/bin/activate
             coverage html
             codecov
-
       - store_test_results:
           path: test-reports
-
       - store_artifacts:
           path: htmlcov
-
       - store_artifacts:
           path: test-reports
-
   build_docker:
     machine: true
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v4-machine-dependencies-{{ checksum "setup.py" }}
-            - v4-machine-dependencies-
+            - v9-machine-dependencies-{{ checksum "setup.py" }}
+            - v9-machine-dependencies-
       - run:
           name: install dependencies
           command: |
-            pyenv install 3.6.3
-            pyenv global 3.6.3
-            python -m venv venv
-            . venv/bin/activate
-            pip install -r dev-requirements.txt
             pip install -e .
       - save_cache:
           paths:
-            - ./venv
-          key: v4-machine-dependencies-{{ checksum "setup.py" }}
+            - /opt/circleci/.pyenv
+          key: v9-machine-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Install Docker Compose
           command: sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -91,7 +76,6 @@ jobs:
       - run:
           name: Test Production Stack
           command: |
-            . venv/bin/activate
             make generate
             mkdir -p etc/nginx
             mv nginx.conf etc/nginx
@@ -115,8 +99,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v3-dependencies-{{ checksum "setup.py" }}
-            - v3-dependencies-
+            - v4-dependencies-{{ checksum "setup.py" }}
+            - v4-dependencies-
       - run:
           name: install dependencies
           command: |
@@ -128,14 +112,13 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v3-dependencies-{{ checksum "setup.py" }}
+          key: v4-dependencies-{{ checksum "setup.py" }}
       - run:
           name: Deploy to Production
           command: |
             . venv/bin/activate
             make generate
             ./scripts/deploy.sh
-
   simulate:
     docker:
       - image: circleci/openjdk:8-node-browsers
@@ -151,7 +134,6 @@ jobs:
           command: |
             cd tests/webdriver
             java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
-
 workflows:
   version: 2
   build_test_deploy:
@@ -166,7 +148,6 @@ workflows:
           filters:
             branches:
               only: master
-
   # Run simulator every hour
   simulator:
     triggers:

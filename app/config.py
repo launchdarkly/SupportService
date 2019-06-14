@@ -45,6 +45,9 @@ class Config(object):
     CACHE_REDIS_HOST = os.environ.get('REDIS_HOST') or 'cache'
     CACHE_CONFIG = {'CACHE_TYPE': 'simple'}
 
+    AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID')
+    AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID')
+
     # define and set required env vars
     LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", required=True)
     LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", required=True)
@@ -132,8 +135,6 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     """Configuration used for production environments."""
     CACHE_CONFIG = {'CACHE_TYPE': 'redis'}
-    AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID')
-    AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID')
 
     @staticmethod
     def init_app(app):
