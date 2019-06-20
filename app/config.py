@@ -92,7 +92,7 @@ class DevelopmentConfig(Config):
 
             # check if plans exist
             if len(Plan.query.all()) != 4:
-                p1 = Plan(id=1, name='fee', description='All the basic features of SupportService', cost=0)
+                p1 = Plan(id=1, name='free', description='All the basic features of SupportService', cost=0)
                 db.session.add(p1)
                 p2 = Plan(id=2, name='bronze', description='Everything in free and email support.', cost=25)
                 db.session.add(p2)
