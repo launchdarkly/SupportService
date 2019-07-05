@@ -148,14 +148,3 @@ workflows:
           filters:
             branches:
               only: master
-  # Run simulator every hour
-  simulator:
-    triggers:
-      - schedule:
-          cron: "0 * * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - simulate
