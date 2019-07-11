@@ -136,10 +136,28 @@ class TestingConfig(Config):
             ldclient.set_config(__config(offline=True))
 
 
+class StagingConfig(Config):
+    """Configuration used for production environments."""
+    CACHE_CONFIG = {'CACHE_TYPE': 'redis'}
+    APP_DOMAIN = "staging.ldsolutions.org"
+
+    @staticmethod
+    def init_app(app):
+        Config.init_app(app)
+
+        with app.app_context():
+            from app.factory import db
+            from app.models import User
+            from app.models import Plan
+
+            db.init_app(app)
+
+
 class ProductionConfig(Config):
     """Configuration used for production environments."""
     CACHE_CONFIG = {'CACHE_TYPE': 'redis'}
-
+    APP_DOMAIN = "ldsolutions.org"
+    
     @staticmethod
     def init_app(app):
         Config.init_app(app)
@@ -155,5 +173,6 @@ config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
+    'staging': StagingConfig,
     'default': DevelopmentConfig
 }
