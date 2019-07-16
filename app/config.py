@@ -103,7 +103,7 @@ class DevelopmentConfig(Config):
                 db.session.commit()
 
             # check if user exists
-            if User.query.filter_by(email='test@tester.com') is None:
+            if User.query.filter_by(email='test@tester.com').first() is None:
                 app.logger.info("Creating test user: test@tester.com password: test")
                 u = User(email='test@tester.com')
                 u.set_password('test')
