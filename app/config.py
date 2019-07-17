@@ -58,8 +58,8 @@ class Config(object):
         config = LdConfig(
             sdk_key = LD_CLIENT_KEY,
             base_uri = os.environ.get("LD_RELAY_URL"),
-            events_uri = os.environ.get("LD_RELAY_URL"),
-            stream_uri = os.environ.get("LD_RELAY_URL")
+            events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
+            stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
         )
         ldclient.set_config(config)
     else:
@@ -71,7 +71,6 @@ class Config(object):
     @staticmethod
     def init_app(app):
         pass
-
 
 class DevelopmentConfig(Config):
     """Configuration used for local development."""
