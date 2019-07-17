@@ -53,9 +53,7 @@ def dashboard():
         updateTheme(theme)
 
     beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
-
     set_theme = '{0}/index.html'.format(current_user.set_path)
-
     return render_template(set_theme, title='Home', show_beta=beta_features)
 
 def updateTheme(theme):
@@ -80,10 +78,10 @@ def experiments():
     set_theme = '{0}/exp.html'.format(current_user.set_path)
 
     random_user = current_user.get_random_ld_user()
-
     show_nps = ldclient.get().variation('show-nps-survery', random_user, False)
+    bootstrap_client = ldclient.get().all_flags_state(random_user, client_side_only=True)
 
-    return render_template(set_theme, title='Experiments', show_nps=show_nps, random_user=random_user)
+    return render_template(set_theme, title='Experiments', show_nps=show_nps, random_user=random_user, ldBootstrap=bootstrap_client.to_json_string())
 
 @core.route('/operational')
 def operational():

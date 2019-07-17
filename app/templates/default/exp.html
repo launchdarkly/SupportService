@@ -570,7 +570,21 @@
 
     // JQuery to populate NPS buttons
     $(document).ready(function() {
-                
+        // Use bootstrapping method to provide immediate values to javascript client
+        var ldclient = LDClient.initialize("{{ config['LD_FRONTEND_KEY'] }}", {{ current_user.get_ld_user() | safe }}, options = {bootstrap: {{ ldBootstrap | safe }} } );
+        ldclient.identify({{ random_user | safe }}, null, function() {
+            console.log("Testing");
+        });
+
+        ldclient.on('ready', function() {
+
+            var showNps = ldclient.variation("show-nps-survery", false);
+
+            if (showNps){
+                $('#launchNps').modal('show');
+            }
+        })
+
         for(i=1;i<=10;i++){
             $("#nps_container").append(generateNpsButton(i));
         }
