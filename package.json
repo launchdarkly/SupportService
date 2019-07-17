@@ -7,7 +7,7 @@
     "amazon-quicksight-embedding-sdk": "^1.0.3",
     "jquery": "^3.4.0",
     "startbootstrap-sb-admin-2": "^4.0.3",
-    "lodash": ">=4.17.11"
+    "lodash": "~4.17.13"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
