@@ -28,6 +28,23 @@ more information on specific feature flags and use cases.
 The app should now be running on [localhost:5000](http://localhost:5000). You
 should be able to log in with the username `test@tester.com` and password `test`.
 
+## Contributing
+
+### Git Commits 
+Each commit should be a coherent whole that implements one idea completely and correctly. No commit should ever break the code, even if another commit "fixes it" later.
+
+Good commit messages make this project easier to maintain, and unlock the power of tools like `git revert`, `log`, and `blame`.
+
+A good commit message:
+
+* Has a subject line that summarizes the change.
+* Uses the imperative mood in the subject line. It should fit the form "If applied, this commit will ".
+* Provides context on what and why (instead of how) in the body.
+* Uses the form <Area>: <Title> in the subject line. The title should be capitalized, but not end with a period.
+* Limits the subject line to 50 characters.
+* Wraps the body at 72 characters.
+        
+See [https://chris.beams.io/posts/git-commit/](https://chris.beams.io/posts/git-commit/) for more information.
 
 ## Running in Production
 
