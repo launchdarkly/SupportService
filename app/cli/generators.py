@@ -24,7 +24,9 @@ class ConfigGenerator():
                 envs = environments,
                 circle_sha1 = os.environ.get('CIRCLE_SHA1') or 'latest',
                 AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID'), # from circle
-                AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID') # from circle
+                AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID'), # from circle
+                AWS_ACCOUNT_ID = os.environ.get('AWS_ACCOUNT_ID'), # from circle
+                AWS_QUICKSIGHT_DASHBOARD_ID = os.environ.get('AWS_QUICKSIGHT_DASHBOARD_ID') # from circle
             )
             docker_compose_file.write(t)
 

@@ -47,6 +47,10 @@ class Config(object):
 
     AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID')
     AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID')
+    AWS_ACCOUNT_ID = os.environ.get('AWS_ACCOUNT_ID')
+    AWS_QUICKSIGHT_DASHBOARD_ID = os.environ.get('AWS_QUICKSIGHT_DASHBOARD_ID')
+    AWS_QUICKSIGHT_SESSION_LIFE = 100
+    AWS_QUICKSIGHT_REGION = "us-west-2"
 
     # define and set required env vars
     LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", required=True)

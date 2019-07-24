@@ -97,8 +97,10 @@ def operational():
 
 @core.route('/dataexport')
 def dataexport():
+
     embed_url = None
     theme = request.args.get("theme")
+
     if theme:
         updateTheme(theme)
 
@@ -107,8 +109,11 @@ def dataexport():
 
     # if AWS creds are not set, don't show the dashboard
     try:
+
         embed_url = fetch_aws_embed_url()
+
     except botocore.exceptions.NoCredentialsError as e:
+
         current_app.logger.debug(e)
         
     show_data_export = ldclient.get().variation(
@@ -118,7 +123,7 @@ def dataexport():
 
     set_theme = '{0}/dataexport.html'.format(current_user.set_path)
 
-    return render_template(
+    return render_template (
         set_theme, 
         title='dataexport', 
         embed_url=embed_url,
@@ -243,18 +248,18 @@ def fetch_aws_embed_url():
     """
     client = boto3.client(
         'quicksight', 
-        region_name = 'us-west-2', 
+        region_name = current_app.config['AWS_QUICKSIGHT_REGION'], 
         aws_access_key_id = current_app.config['AWS_QUICKSIGHT_ACCESS_KEY_ID'],
         aws_secret_access_key = current_app.config['AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID']
     )
 
     response = client.get_dashboard_embed_url(
-        AwsAccountId='955116512041',
-        DashboardId='3d69e3e3-304c-480c-8388-c26bddfa7912',
+        AwsAccountId = current_app.config['AWS_ACCOUNT_ID'],
+        DashboardId = current_app.config['AWS_QUICKSIGHT_DASHBOARD_ID'],
         IdentityType='IAM',
-        SessionLifetimeInMinutes=100,
-        UndoRedoDisabled=True,
-        ResetDisabled=True
+        SessionLifetimeInMinutes = current_app.config['AWS_QUICKSIGHT_SESSION_LIFE'],
+        UndoRedoDisabled = True,
+        ResetDisabled = True
     )
     embedUrl = response.get('EmbedUrl')
     return embedUrl

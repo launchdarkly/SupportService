@@ -16,9 +16,9 @@
         var options = {
             url: embedUrl,
             container: embedLocation,
-            scrolling: "no",
-            height: "500px",
-            width: "850px"
+            scrolling: "yes",
+            height: "450px",
+            width: "950px"
         };
         QuickSightEmbedding.embedDashboard(options);
     }
