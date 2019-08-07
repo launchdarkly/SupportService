@@ -4,7 +4,7 @@ workflow "Find code references" {
 }
 
 action "launchdarkly/find-code-references" {
-  uses = "launchdarkly/find-code-references"
+  uses = "launchdarkly/find-code-references@master"
   secrets = ["LD_ACCESS_TOKEN", "GITHUB_TOKEN"]
   env = {
     LD_EXCLUDE = "app/static/.*"
