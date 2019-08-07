@@ -1,12 +1,13 @@
-workflow "Find code references" {
+workflow "Find flag references" {
   on = "push"
-  resolves = ["launchdarkly/find-code-references"]
+  resolves = ["find_flags"]
 }
-
-action "launchdarkly/find-code-references" {
-  uses = "launchdarkly/find-code-references@master"
-  secrets = ["LD_ACCESS_TOKEN", "GITHUB_TOKEN"]
+action "find_flags" {
+  secrets = [
+    "LD_ACCESS_TOKEN",
+  ]
   env = {
-    LD_EXCLUDE = "app/static/.*"
+    LD_PROJ_KEY = "support-service"
   }
+  uses = "docker://launchdarkly/ld-find-code-refs-github-action:1.1.1"
 }
