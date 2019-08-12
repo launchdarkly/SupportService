@@ -100,8 +100,10 @@ public class Simulator implements Runnable {
                         driver.get(this.experimentationUrl);
         
                         if (randomizer.getShouldView()) {
-                            logger.info("Showing NPS to " + email);
-                            driver.findElement(By.xpath("//*[@id=\"page-wrapper\"]/button")).click();
+                            if (!driver.findElements(By.xpath("//*[@id=\"page-wrapper\"]/button")).isEmpty()) {
+                                logger.info("Showing NPS to " + email);
+                                driver.findElement(By.xpath("//*[@id=\"page-wrapper\"]/button")).click();
+                            }
                             if (randomizer.getShouldConvert()) {
                                 logger.info("Converting NPS for " + email);
                                 if (elementExists(driver, "style_a")) {

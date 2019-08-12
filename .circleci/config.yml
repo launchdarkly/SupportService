@@ -121,7 +121,7 @@ jobs:
             ./scripts/deploy.sh
   simulate:
     docker:
-      - image: circleci/openjdk:8-node-browsers
+      - image: circleci/openjdk:11-node-browsers
     steps:
       - checkout
       - run:
