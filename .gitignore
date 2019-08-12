@@ -30,7 +30,8 @@ test-reports/
 venv/
 *.env
 *.zip
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 
 # Generated Files
 docker-compose.prod.yml
