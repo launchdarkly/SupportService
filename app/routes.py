@@ -2,6 +2,8 @@ import json
 import logging
 import boto3
 import botocore
+import time
+import random
 
 import ldclient
 from flask import (Blueprint, current_app, flash, redirect, render_template,
@@ -31,16 +33,26 @@ def index():
     user = current_user.get_ld_user()
     session['ld_user'] = user
 
-    longer_trial_duration = ldclient.get().variation(
-        'longer-trial-duration',
+    flag_name = 'longer-trial-duration'
+    longer_trial_duration = ldclient.get().variation_detail(
+        flag_name,
         user,
         False)
 
-    if longer_trial_duration: # experimentation group
+    start_time = time.time()
+    if longer_trial_duration.value: # experimentation group
         trial_duration = 30
+        time.sleep(random.randint(1,3))
     else: # control group
         trial_duration = 14
-
+    end_time = time.time() - start_time
+    data_export = {
+        'flag': flag_name,
+        'variation': longer_trial_duration.variation_index,
+        'time': end_time,
+    }
+    ldclient.get().track('trial-rendering', user, data_export)
+    
     session['trial_duration'] = trial_duration
 
     return render_template('home.html', trial_duration=trial_duration)
