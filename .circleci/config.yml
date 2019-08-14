@@ -142,9 +142,16 @@ workflows:
       - build_docker:
           requires:
             - test
-      - deploy:
+      - hold:
+          type: approval
           requires:
             - build_docker
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - hold
           filters:
             branches:
               only: master
