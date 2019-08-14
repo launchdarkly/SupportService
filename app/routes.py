@@ -3,7 +3,6 @@ import logging
 import boto3
 import botocore
 import time
-import random
 
 import ldclient
 from flask import (Blueprint, current_app, flash, redirect, render_template,
@@ -13,7 +12,7 @@ from werkzeug.urls import url_parse
 
 from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
 from app.models import User, Plan
-
+from app.util import newServerFunctionality
 
 core = Blueprint('core', __name__)
 
@@ -40,13 +39,12 @@ def index():
         False)
     current_app.logger.info(trial_duration)
 
-    min_load_delay = 1
-    max_load_delay = 3
     start_time = time.time()
+    
+    # New server functionality testing
+    newServerFunctionality(trial_duration.value)
 
-    if trial_duration.value == '30':
-        time.sleep(random.randint(min_load_delay,max_load_delay))
-
+    # Calculate the server processing time based on flag evaluation
     end_time = time.time() - start_time
     data_export = {
         'flag': flag_name,
