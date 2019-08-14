@@ -33,29 +33,31 @@ def index():
     user = current_user.get_ld_user()
     session['ld_user'] = user
 
-    flag_name = 'longer-trial-duration'
-    longer_trial_duration = ldclient.get().variation_detail(
+    flag_name = 'trial-duration'
+    trial_duration = ldclient.get().variation_detail(
         flag_name,
         user,
         False)
+    current_app.logger.info(trial_duration)
 
+    min_load_delay = 1
+    max_load_delay = 3
     start_time = time.time()
-    if longer_trial_duration.value: # experimentation group
-        trial_duration = 30
-        time.sleep(random.randint(1,3))
-    else: # control group
-        trial_duration = 14
+
+    if trial_duration.value == '30':
+        time.sleep(random.randint(min_load_delay,max_load_delay))
+
     end_time = time.time() - start_time
     data_export = {
         'flag': flag_name,
-        'variation': longer_trial_duration.variation_index,
+        'variation': trial_duration.variation_index,
         'time': end_time,
     }
     ldclient.get().track('trial-rendering', user, data_export)
     
-    session['trial_duration'] = trial_duration
+    session['trial_duration'] = trial_duration.value
 
-    return render_template('home.html', trial_duration=trial_duration)
+    return render_template('home.html', trial_duration=trial_duration.value)
 
 @core.route('/dashboard')
 @login_required
