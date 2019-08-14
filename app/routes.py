@@ -37,7 +37,6 @@ def index():
         flag_name,
         user,
         False)
-    current_app.logger.info(trial_duration)
 
     start_time = time.time()
     
