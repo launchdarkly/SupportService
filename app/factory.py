@@ -91,7 +91,7 @@ def create_app(config_name = 'default'):
         envs = l.getEnvironments('support-service')
 
         c.generate_prod_config(envs)
-        c.generate_nginx_config(envs)
+        c.generate_nginx_config(app.config['APP_DOMAIN'], envs)
 
     app.cli.add_command(generate)
 

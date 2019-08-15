@@ -40,8 +40,8 @@ http {
         listen 443 ssl;
         server_name {{ env.hostname }};
 
-        ssl_certificate /etc/letsencrypt/live/ldsolutions.org/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/ldsolutions.org/privkey.pem;
+        ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
 
         location / {
             proxy_pass http://{{ env.hostname }}:{{ env.port }};
@@ -64,8 +64,8 @@ http {
         listen 443 ssl;
         server_name *.ldsolutions.org;
 
-        ssl_certificate /etc/letsencrypt/live/ldsolutions.org/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/ldsolutions.org/privkey.pem;
+        ssl_certificate /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
 
         location / {
             add_header Content-Type text/plain;
