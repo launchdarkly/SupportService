@@ -2,6 +2,7 @@ import json
 import logging
 import boto3
 import botocore
+import time
 
 import ldclient
 from flask import (Blueprint, current_app, flash, redirect, render_template,
@@ -11,7 +12,7 @@ from werkzeug.urls import url_parse
 
 from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
 from app.models import User, Plan
-
+from app.util import artifical_delay
 
 core = Blueprint('core', __name__)
 
@@ -31,19 +32,28 @@ def index():
     user = current_user.get_ld_user()
     session['ld_user'] = user
 
-    longer_trial_duration = ldclient.get().variation(
-        'longer-trial-duration',
+    flag_name = 'trial-duration'
+    trial_duration = ldclient.get().variation_detail(
+        flag_name,
         user,
         False)
 
-    if longer_trial_duration: # experimentation group
-        trial_duration = 30
-    else: # control group
-        trial_duration = 14
+    start_time = time.time()
+    
+    artifical_delay(trial_duration.value)
 
-    session['trial_duration'] = trial_duration
+    # Calculate the server processing time based on flag evaluation
+    end_time = time.time() - start_time
+    data_export = {
+        'flag': flag_name,
+        'variation': trial_duration.variation_index,
+        'time': end_time,
+    }
+    ldclient.get().track('trial-rendering', user, data_export)
+    
+    session['trial_duration'] = trial_duration.value
 
-    return render_template('home.html', trial_duration=trial_duration)
+    return render_template('home.html', trial_duration=trial_duration.value)
 
 @core.route('/dashboard')
 @login_required

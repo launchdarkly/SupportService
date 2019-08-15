@@ -3,6 +3,8 @@ Utility Functions
 """
 import socket
 import logging
+import random
+import time
 
 def getLdMachineUser(request=None):
     """
@@ -21,3 +23,15 @@ def getLdMachineUser(request=None):
     }
     logging.debug(user)
     return user
+
+def artifical_delay(duration):
+    # Delays are in seconds
+    MIN_LOAD_DELAY = 1
+    MAX_LOAD_DELAY = 3
+    LOAD_DELAY_TRIGGER = 30
+
+    # multi-variate flag is a string, so doing string comparison
+    if duration == LOAD_DELAY_TRIGGER:
+        time.sleep(random.randint(MIN_LOAD_DELAY,MAX_LOAD_DELAY))
+    
+    return 
