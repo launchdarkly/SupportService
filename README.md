@@ -40,7 +40,7 @@ A good commit message:
 * Has a subject line that summarizes the change.
 * Uses the imperative mood in the subject line. It should fit the form "If applied, this commit will ".
 * Provides context on what and why (instead of how) in the body.
-* Uses the form <Area>: <Title> in the subject line. The title should be capitalized, but not end with a period.
+* Uses the form `<Area>: <Title>` in the subject line. The title should be capitalized, but not end with a period.
 * Limits the subject line to 50 characters.
 * Wraps the body at 72 characters.
         
