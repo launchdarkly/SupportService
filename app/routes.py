@@ -12,7 +12,7 @@ from werkzeug.urls import url_parse
 
 from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
 from app.models import User, Plan
-from app.util import newServerFunctionality
+from app.util import artifical_delay
 
 core = Blueprint('core', __name__)
 
@@ -40,8 +40,7 @@ def index():
 
     start_time = time.time()
     
-    # New server functionality testing
-    newServerFunctionality(trial_duration.value)
+    artifical_delay(trial_duration.value)
 
     # Calculate the server processing time based on flag evaluation
     end_time = time.time() - start_time

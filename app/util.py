@@ -24,13 +24,14 @@ def getLdMachineUser(request=None):
     logging.debug(user)
     return user
 
-def newServerFunctionality(duration):
+def artifical_delay(duration):
     # Delays are in seconds
-    min_load_delay = 1
-    max_load_delay = 3
+    MIN_LOAD_DELAY = 1
+    MAX_LOAD_DELAY = 3
+    LOAD_DELAY_TRIGGER = 30
 
     # multi-variate flag is a string, so doing string comparison
-    if duration == '30':
-        time.sleep(random.randint(min_load_delay,max_load_delay))
+    if duration == LOAD_DELAY_TRIGGER:
+        time.sleep(random.randint(MIN_LOAD_DELAY,MAX_LOAD_DELAY))
     
     return 
