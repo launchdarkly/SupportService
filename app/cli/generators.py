@@ -36,7 +36,7 @@ class ConfigGenerator():
 
         with open('nginx.conf', 'w+') as nginx_file:
             t = template.render(
-                domain = domain
+                domain = domain,
                 envs = environments
             )
             nginx_file.write(t)
