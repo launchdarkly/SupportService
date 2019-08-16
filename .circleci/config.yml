@@ -86,12 +86,35 @@ jobs:
       - run:
           name: Push Image
           command: |
-            if [[ "$CIRCLE_BRANCH" == "master" ]]; then
-              docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
-              docker push levlaz/supportservice
-            else
-              echo "Branch is not master, not uploading."
-            fi
+            docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+            docker push levlaz/supportservice
+  deploy_staging:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v4-dependencies-{{ checksum "setup.py" }}
+            - v4-dependencies-
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r dev-requirements.txt
+            pip install -e .
+            sudo apt-get install -y rsync
+      - save_cache:
+          paths:
+            - ./venv
+          key: v4-dependencies-{{ checksum "setup.py" }}
+      - run:
+          name: Deploy to Staging
+          command: |
+            . venv/bin/activate
+            make generate-staging
+            ./scripts/deploy_staging.sh
   deploy:
     docker:
       - image: circleci/python:3.6
@@ -142,6 +165,12 @@ workflows:
       - build_docker:
           requires:
             - test
+      - deploy_staging:
+          requires:
+            - build_docker
+          filters:
+            branches:
+              ignore: master
       - hold:
           type: approval
           requires:

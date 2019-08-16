@@ -85,13 +85,13 @@ def create_app(config_name = 'default'):
         """
         Generate production configuration files for nginx and docker-compose.
         """
-        l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), 'ldsolutions.org')
+        l = LaunchDarklyApi(os.environ.get('LD_API_KEY'), app.config["APP_DOMAIN"])
         c = ConfigGenerator()
 
         envs = l.getEnvironments('support-service')
 
         c.generate_prod_config(envs)
-        c.generate_nginx_config(envs)
+        c.generate_nginx_config(app.config['APP_DOMAIN'], envs)
 
     app.cli.add_command(generate)
 
