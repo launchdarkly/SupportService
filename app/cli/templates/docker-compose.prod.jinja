@@ -37,18 +37,3 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
-
-  web:
-    image: nginx:alpine
-    volumes:
-      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt:/etc/letsencrypt
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - db
-      - cache
-      {% for env in envs %}
-      - {{ env.hostname }}
-      {% endfor %}
