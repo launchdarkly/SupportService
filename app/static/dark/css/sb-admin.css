@@ -1,3 +1,8 @@
+/* margin for the dark-theme nps table */
+.bg-dark div#page-wrapper {
+  margin-left: 30px;
+}
+
 html {
   position: relative;
   min-height: 100%;
