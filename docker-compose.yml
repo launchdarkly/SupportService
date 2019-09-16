@@ -1,0 +1,38 @@
+version: '3'
+services:
+  
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file: 
+      - .env
+    environment:
+      - FLASK_APP=app.factory:create_app('production')
+      - DATABASE_URL=postgresql://supportService:supportService@db/supportService
+      - FLASK_ENV=production
+      - REDIS_HOST=cache
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "5000:5000"
+    command: ["./scripts/start_dev.sh", "5000"]
+    depends_on:
+      - db
+      - cache
+
+  db:
+    image: postgres:11-alpine
+    environment:
+      - POSTGRES_USER=supportService
+      - POSTGRES_PASSWORD=supportService
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  cache:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+

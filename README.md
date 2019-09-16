@@ -9,28 +9,33 @@ more information on specific feature flags and use cases.
 
 ## Installation
 
-### Requirements
-
-* Python 3
-* pip
-
-### Instructions
+### Initial setup
 
 * Clone the repo locally `git clone https://github.com/launchdarkly/SupportService.git`
-* Copy `.env.example` to `.env` and fill in the correct values:
+* Copy `.env.example` to `.env` and fill in the correct values, without quotes:
 
-        export LD_CLIENT_KEY=$YOUR_SDK_KEY
-        export LD_FRONTEND_KEY=$YOUR_FRONTEND_ID
+        LD_CLIENT_KEY=$YOUR_SDK_KEY
+        LD_FRONTEND_KEY=$YOUR_FRONTEND_ID
 
+### Option 1: Run in Docker
+
+* Ensure that you have [Docker](https://docs.docker.com/install/) installed
+* Run `docker-compose up`
+
+### Option 2: Run locally in a virtualenv
+
+* Ensure that you have [`python3`](https://www.python.org/downloads/) and [PostgreSQL](https://www.postgresql.org/download/) installed
 * Run `make dev` to create a virtualenv and install all dependencies.
 * Run `make run` to start the application
 
-The app should now be running on [localhost:5000](http://localhost:5000). You
-should be able to log in with the username `test@tester.com` and password `test`.
+### Logging in
+
+The app should now be running on [localhost:5000](http://localhost:5000). You should be able to log in with the username `test@tester.com` and password `test`. Alternatively, register a new user - it won't send you any email.
 
 ## Contributing
 
-### Git Commits 
+### Git Commits
+
 Each commit should be a coherent whole that implements one idea completely and correctly. No commit should ever break the code, even if another commit "fixes it" later.
 
 Good commit messages make this project easier to maintain, and unlock the power of tools like `git revert`, `log`, and `blame`.
@@ -43,7 +48,7 @@ A good commit message:
 * Uses the form `<Area>: <Title>` in the subject line. The title should be capitalized, but not end with a period.
 * Limits the subject line to 50 characters.
 * Wraps the body at 72 characters.
-        
+
 See [https://chris.beams.io/posts/git-commit/](https://chris.beams.io/posts/git-commit/) for more information.
 
 ## Running in Production
@@ -67,6 +72,7 @@ runs via CircleCI to update all existing instances on AWS LightSail to the lates
 version of master.
 
 ## Simulator
+
 There is a selenium based "simulator" that lives under the `webdriver` directory.
 This is used to provide a steady stream of activities against all current demo
 sites so that the insights graphs for various feature flags are populated.
