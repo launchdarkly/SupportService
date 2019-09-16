@@ -12,8 +12,8 @@ help:
 dev:
 	if [ ! -d "venv" ]; then python3 -m venv venv; fi
 	bash -c "source venv/bin/activate"
-	pip install -r dev-requirements.txt
-	pip install -e .
+	pip3 install -r dev-requirements.txt
+	pip3 install -e .
 
 run:
 	export FLASK_APP="app.factory:create_app()" && \
