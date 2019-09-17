@@ -8,9 +8,9 @@ services:
     env_file: 
       - .env
     environment:
-      - FLASK_APP=app.factory:create_app('production')
+      - FLASK_APP=app.factory:create_app('development')
       - DATABASE_URL=postgresql://supportService:supportService@db/supportService
-      - FLASK_ENV=production
+      - FLASK_ENV=development
       - REDIS_HOST=cache
     volumes:
       - .:/usr/src/app
