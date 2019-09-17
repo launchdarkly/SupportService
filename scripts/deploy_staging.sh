@@ -6,24 +6,26 @@
 # a generate docker-compose file. Then it prunes older docker images, pulls
 # the latest docker image and restarts docker-compose.
 #
-PROD_SERVER="ld@staging.ldsolutions.org"
+STAGING_SERVER="ubuntu@staging.ldsolutions.org"
 
-until bash -c "ssh -o StrictHostKeyChecking=no $PROD_SERVER 'docker ps'"; do
+until bash -c "ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'docker ps'"; do
     >&2 echo "Server is not ready - sleeping"
     sleep 10
 done
 
 # Send Latest Scripts to Production Server
-rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $PROD_SERVER:/var/www/app/scripts/
-scp -o StrictHostKeyChecking=no nginx.conf $PROD_SERVER:/var/www/app/etc/nginx/nginx.conf
-scp -o StrictHostKeyChecking=no docker-compose.prod.yml $PROD_SERVER:/var/www/app/docker-compose.yml
+rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $STAGING_SERVER:/var/www/app/scripts/
+scp -o StrictHostKeyChecking=no nginx.conf $STAGING_SERVER:/etc/nginx/nginx.conf
+scp -o StrictHostKeyChecking=no docker-compose.prod.yml $STAGING_SERVER:/var/www/app/docker-compose.yml
 
 # Clean up old images
-ssh -o StrictHostKeyChecking=no $PROD_SERVER 'docker system prune --force --volumes'
+ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'docker system prune --force --volumes'
 
 # Log into Production Server, Pull and Restart Docker
-ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose pull'
-ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose build'
-ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose down --remove-orphans'
-ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose up -d'
-ssh -o StrictHostKeyChecking=no $PROD_SERVER 'cd /var/www/app && docker-compose restart web'
+ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose pull'
+ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose build'
+ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose down --remove-orphans'
+ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose up -d'
+
+# Restart Nginx 
+ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'sudo nginx -s reload'
