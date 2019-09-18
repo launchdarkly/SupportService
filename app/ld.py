@@ -6,7 +6,8 @@ Note that the API SDK is generated using swagger. The entire library is
 stored in the lib/ directory since we do not currently publish this anywhere.
 """
 import launchdarkly_api
-
+import logging
+import json
 
 class LaunchDarklyApi():
     """Wrapper for the LaunchDarkly API"""
@@ -26,40 +27,35 @@ class LaunchDarklyApi():
         self.client = launchdarkly_api.ProjectsApi(
             launchdarkly_api.ApiClient(configuration))
 
-    def formatHostname(self, key):
+    def format_hostname(self, key):
         """Returns formatted hostname for an environment.
 
         :param key: environment key
         """
         return "{0}.{1}".format(key, self.domain)
 
-    def getEnvironments(self, projectKey):
+    def get_environments(self, projectKey):
         """Returns List of Environments for a Project.
 
-        Includes name, key, and mobile key, and formatted hostname.
+        Includes name, key, and mobile key.
 
         :param projectKey: Key for project
 
         :returns: Collection of Environments
         """
         resp = self.client.get_project(projectKey)
-        envs = []
-        port = 8000
 
-        for env in resp.environments:
-            port += 1
-            env = dict(
-                key=env.key,
-                api_key = env.api_key,
-                client_id = env.id,
-                hostname = self.formatHostname(env.key),
-                port = port
-            )
-            envs.append(env)
+        return resp
 
-        return envs
+    def get_environment(self, environment_key):
+        #logging.info(project.environments)
+        for env in project.environments:
+            logging.info(env.name)
+            if env.name == environment_key:
+                return env
 
-    def getEnvironment(self, projectKey, environmentKey):
-        resp = self.client.get_project(projectKey)
 
-        return resp.environments.get(projectKey, environmentKey)
+    def get_project(self, project_key):
+        resp = self.client.get_project(project_key)
+
+        return resp

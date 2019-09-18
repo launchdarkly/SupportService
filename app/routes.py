@@ -3,14 +3,15 @@ import logging
 import boto3
 import botocore
 import time
-
+import pickle
 import ldclient
-from flask import (Blueprint, current_app, flash, redirect, render_template,
-                   request, url_for, session)
+from flask import (abort, Blueprint, current_app, flash, redirect, render_template,
+                   request, url_for, session, jsonify)
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
+#from app.ld import get_environments
 from app.models import User, Plan
 from app.util import artifical_delay
 
@@ -39,7 +40,7 @@ def index():
         False)
 
     start_time = time.time()
-    
+
     artifical_delay(trial_duration.value)
 
     # Calculate the server processing time based on flag evaluation
@@ -50,7 +51,7 @@ def index():
         'time': end_time,
     }
     ldclient.get().track('trial-rendering', user, data_export)
-    
+
     session['trial_duration'] = trial_duration.value
 
     return render_template('home.html', trial_duration=trial_duration.value)
@@ -125,7 +126,7 @@ def dataexport():
     except botocore.exceptions.NoCredentialsError as e:
 
         current_app.logger.debug(e)
-        
+
     show_data_export = ldclient.get().variation(
         'data-export',
         user,
@@ -134,8 +135,8 @@ def dataexport():
     set_theme = '{0}/dataexport.html'.format(current_user.set_path)
 
     return render_template (
-        set_theme, 
-        title='dataexport', 
+        set_theme,
+        title='dataexport',
         embed_url=embed_url,
         show_data_export=show_data_export
     )
@@ -253,12 +254,12 @@ def upgrade():
 
 def fetch_aws_embed_url():
     """
-    This function is used to generate a new embedded url 
+    This function is used to generate a new embedded url
     key each time the data export page is requested
     """
     client = boto3.client(
-        'quicksight', 
-        region_name = current_app.config['AWS_QUICKSIGHT_REGION'], 
+        'quicksight',
+        region_name = current_app.config['AWS_QUICKSIGHT_REGION'],
         aws_access_key_id = current_app.config['AWS_QUICKSIGHT_ACCESS_KEY_ID'],
         aws_secret_access_key = current_app.config['AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID']
     )
@@ -273,3 +274,18 @@ def fetch_aws_embed_url():
     )
     embedUrl = response.get('EmbedUrl')
     return embedUrl
+
+@core.route('/environments', subdomain="supportservice")
+@login_required
+def environments():
+    webhook = ldclient.get().variation('environments-webhook', current_user.get_ld_user(), False)
+    if webhook:
+        try:
+            project = current_app.ld.get_environments("support-service")
+            project_pick = pickle.dumps(project)
+            current_app.redis_client.set("support-service", project_pick)
+            return jsonify({'response': 200})
+        except:
+            return jsonify({'response': 400})
+    else:
+        abort(404)

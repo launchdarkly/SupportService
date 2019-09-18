@@ -3,13 +3,15 @@ import time
 import uuid
 from datetime import datetime
 
-from app.factory import db, login
+#from app.factory import db
 from faker import Faker
 from flask import current_app
+from flask_sqlalchemy import SQLAlchemy
 from flask_login import AnonymousUserMixin, UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
 fake = Faker()
+db = SQLAlchemy()
 
 class User(UserMixin, db.Model):
 
@@ -42,7 +44,6 @@ class User(UserMixin, db.Model):
     def get_email_hash(self):
         return hashlib.md5(self.email.encode()).hexdigest()
 
-
     def get_ld_user(self):
         app_version = current_app.config['VERSION']
         milliseconds = int(round(time.time() * 1000))
@@ -69,10 +70,6 @@ class User(UserMixin, db.Model):
     def get_random_ld_user(self):
         user = {'key': str(uuid.uuid1())}
         return user
-
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))
 
 
 class AnonymousUser(AnonymousUserMixin):

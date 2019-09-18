@@ -6,5 +6,4 @@ until bash -c "flask db current > /dev/null 2>&1"; do
 done
 
 >&2 echo "Postgres is up, starting SupportService"
-flask db upgrade > /dev/null 2>&1
-flask run -h 0.0.0.0 -p $1 --reload
+python3 app/factory.py --host=localhost

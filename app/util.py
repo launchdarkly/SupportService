@@ -33,5 +33,5 @@ def artifical_delay(duration):
     # multi-variate flag is a string, so doing string comparison
     if duration == LOAD_DELAY_TRIGGER:
         time.sleep(random.randint(MIN_LOAD_DELAY,MAX_LOAD_DELAY))
-    
-    return 
+
+    return

@@ -1,5 +1,4 @@
-from app.factory import db
-from app.models import User, Plan
+from app.models import User, Plan, db
 from model_base import ModelBase
 
 
