@@ -1,38 +1,37 @@
-version: '3'
+version: '3.7'
 services:
-  
+
   app:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    env_file: 
+    env_file:
       - .env
     environment:
-      - FLASK_APP=app.factory:create_app('development')
-      - DATABASE_URL=postgresql://supportService:supportService@db/supportService
       - FLASK_ENV=development
+      - FLASK_APP=app.factory:create_app('development')
       - REDIS_HOST=cache
+      - LOG_TO_STDOUT=1
     volumes:
-      - .:/usr/src/app
+      - .:/app
     ports:
-      - "5000:5000"
-    command: ["./scripts/start_dev.sh", "5000"]
+      - 3000:3000
+    command: flask run -h 0.0.0.0 -p 3000 --reload
     depends_on:
-      - db
       - cache
-
-  db:
-    image: postgres:11-alpine
-    environment:
-      - POSTGRES_USER=supportService
-      - POSTGRES_PASSWORD=supportService
-    volumes:
-      - ./data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   cache:
     image: redis:alpine
     ports:
-      - "6379:6379"
+      - 6379:6379
 
+  # Uncomment the following service to send metrics to Datadog.
+  # Don't forget to update your .env file too
+  # datadog:
+  #   image: datadog/agent:latest
+  #   env_file:
+  #     - .env
+  #   environment:
+  #    - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+  #   links:
+  #     - app
