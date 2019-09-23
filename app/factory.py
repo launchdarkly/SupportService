@@ -18,7 +18,8 @@ from app.config import config
 from app.util import getLdMachineUser
 from app.ld import LaunchDarklyApi
 from app.cli.generators import ConfigGenerator
-from app.models import User, db
+from app.models import User
+from app.db import db
 
 import json
 import pickle
@@ -43,7 +44,7 @@ class SubdomainDispatcher(object):
         self.domain = domain
         self.lock = Lock()
         self.instances = {}
-        self.ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'), domain)
+        self.ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
         self.config_name= config_name
         if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
             self.rclient = redis.Redis(host=os.environ.get('REDIS_HOST'))
@@ -59,7 +60,9 @@ class SubdomainDispatcher(object):
     def get_application(self, host):
         logging.info(self.domain)
         host = host.split(':')[0]
-        subdomain = host[:-len(self.domain)].rstrip('.')
+        logging.info(host)
+        subdomain = host.split('.')[0]
+
 
         with self.lock:
             app = self.instances.get(subdomain)
@@ -148,9 +151,12 @@ class SubdomainDispatcher(object):
             ld_project = pickle.loads(project)
             environments = ld_project.environments
             for env in environments:
+                logging.info(env)
                 if env.key == subdomain:
                     current_env = env
                     break
+            logging.info(current_env.api_key)
+            logging.info(current_env.id)
             app.config['LD_CLIENT_KEY'] = current_env.api_key
             app.config['LD_FRONTEND_KEY'] = current_env.id
         else:
@@ -183,7 +189,7 @@ def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
     run_simple(host, port, app, **options)
 
 
-application = SubdomainDispatcher(domain=os.environ.get('FLASK_DOMAIN', 'localhost'), config_name=os.environ.get('SS_CONFIG', 'default'))
+application = SubdomainDispatcher(domain=os.environ.get('FLASK_DOMAIN', 'localhost'), config_name=os.environ.get('FLASK_ENV', 'default'))
 
 
 if __name__ == '__main__':

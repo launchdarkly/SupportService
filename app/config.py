@@ -67,7 +67,6 @@ class DevelopmentConfig(Config):
 
     @staticmethod
     def init_app(app):
-        print(app.config)
         # define and set required env vars
         LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", app.config['LD_CLIENT_KEY'], required=True)
         LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", app.config['LD_FRONTEND_KEY'], required=True)
@@ -88,7 +87,7 @@ class DevelopmentConfig(Config):
         Config.init_app(app)
 
         with app.app_context():
-            from app.factory import db
+            from app.db import db
             from app.models import User
             from app.models import Plan
 
@@ -128,7 +127,7 @@ class TestingConfig(Config):
         Config.init_app(app)
 
         with app.app_context():
-            from app.factory import db
+            from app.db import db
             from app.models import User
 
             db.init_app(app)
@@ -147,7 +146,7 @@ class StagingConfig(Config):
         Config.init_app(app)
 
         with app.app_context():
-            from app.factory import db
+            from app.db import db
             from app.models import User
             from app.models import Plan
 
@@ -163,7 +162,7 @@ class ProductionConfig(Config):
         Config.init_app(app)
 
         with app.app_context():
-            from app.factory import db
+            from app.db import db
             from app.models import User
             from app.models import Plan
 

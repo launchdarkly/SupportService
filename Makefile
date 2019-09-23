@@ -28,7 +28,6 @@ test:
 
 generate:
 	j2 app/cli/templates/docker-compose.prod.jinja > docker-compose.prod.yml
-	cat docker-compose.prod.yml
 
 .PHONY: dev-container
 dev-container:
