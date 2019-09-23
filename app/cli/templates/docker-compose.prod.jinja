@@ -1,11 +1,10 @@
 version: '3'
 services:
-  {% for env in envs %}
-  {{ env.hostname }}:
-    hostname: {{ env.hostname }}
+  supportservice:
+    hostname: supportservice
     image: levlaz/supportservice:{{ circle_sha1 }}
     environment:
-      - FLASK_APP=app.factory:create_app('production')
+	    - FLASK_APP="app.factory:SubdomainDispatcher('ldsolutions.org','default')" &&\
       - DATABASE_URL=postgresql://supportService:supportService@db/supportService
       - FLASK_ENV=production
       - LD_CLIENT_KEY={{ env.api_key }}
@@ -16,12 +15,11 @@ services:
       - AWS_ACCOUNT_ID={{ AWS_ACCOUNT_ID }}
       - AWS_QUICKSIGHT_DASHBOARD_ID={{ AWS_QUICKSIGHT_DASHBOARD_ID }}
     ports:
-      - "{{ env.port }}:{{ env.port }}"
-    command: ["./scripts/start.sh", "{{ env.port }}"]
+      - "80:80"
+    command: ["./scripts/start.sh", "80"]
     depends_on:
       - db
       - cache
-  {% endfor %}
 
   db:
     image: postgres:11-alpine

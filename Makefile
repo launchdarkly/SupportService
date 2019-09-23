@@ -30,10 +30,6 @@ generate:
 	export FLASK_APP="app.factory:create_app('production')" && \
 	flask generate
 
-generate-staging:
-	export FLASK_APP="app.factory:create_app('staging')" && \
-	flask generate
-
 .PHONY: dev-container
 dev-container:
 	docker build -f Dockerfile.dev -t supportservice:latest .

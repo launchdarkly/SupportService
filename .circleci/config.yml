@@ -113,7 +113,6 @@ jobs:
           name: Deploy to Staging
           command: |
             . venv/bin/activate
-            make generate-staging
             ./scripts/deploy_staging.sh
   deploy:
     docker:
@@ -140,7 +139,6 @@ jobs:
           name: Deploy to Production
           command: |
             . venv/bin/activate
-            make generate
             ./scripts/deploy.sh
   simulate:
     docker:
