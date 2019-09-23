@@ -1,7 +1,7 @@
 # Production Dockerfile for SupportService
 FROM python:3.6-alpine
 
-RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev bash git libffi-dev make
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev bash git libffi-dev make postgresql-client
 
 WORKDIR /usr/src/app
 
@@ -12,4 +12,3 @@ RUN pip install -r requirements.txt
 COPY . .
 
 RUN pip install --upgrade -e .
-

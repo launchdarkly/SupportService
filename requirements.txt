@@ -25,3 +25,6 @@ launchdarkly-api==2.0.15
 
 # Runtime
 gunicorn==19.9.0
+
+# Docker-compose generator
+j2cli==0.3.10

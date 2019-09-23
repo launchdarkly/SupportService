@@ -27,8 +27,8 @@ test:
 	set -e && TESTING=true coverage run tests/main.py
 
 generate:
-	export FLASK_APP="app.factory:create_app('production')" && \
-	flask generate
+	j2 app/cli/templates/docker-compose.prod.jinja > docker-compose.prod.yml
+	cat docker-compose.prod.yml
 
 .PHONY: dev-container
 dev-container:

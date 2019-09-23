@@ -59,7 +59,6 @@ class SubdomainDispatcher(object):
     def get_application(self, host):
         logging.info(self.domain)
         host = host.split(':')[0]
-        assert host.endswith(self.domain), 'Configuration error'
         subdomain = host[:-len(self.domain)].rstrip('.')
 
         with self.lock:
@@ -185,6 +184,7 @@ def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
 
 
 application = SubdomainDispatcher(domain=os.environ.get('FLASK_DOMAIN', 'localhost'), config_name=os.environ.get('SS_CONFIG', 'default'))
+
 
 if __name__ == '__main__':
     rundevserver(host="0.0.0.0")
