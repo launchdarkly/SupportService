@@ -5,7 +5,6 @@ from datetime import datetime
 
 from faker import Faker
 from flask import current_app
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import AnonymousUserMixin, UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.db import db
