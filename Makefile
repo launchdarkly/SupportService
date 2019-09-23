@@ -24,7 +24,7 @@ run:
 	python3 app/factory.py --host=localhost
 
 test:
-	TESTING=True set -e && coverage run tests/main.py
+	set -e && TESTING=true coverage run tests/main.py
 
 generate:
 	export FLASK_APP="app.factory:create_app('production')" && \

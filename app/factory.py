@@ -49,12 +49,11 @@ class SubdomainDispatcher(object):
             self.rclient = redis.Redis(host=os.environ.get('REDIS_HOST'))
             self.project = self.ld.get_project(PROJECT_NAME)
             project_pick = pickle.dumps(self.project)
-            self.rclient.set("support-service", project_pick)
+            self.rclient.set(PROJECT_NAME, project_pick)
         else:
             import fakeredis
             self.rclient = fakeredis.FakeStrictRedis()
             self.project = {}
-
 
 
     def get_application(self, host):
@@ -136,7 +135,7 @@ class SubdomainDispatcher(object):
         return app
 
     def make_app(self, ld, subdomain, config_name):
-        project = pickle.loads(self.rclient.get('support-service'))
+        project = pickle.loads(self.rclient.get(PROJECT_NAME))
         for env in project.environments:
             if env.key == subdomain:
                 return self.create_app(subdomain, env, config_name=config_name)
@@ -146,7 +145,7 @@ class SubdomainDispatcher(object):
     def build_environments(self, app, subdomain, env):
         if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
             app.redis_client = FlaskRedis(app)
-            project = self.rclient.get("support-service")
+            project = self.rclient.get(PROJECT_NAME)
             ld_project = pickle.loads(project)
             environments = ld_project.environments
             for env in environments:
