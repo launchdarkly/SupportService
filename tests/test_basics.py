@@ -3,7 +3,7 @@ import unittest
 from flask import current_app
 
 from app.factory import SubdomainDispatcher
-from app.models import db
+from app.db import db
 
 
 class BasicTestCase(unittest.TestCase):

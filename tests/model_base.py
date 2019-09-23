@@ -1,6 +1,6 @@
 import unittest
 from app.factory import SubdomainDispatcher
-from app.models import db
+from app.db import db
 
 class ModelBase(unittest.TestCase):
     def setUp(self):
