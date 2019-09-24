@@ -14,7 +14,6 @@ services:
       - FLASK_DEBUG=true
       - REDIS_HOST=cache
       - REDIS_URL=redis://cache:6379/0
-      - SS_CONFIG=default
     volumes:
       - .:/usr/src/app
     ports:
