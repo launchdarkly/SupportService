@@ -6,4 +6,5 @@ while ! nc -zv db 5432; do
 done
 
 >&2 echo "Postgres is up, starting SupportService"
+flask db upgrade > /dev/null 2>&1
 gunicorn "app.factory:application" -b 0.0.0.0:$1
