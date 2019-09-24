@@ -40,8 +40,7 @@ class CachingDisabled:
 
 class SubdomainDispatcher(object):
 
-    def __init__(self, domain='', debug=False, config_name='default'):
-        self.domain = domain
+    def __init__(self, debug=False, config_name='default'):
         self.lock = Lock()
         self.instances = {}
         self.ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
@@ -58,17 +57,14 @@ class SubdomainDispatcher(object):
 
 
     def get_application(self, host):
-        logging.info(self.domain)
         host = host.split(':')[0]
         logging.info(host)
         subdomain = host.split('.')[0]
 
-
         with self.lock:
             app = self.instances.get(subdomain)
             if app is None:
-                app = self.make_app(self.ld, subdomain, self.config_name)
-                #app = self.create_app(self.ld, subdomain)
+                app = make_app(self.ld, self.rclient, subdomain, self.project, self.config_name)
                 self.instances[subdomain] = app
             return app
 
@@ -79,91 +75,84 @@ class SubdomainDispatcher(object):
             return User.query.get(id)
         return app(environ, start_response)
 
-    def create_app(self, subdomain, env, config_name):
-        """Flask application factory.
 
-        :param config_name: Flask Configuration
+def create_app(subdomain, env, config_name):
+    """Flask application factory.
 
-        :type config_name: app.config class
+    :param config_name: Flask Configuration
 
-        :returns: a flask application
+    :type config_name: app.config class
+
+    :returns: a flask application
+    """
+    app = Flask(__name__)
+    app = build_environments(subdomain, env, app)
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+
+    #app.ld = ld
+    app.logger.info("APP VERSION: " + app.config['VERSION'])
+
+    bootstrap.init_app(app)
+    cache.init_app(app, config=app.config['CACHE_CONFIG'])
+    login.init_app(app)
+
+    login.login_view = 'core.login'
+    from app.models import AnonymousUser
+    login.anonymous_user = AnonymousUser
+    migrate.init_app(app, db)
+
+    from app.routes import core
+    app.register_blueprint(core)
+
+    @app.before_request
+    def setLoggingLevel():
+        """Set Logging Level Based on Feature Flag
+
+        This uses LaunchDarkly to update the logging level dynamically.
+        Before each request runs, we check the current logging level and
+        it does not match, we update it to the new value.
+
+        Logging levels are integer values based on the standard Logging library
+        in python: https://docs.python.org/3/library/logging.html#logging-levels
+
+        This is an operational feature flag.
         """
-        app = Flask(__name__)
-        app = self.build_environments(app, subdomain, env)
-        app.config.from_object(config[config_name])
-        config[config_name].init_app(app)
+        from flask import request
+        logLevel = ldclient.get().variation("set-logging-level", getLdMachineUser(request), logging.INFO)
 
-        app.project = self.project
-        #app.ld = ld
-        app.logger.info("APP VERSION: " + app.config['VERSION'])
+        app.logger.info("Log level is {0}".format(logLevel))
 
-        bootstrap.init_app(app)
-        cache.init_app(app, config=app.config['CACHE_CONFIG'])
-        login.init_app(app)
+        # set app
+        app.logger.setLevel(logLevel)
+        # set werkzeug
+        logging.getLogger('werkzeug').setLevel(logLevel)
+        # set root
+        logging.getLogger().setLevel(logLevel)
 
-        login.login_view = 'core.login'
-        from app.models import AnonymousUser
-        login.anonymous_user = AnonymousUser
-        migrate.init_app(app, db)
+    return app
 
-        from app.routes import core
-        app.register_blueprint(core)
+def make_app(ld, rclient, subdomain, project, config_name):
+    project = pickle.loads(rclient.get(PROJECT_NAME))
+    for env in project.environments:
+        if env.key == subdomain:
+            return create_app(subdomain, env, config_name=config_name)
 
-        @app.before_request
-        def setLoggingLevel():
-            """Set Logging Level Based on Feature Flag
+    return NotFound()
 
-            This uses LaunchDarkly to update the logging level dynamically.
-            Before each request runs, we check the current logging level and
-            it does not match, we update it to the new value.
+def build_environments(subdomain, env, app):
+    if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
+        app.redis_client = FlaskRedis(app)
+        logging.info(env.api_key)
+        logging.info(env.id)
+        app.config['LD_CLIENT_KEY'] = env.api_key
+        app.config['LD_FRONTEND_KEY'] = env.id
+    else:
+        app.config['LD_CLIENT_KEY'] = env['LD_CLIENT_KEY']
+        app.config['LD_FRONTEND_KEY'] = env['LD_FRONTEND_KEY']
 
-            Logging levels are integer values based on the standard Logging library
-            in python: https://docs.python.org/3/library/logging.html#logging-levels
+    return app
 
-            This is an operational feature flag.
-            """
-            from flask import request
-            logLevel = ldclient.get().variation("set-logging-level", getLdMachineUser(request), logging.INFO)
-
-            app.logger.info("Log level is {0}".format(logLevel))
-
-            # set app
-            app.logger.setLevel(logLevel)
-            # set werkzeug
-            logging.getLogger('werkzeug').setLevel(logLevel)
-            # set root
-            logging.getLogger().setLevel(logLevel)
-
-        return app
-
-    def make_app(self, ld, subdomain, config_name):
-        project = pickle.loads(self.rclient.get(PROJECT_NAME))
-        for env in project.environments:
-            if env.key == subdomain:
-                return self.create_app(subdomain, env, config_name=config_name)
-
-        return NotFound()
-
-    def build_environments(self, app, subdomain, env):
-        if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
-            app.redis_client = FlaskRedis(app)
-            project = self.rclient.get(PROJECT_NAME)
-            ld_project = pickle.loads(project)
-            environments = ld_project.environments
-            for env in environments:
-                logging.info(env)
-                if env.key == subdomain:
-                    current_env = env
-                    break
-            logging.info(current_env.api_key)
-            logging.info(current_env.id)
-            app.config['LD_CLIENT_KEY'] = current_env.api_key
-            app.config['LD_FRONTEND_KEY'] = current_env.id
-        else:
-            app.config['LD_CLIENT_KEY'] = env['LD_CLIENT_KEY']
-            app.config['LD_FRONTEND_KEY'] = env['LD_FRONTEND_KEY']
-
-        return app
 
 def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
     """
@@ -184,12 +173,12 @@ def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
     options.setdefault('use_reloader', True)
     options.setdefault('use_debugger', True)
 
-    app = SubdomainDispatcher(domain=domain)
+    app = SubdomainDispatcher(config_name=os.environ.get('FLASK_ENV', 'default'))
 
     run_simple(host, port, app, **options)
 
 
-application = SubdomainDispatcher(domain=os.environ.get('FLASK_DOMAIN', 'localhost'), config_name=os.environ.get('FLASK_ENV', 'default'))
+application = SubdomainDispatcher(config_name=os.environ.get('FLASK_ENV', 'default'))
 
 
 if __name__ == '__main__':
