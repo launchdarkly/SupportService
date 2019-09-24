@@ -1,6 +1,7 @@
 import logging
 import os
 from threading import Lock
+import pickle
 
 import ldclient
 import redis
@@ -21,9 +22,7 @@ from app.cli.generators import ConfigGenerator
 from app.models import User
 from app.db import db
 
-import json
-import pickle
-import datetime
+
 
 migrate = Migrate()
 bootstrap =  Bootstrap()

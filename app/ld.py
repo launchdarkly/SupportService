@@ -26,26 +26,6 @@ class LaunchDarklyApi():
         self.client = launchdarkly_api.ProjectsApi(
             launchdarkly_api.ApiClient(configuration))
 
-    def get_environments(self, projectKey):
-        """Returns List of Environments for a Project.
-
-        Includes name, key, and mobile key.
-
-        :param projectKey: Key for project
-
-        :returns: Collection of Environments
-        """
-        resp = self.client.get_project(projectKey)
-
-        return resp
-
-    def get_environment(self, environment_key):
-        for env in project.environments:
-            logging.info(env.name)
-            if env.name == environment_key:
-                return env
-
-
     def get_project(self, project_key):
         resp = self.client.get_project(project_key)
 
