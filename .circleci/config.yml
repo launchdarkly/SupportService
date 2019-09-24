@@ -140,6 +140,7 @@ jobs:
           name: Deploy to Production
           command: |
             . venv/bin/activate
+            make generate
             ./scripts/deploy.sh
   simulate:
     docker:
