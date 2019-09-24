@@ -143,13 +143,11 @@ def make_app(ld, rclient, subdomain, project, config_name):
 def build_environment(env_id, env_api_key, app):
     if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
         app.redis_client = FlaskRedis(app)
-        logging.info(env_api_key)
-        logging.info(env_id)
-        app.config['LD_CLIENT_KEY'] = env_api_key
-        app.config['LD_FRONTEND_KEY'] = env_id
-    else:
-        app.config['LD_CLIENT_KEY'] = env_id['LD_CLIENT_KEY']
-        app.config['LD_FRONTEND_KEY'] = env_api_key['LD_FRONTEND_KEY']
+
+    logging.info(env_api_key)
+    logging.info(env_id)
+    app.config['LD_CLIENT_KEY'] = env_api_key
+    app.config['LD_FRONTEND_KEY'] = env_id
 
     return app
 
