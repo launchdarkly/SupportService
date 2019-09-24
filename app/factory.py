@@ -86,7 +86,13 @@ def create_app(env_id, env_api_key, config_name):
     :returns: a flask application
     """
     app = Flask(__name__)
-    app = build_environment(env_id, env_api_key, app)
+    app = build_environment(app)
+    if env_api_key:
+        app.config['LD_CLIENT_KEY'] = env_api_key
+        logging.info(env_api_key)
+    if env_id:
+        app.config['LD_FRONTEND_KEY'] = env_id
+        logging.info(env_id)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
@@ -140,14 +146,9 @@ def make_app(ld, rclient, subdomain, project, config_name):
 
     return NotFound()
 
-def build_environment(env_id, env_api_key, app):
+def build_environment(app):
     if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
         app.redis_client = FlaskRedis(app)
-
-    logging.info(env_api_key)
-    logging.info(env_id)
-    app.config['LD_CLIENT_KEY'] = env_api_key
-    app.config['LD_FRONTEND_KEY'] = env_id
 
     return app
 
