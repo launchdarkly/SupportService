@@ -65,33 +65,17 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///supportservice.db"
 
+
     @staticmethod
     def init_app(app):
-        # define and set required env vars
-        LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", app.config['LD_CLIENT_KEY'], required=True)
-        LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", app.config['LD_FRONTEND_KEY'], required=True)
-
-        # LaunchDarkly Config
-        # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
-        if "LD_RELAY_URL" in os.environ:
-            config = LdConfig(
-                sdk_key = app.config.LD_CLIENT_KEY,
-                base_uri = os.environ.get("LD_RELAY_URL"),
-                events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
-                stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
-            )
-            ldclient.set_config(config)
-        else:
-            ldclient.set_sdk_key(LD_CLIENT_KEY)
-
         Config.init_app(app)
-
         with app.app_context():
             from app.db import db
             from app.models import User
             from app.models import Plan
 
             db.init_app(app)
+            setup_ld_client(app)
             db.create_all()
 
             # check if plans exist
@@ -144,7 +128,7 @@ class StagingConfig(Config):
     @staticmethod
     def init_app(app):
         Config.init_app(app)
-
+        setup_ld_client(app)
         with app.app_context():
             from app.db import db
             from app.models import User
@@ -160,7 +144,7 @@ class ProductionConfig(Config):
     @staticmethod
     def init_app(app):
         Config.init_app(app)
-
+        setup_ld_client(app)
         with app.app_context():
             from app.db import db
             from app.models import User
@@ -175,3 +159,21 @@ config = {
     'staging': StagingConfig,
     'default': DevelopmentConfig
 }
+
+def setup_ld_client(app):
+    # define and set required env vars
+    LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", app.config['LD_CLIENT_KEY'], required=True)
+    LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", app.config['LD_FRONTEND_KEY'], required=True)
+
+    # LaunchDarkly Config
+    # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
+    if "LD_RELAY_URL" in os.environ:
+        config = LdConfig(
+            sdk_key = app.config.LD_CLIENT_KEY,
+            base_uri = os.environ.get("LD_RELAY_URL"),
+            events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
+            stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
+        )
+        ldclient.set_config(config)
+    else:
+        ldclient.set_sdk_key(LD_CLIENT_KEY)
