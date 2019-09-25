@@ -76,7 +76,6 @@ jobs:
       - run:
           name: Test Production Stack
           command: |
-            pip install j2cli==0.3.10
             make generate
             docker-compose -f docker-compose.prod.yml up -d
       - run:
@@ -112,7 +111,6 @@ jobs:
           name: Deploy to Staging
           command: |
             . venv/bin/activate
-            pip install j2cli==0.3.10
             make generate
             ./scripts/deploy_staging.sh
   deploy:
