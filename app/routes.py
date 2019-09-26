@@ -2,6 +2,7 @@ import json
 import logging
 import boto3
 import botocore
+import os
 import time
 import pickle
 import ldclient
@@ -11,6 +12,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
+from app.ld import LaunchDarklyApi
 from app.models import User, Plan
 from app.util import artifical_delay
 
@@ -274,13 +276,13 @@ def fetch_aws_embed_url():
     embedUrl = response.get('EmbedUrl')
     return embedUrl
 
-@core.route('/environments', subdomain="supportservice")
-@login_required
+@core.route('/environments')
 def environments():
     webhook = ldclient.get().variation('environments-webhook', current_user.get_ld_user(), False)
     if webhook:
         try:
-            project = current_app.ld.get_project("support-service")
+            ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
+            project = ld.get_project("support-service")
             project_pick = pickle.dumps(project)
             current_app.redis_client.set("support-service", project_pick)
             return jsonify({'response': 200})
