@@ -77,8 +77,6 @@ jobs:
           name: Test Production Stack
           command: |
             make generate
-            mkdir -p etc/nginx
-            mv nginx.conf etc/nginx
             docker-compose -f docker-compose.prod.yml up -d
       - run:
           name: Debug Docker
@@ -113,7 +111,7 @@ jobs:
           name: Deploy to Staging
           command: |
             . venv/bin/activate
-            make generate-staging
+            make generate
             ./scripts/deploy_staging.sh
   deploy:
     docker:

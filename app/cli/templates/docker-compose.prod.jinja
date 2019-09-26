@@ -1,27 +1,24 @@
 version: '3'
 services:
-  {% for env in envs %}
-  {{ env.hostname }}:
-    hostname: {{ env.hostname }}
-    image: levlaz/supportservice:{{ circle_sha1 }}
+  supportservice:
+    hostname: supportservice
+    image: levlaz/supportservice:{{ env("CIRCLE_SHA1") }}
     environment:
-      - FLASK_APP=app.factory:create_app('production')
+      - FLASK_APP=app.factory:create_app('12345','12345','production')
       - DATABASE_URL=postgresql://supportService:supportService@db/supportService
       - FLASK_ENV=production
-      - LD_CLIENT_KEY={{ env.api_key }}
-      - LD_FRONTEND_KEY={{ env.client_id }}
+      - LD_API_KEY={{ env("LD_API_KEY") }}
       - REDIS_HOST=cache
-      - AWS_QUICKSIGHT_ACCESS_KEY_ID={{ AWS_QUICKSIGHT_ACCESS_KEY_ID }}
-      - AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID={{ AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID }}
-      - AWS_ACCOUNT_ID={{ AWS_ACCOUNT_ID }}
-      - AWS_QUICKSIGHT_DASHBOARD_ID={{ AWS_QUICKSIGHT_DASHBOARD_ID }}
+      - AWS_QUICKSIGHT_ACCESS_KEY_ID={{ env("AWS_QUICKSIGHT_ACCESS_KEY_ID") }}
+      - AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID={{ env("AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID") }}
+      - AWS_ACCOUNT_ID={{ env("AWS_ACCOUNT_ID") }}
+      - AWS_QUICKSIGHT_DASHBOARD_ID={{ env("AWS_QUICKSIGHT_DASHBOARD_ID") }}
     ports:
-      - "{{ env.port }}:{{ env.port }}"
-    command: ["./scripts/start.sh", "{{ env.port }}"]
+      - "8001:8001"
+    command: ["./scripts/start.sh", "8001"]
     depends_on:
       - db
       - cache
-  {% endfor %}
 
   db:
     image: postgres:11-alpine

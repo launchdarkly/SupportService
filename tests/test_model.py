@@ -1,5 +1,5 @@
-from app.factory import db
 from app.models import User, Plan
+from app.db import db
 from model_base import ModelBase
 
 

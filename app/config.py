@@ -6,7 +6,6 @@ import sys
 import ldclient
 from ldclient import Config as LdConfig
 
-
 log = logging.getLogger()
 
 
@@ -14,15 +13,15 @@ def env_var(key, default=None, required=False):
     """
     Helper function to parse environment variables.
     """
-    if required:
+    if default is not None:
+        var = os.environ.get(key, default)
+    elif required:
         try:
             var = os.environ[key]
         except KeyError:
             log.error("ERROR: Required Environment Variable {0} is not set.".format(key))
         if len(os.environ[key]) == 0:
             log.error("ERROR: Required Environment Variable {0} is empty".format(key))
-    else:
-        var = os.environ.get(key, default)
 
     try:
         return var
@@ -42,7 +41,9 @@ class Config(object):
         )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
-    CACHE_REDIS_HOST = os.environ.get('REDIS_HOST') or 'cache'
+    REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+    CACHE_REDIS_HOST = REDIS_HOST
+    REDIS_URL = os.environ.get('REDIS_URL')
     CACHE_CONFIG = {'CACHE_TYPE': 'simple'}
 
     AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID')
@@ -51,23 +52,6 @@ class Config(object):
     AWS_QUICKSIGHT_DASHBOARD_ID = os.environ.get('AWS_QUICKSIGHT_DASHBOARD_ID')
     AWS_QUICKSIGHT_SESSION_LIFE = 100
     AWS_QUICKSIGHT_REGION = "us-west-2"
-
-    # define and set required env vars
-    LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", required=True)
-    LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", required=True)
-
-    # LaunchDarkly Config
-    # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
-    if "LD_RELAY_URL" in os.environ:
-        config = LdConfig(
-            sdk_key = LD_CLIENT_KEY,
-            base_uri = os.environ.get("LD_RELAY_URL"),
-            events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
-            stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
-        )
-        ldclient.set_config(config)
-    else:
-        ldclient.set_sdk_key(LD_CLIENT_KEY)
 
     root = logging.getLogger()
     root.setLevel(logging.INFO)
@@ -81,16 +65,17 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///supportservice.db"
 
+
     @staticmethod
     def init_app(app):
         Config.init_app(app)
-
         with app.app_context():
-            from app.factory import db
+            from app.db import db
             from app.models import User
             from app.models import Plan
 
             db.init_app(app)
+            setup_ld_client(app)
             db.create_all()
 
             # check if plans exist
@@ -119,13 +104,14 @@ class TestingConfig(Config):
     """Configuration used for testing and CI."""
     TESTING = True
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///supportservice.db"
 
     @staticmethod
     def init_app(app):
         Config.init_app(app)
 
         with app.app_context():
-            from app.factory import db
+            from app.db import db
             from app.models import User
 
             db.init_app(app)
@@ -138,14 +124,13 @@ class TestingConfig(Config):
 class StagingConfig(Config):
     """Configuration used for production environments."""
     CACHE_CONFIG = {'CACHE_TYPE': 'redis'}
-    APP_DOMAIN = "staging.ldsolutions.org"
 
     @staticmethod
     def init_app(app):
         Config.init_app(app)
-
+        setup_ld_client(app)
         with app.app_context():
-            from app.factory import db
+            from app.db import db
             from app.models import User
             from app.models import Plan
 
@@ -155,14 +140,13 @@ class StagingConfig(Config):
 class ProductionConfig(Config):
     """Configuration used for production environments."""
     CACHE_CONFIG = {'CACHE_TYPE': 'redis'}
-    APP_DOMAIN = "ldsolutions.org"
-    
+
     @staticmethod
     def init_app(app):
         Config.init_app(app)
-
+        setup_ld_client(app)
         with app.app_context():
-            from app.factory import db
+            from app.db import db
             from app.models import User
             from app.models import Plan
 
@@ -175,3 +159,21 @@ config = {
     'staging': StagingConfig,
     'default': DevelopmentConfig
 }
+
+def setup_ld_client(app):
+    # define and set required env vars
+    LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", app.config['LD_CLIENT_KEY'], required=True)
+    LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", app.config['LD_FRONTEND_KEY'], required=True)
+
+    # LaunchDarkly Config
+    # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
+    if "LD_RELAY_URL" in os.environ:
+        config = LdConfig(
+            sdk_key = app.config.LD_CLIENT_KEY,
+            base_uri = os.environ.get("LD_RELAY_URL"),
+            events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
+            stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
+        )
+        ldclient.set_config(config)
+    else:
+        ldclient.set_sdk_key(LD_CLIENT_KEY)

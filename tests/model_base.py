@@ -1,10 +1,12 @@
 import unittest
-from app.factory import create_app, db
-
+from app.factory import create_app
+from app.db import db
 
 class ModelBase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app('testing')
+        env_id = '12345'
+        env_api_key = '12345'
+        self.app = create_app(env_id, env_api_key, config_name='testing')
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()

@@ -5,5 +5,8 @@ RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev bash git libff
 
 WORKDIR /usr/src/app
 
+COPY requirements.txt .
+COPY setup.py .
+
 RUN pip install -r requirements.txt
 RUN pip install --upgrade -e .

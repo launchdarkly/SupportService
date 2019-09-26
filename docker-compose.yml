@@ -1,22 +1,24 @@
 version: '3'
 services:
-  
+
   app:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    env_file: 
+    env_file:
       - .env
     environment:
-      - FLASK_APP=app.factory:create_app('development')
+      - FLASK_APP=app.factory:SubdomainDispatcher('localhost','default')
       - DATABASE_URL=postgresql://supportService:supportService@db/supportService
       - FLASK_ENV=development
+      - FLASK_DEBUG=true
       - REDIS_HOST=cache
+      - REDIS_URL=redis://cache:6379/0
     volumes:
       - .:/usr/src/app
     ports:
       - "5000:5000"
-    command: ["./scripts/start_dev.sh", "5000"]
+    command: ["python3", "app/factory.py", "--host=0.0.0.0"]
     depends_on:
       - db
       - cache
@@ -35,4 +37,3 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
-
