@@ -15,19 +15,20 @@ dev:
 	pip3 install -r dev-requirements.txt
 	pip3 install -e .
 
+# Not using flask run due to socket error for local debugging and reloading
+# https://stackoverflow.com/questions/53522052/flask-app-valueerror-signal-only-works-in-main-thread
 run:
-	export FLASK_APP="app.factory:create_app()" && \
+	export FLASK_APP="app.factory:SubdomainDispatcher('localhost','default')" &&\
 	export FLASK_DEBUG=true && \
 	export FLASK_ENV=development && \
-	flask run --host=0.0.0.0
+	python3 app/factory.py --host=localhost
 
 test:
-	set -e && coverage run tests/main.py
+	set -e && TESTING=true coverage run tests/main.py
 
 generate:
-	export FLASK_APP="app.factory:create_app('production')" && \
-	flask generate
+	j2 app/cli/templates/docker-compose.prod.jinja > docker-compose.prod.yml
 
-generate-staging:
-	export FLASK_APP="app.factory:create_app('staging')" && \
-	flask generate
+.PHONY: dev-container
+dev-container:
+	docker build -f Dockerfile.dev -t supportservice:latest .

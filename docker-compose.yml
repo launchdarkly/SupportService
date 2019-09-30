@@ -8,15 +8,18 @@ services:
     env_file:
       - .env
     environment:
+      - FLASK_APP=app.factory:SubdomainDispatcher('localhost','default')
+      - DATABASE_URL=postgresql://supportService:supportService@db/supportService
       - FLASK_ENV=development
-      - FLASK_APP=app.factory:create_app('development')
+      - FLASK_DEBUG=true
       - REDIS_HOST=cache
+      - REDIS_URL=redis://cache:6379/0
       - LOG_TO_STDOUT=1
     volumes:
-      - .:/app
+      - .:/usr/src/app
     ports:
-      - 3000:3000
-    command: flask run -h 0.0.0.0 -p 3000 --reload
+      - 5000:5000
+    command: ["python3", "app/factory.py", "--host=0.0.0.0"]
     depends_on:
       - cache
 
