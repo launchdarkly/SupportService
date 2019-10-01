@@ -6,13 +6,7 @@ import sys
 import ldclient
 from ldclient import Config as LdConfig
 
-# Add and initialize Datadog monitoring.
-if os.environ.get('DATADOG_HOST'):
-    from datadog import initialize, statsd
-    initialize(statsd_host=os.environ.get('DATADOG_HOST'))
-
 log = logging.getLogger()
-
 
 def env_var(key, default=None, required=False):
     """

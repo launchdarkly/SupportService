@@ -13,6 +13,9 @@ services:
       - AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID={{ env("AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID") }}
       - AWS_ACCOUNT_ID={{ env("AWS_ACCOUNT_ID") }}
       - AWS_QUICKSIGHT_DASHBOARD_ID={{ env("AWS_QUICKSIGHT_DASHBOARD_ID") }}
+      - DATADOG_HOST=datadog-agent
+      - DD_AGENT_HOST=datadog-agent
+      - DD_AGENT_PORT=8126
     ports:
       - "8001:8001"
     command: ["./scripts/start.sh", "8001"]
@@ -34,3 +37,17 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
+
+  datadog-agent:
+    image: datadog/agent:latest
+    env_file:
+      - .env
+    environment:
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+      - DD_API_KEY={{ env("DD_API_KEY") }}
+    ports:
+      - 8126:8126
+    links:
+      - supportservice

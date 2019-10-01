@@ -1,6 +1,5 @@
-version: '3.7'
+version: "3.7"
 services:
-
   app:
     build:
       context: .
@@ -15,11 +14,14 @@ services:
       - REDIS_HOST=cache
       - REDIS_URL=redis://cache:6379/0
       - LOG_TO_STDOUT=1
+      - DATADOG_HOST=datadog-agent
+      - DD_AGENT_HOST=datadog-agent
+      - DD_AGENT_PORT=8126
     volumes:
       - .:/usr/src/app
     ports:
       - 5000:5000
-    command: ["python3", "app/factory.py", "--host=0.0.0.0"]
+    command: ["ddtrace-run", "python3", "app/factory.py", "--host=0.0.0.0"]
     depends_on:
       - cache
 
@@ -28,13 +30,15 @@ services:
     ports:
       - 6379:6379
 
-  # Uncomment the following service to send metrics to Datadog.
-  # Don't forget to update your .env file too
-  # datadog:
-  #   image: datadog/agent:latest
-  #   env_file:
-  #     - .env
-  #   environment:
-  #    - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
-  #   links:
-  #     - app
+  datadog-agent:
+    image: datadog/agent:latest
+    env_file:
+      - .env
+    environment:
+      - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
+      - DD_APM_ENABLED=true
+      - DD_APM_NON_LOCAL_TRAFFIC=true
+    ports:
+      - 8126:8126
+    links:
+      - app
