@@ -14,6 +14,9 @@ jobs:
           cd tests/webdriver
           mvn compile assembly:single
       - name: Run Simulation
+        env:
+          LD_API_KEY: ${{ secrets.LD_API_KEY }}
+          LD_CLIENT_KEY: ${{ secrets.LD_CLIENT_KEY }}
         run: |
           cd tests/webdriver
           java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
