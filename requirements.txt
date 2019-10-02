@@ -26,5 +26,9 @@ launchdarkly-api==2.0.15
 # Runtime
 gunicorn==19.9.0
 
+# Datadog
+datadog==0.30.0
+ddtrace==0.29.0
+
 # Docker-compose generator
 j2cli==0.3.10

@@ -8,7 +8,6 @@ from ldclient import Config as LdConfig
 
 log = logging.getLogger()
 
-
 def env_var(key, default=None, required=False):
     """
     Helper function to parse environment variables.
@@ -168,9 +167,10 @@ def setup_ld_client(app):
     # LaunchDarkly Config
     # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
     if "LD_RELAY_URL" in os.environ:
+        base_uri = os.environ.get("LD_RELAY_URL")
         config = LdConfig(
             sdk_key = app.config.LD_CLIENT_KEY,
-            base_uri = os.environ.get("LD_RELAY_URL"),
+            base_uri = base_uri,
             events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
             stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
         )

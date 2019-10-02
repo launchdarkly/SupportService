@@ -21,12 +21,16 @@ class ConfigGenerator():
 
         with open('docker-compose.prod.yml', 'w+') as docker_compose_file:
             t = template.render(
-                envs = environments,
-                circle_sha1 = os.environ.get('CIRCLE_SHA1') or 'latest',
-                AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID'), # from circle
-                AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID'), # from circle
-                AWS_ACCOUNT_ID = os.environ.get('AWS_ACCOUNT_ID'), # from circle
-                AWS_QUICKSIGHT_DASHBOARD_ID = os.environ.get('AWS_QUICKSIGHT_DASHBOARD_ID') # from circle
+                envs=environments,
+                circle_sha1=os.environ.get('CIRCLE_SHA1') or 'latest',
+                AWS_QUICKSIGHT_ACCESS_KEY_ID=os.environ.get(
+                    'AWS_QUICKSIGHT_ACCESS_KEY_ID'),  # from circle
+                AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID=os.environ.get(
+                    'AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID'),  # from circle
+                AWS_ACCOUNT_ID=os.environ.get('AWS_ACCOUNT_ID'),  # from circle
+                AWS_QUICKSIGHT_DASHBOARD_ID=os.environ.get(
+                    'AWS_QUICKSIGHT_DASHBOARD_ID'),  # from circle
+                DD_API_KEY=os.environ.get('DD_API_KEY')  # from circle
             )
             docker_compose_file.write(t)
 
@@ -36,7 +40,7 @@ class ConfigGenerator():
 
         with open('nginx.conf', 'w+') as nginx_file:
             t = template.render(
-                domain = domain,
-                envs = environments
+                domain=domain,
+                envs=environments
             )
             nginx_file.write(t)
