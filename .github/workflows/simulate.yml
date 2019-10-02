@@ -1,8 +1,7 @@
 name: Run Selenium Simulator
-# on:
-#   schedule:
-#     - cron: '0 * * * *'
-on: push
+on:
+  schedule:
+    - cron: '*/15 * * * *'
 jobs:
   simualte:
     name: Simulate
