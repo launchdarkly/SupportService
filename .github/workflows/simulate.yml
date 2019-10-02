@@ -12,7 +12,7 @@ jobs:
       - name: Install Simulator
         run: |
           cd tests/webdriver
-          mv compile assembly:single
+          mvn compile assembly:single
       - name: Run Simulation
         run: |
           cd tests/webdriver
