@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y chromium-browser chromium-chromedriver
       - name: Install Simulator
         run: |
           cd tests/webdriver
