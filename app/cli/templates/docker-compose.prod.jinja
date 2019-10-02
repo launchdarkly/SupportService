@@ -40,8 +40,6 @@ services:
 
   datadog-agent:
     image: datadog/agent:latest
-    env_file:
-      - .env
     environment:
       - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
       - DD_APM_ENABLED=true
