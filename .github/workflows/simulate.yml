@@ -13,10 +13,8 @@ jobs:
         run: |
           sudo apt update
           sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
-          sudo curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add
-          sudo echo "deb [arch=amd64]  http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get -y update
-          sudo apt-get -y install google-chrome-stable
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
           wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/bin/chromedriver
@@ -30,6 +28,9 @@ jobs:
         env:
           LD_API_KEY: ${{ secrets.LD_API_KEY }}
           LD_CLIENT_KEY: ${{ secrets.LD_CLIENT_KEY }}
+          DISPLAY: :99
+          CHROME_BIN: /usr/bin/google-chrome
         run: |
           cd tests/webdriver
+          Xvfb :99 -screen 0 1280x1024x24 &
           java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
