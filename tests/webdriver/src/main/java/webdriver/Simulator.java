@@ -61,10 +61,8 @@ public class Simulator implements Runnable {
     @Override
     public void run() {
         logger.info("Starting Activity for " + this.baseUrl + " with " + this.iterations + " iterations.");
-
+        WebDriver driver = new ChromeDriver();
         try {
-            WebDriver driver = new ChromeDriver();
-
             for (int i = MIN; i <= this.iterations; i++) {
                 Randomizer randomizer = new Randomizer();
                 String email = faker.internet().emailAddress();
@@ -154,6 +152,8 @@ public class Simulator implements Runnable {
             driver.quit();
         } catch (Exception e) {
             logger.error("Error: " + e);
+        } finally {
+            driver.quit();
         }
 
     }
