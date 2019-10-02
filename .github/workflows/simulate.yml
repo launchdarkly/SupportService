@@ -1,0 +1,18 @@
+name: Run Selenium Simulator
+# on:
+#   schedule:
+#     - cron: '0 * * * *'
+on: push
+jobs:
+  simualte:
+    name: Simulate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Simulator
+        run: |
+          cd tests/webdriver
+          mv compile assembly:single
+      - name: Run Simulation
+        run: |
+          cd tests/webdriver
+          java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
