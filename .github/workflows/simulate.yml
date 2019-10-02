@@ -1,7 +1,9 @@
 name: Run Selenium Simulator
-on:
-  schedule:
-    - cron: '*/15 * * * *'
+# Commenting this out for now because using schedule appears to break GitHub Actions
+# on:
+#   schedule:
+#     - cron: '*/15 * * * *'
+on: push
 jobs:
   simualte:
     name: Simulate
