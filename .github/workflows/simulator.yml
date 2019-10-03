@@ -1,0 +1,36 @@
+name: Simulator
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo dpkg -i google-chrome-stable_current_amd64.deb; sudo apt-get -fy install
+        wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
+        unzip chromedriver_linux64.zip
+        sudo mv chromedriver /usr/bin/chromedriver
+        sudo chown root:root /usr/bin/chromedriver
+        sudo chmod +x /usr/bin/chromedriver
+    - name: Install Simulator
+      run: |
+        cd tests/webdriver
+        mvn compile assembly:single
+    - name: Run Simulation
+      env:
+        LD_API_KEY: ${{ secrets.LD_API_KEY }}
+        LD_CLIENT_KEY: ${{ secrets.LD_CLIENT_KEY }}
+        DISPLAY: ":99"
+        CHROME_BIN: /usr/bin/google-chrome
+      run: |
+        cd tests/webdriver
+        Xvfb :99 -screen 0 1280x1024x24 &
+        java -jar target/webdriver-1.0-SNAPSHOT-jar-with-dependencies.jar
