@@ -28,6 +28,7 @@ services:
     environment:
       - POSTGRES_USER=supportService
       - POSTGRES_PASSWORD=supportService
+    command: ["-c", "max_connections=10000"]
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:
