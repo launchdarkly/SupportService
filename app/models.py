@@ -66,7 +66,10 @@ class User(UserMixin, db.Model):
         return user
 
     def get_random_ld_user(self):
-        user = {'key': str(uuid.uuid1())}
+        user = {
+            'key': str(uuid.uuid1()),
+            'anonymous': True
+        }
         return user
 
 
