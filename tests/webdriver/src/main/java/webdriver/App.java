@@ -57,7 +57,7 @@ public class App
                 }
 
                 if (shouldSim) {
-                    String hostname = String.format("%s.ldsolutions.org", key);
+                    String hostname = String.format("%s.staging.ldsolutions.org", key);
                     Simulator simulator = new Simulator(hostname);
                     executor.execute(simulator);
                 } else {
