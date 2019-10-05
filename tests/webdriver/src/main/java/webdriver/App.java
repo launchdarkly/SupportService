@@ -36,6 +36,13 @@ public class App
         LDClient ldClient = new LDClient(System.getenv("LD_CLIENT_KEY"));
         LDUser user = new LDUser("any");
         int maxThreads = ldClient.intVariation("max-selenium-threads", user, 1);
+        boolean simulatorDisabled = ldClient.boolVariation("disable-simulator", user, false);
+
+        if (simulatorDisabled) {
+            logger.info("Not Running. Simualtor is disabled.");
+            System.exit(0);
+        }
+        
         ldClient.flush();
         ldClient.close();
 
