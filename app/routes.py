@@ -12,7 +12,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app.cache import CachingDisabled, CACHE_TIMEOUT, cache
-from app.factory import db
+from app.factory import db, PROJECT_NAME
 from app.ld import LaunchDarklyApi
 from app.models import User, Plan
 from app.util import artifical_delay
@@ -283,9 +283,9 @@ def environments():
     if webhook:
         try:
             ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
-            project = ld.get_project("support-service")
+            project = ld.get_project(PROJECT_NAME)
             project_pick = pickle.dumps(project)
-            current_app.redis_client.set("support-service", project_pick)
+            current_app.redis_client.set(PROJECT_NAME, project_pick)
             return jsonify({'response': 200})
         except:
             return jsonify({'response': 400})

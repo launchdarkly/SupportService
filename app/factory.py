@@ -92,7 +92,8 @@ def create_app(env_id, env_api_key, config_name):
     app.logger.info("APP VERSION: " + app.config['VERSION'])
 
     bootstrap.init_app(app)
-    cache.init_app(app, config=app.config['CACHE_CONFIG'])
+    cache_config = { **app.config['CACHE_CONFIG'], 'CACHE_KEY_PREFIX': env_id }
+    cache.init_app(app, config=cache_config)
     login.init_app(app)
 
     login.login_view = 'core.login'
