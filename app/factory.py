@@ -8,13 +8,13 @@ import redis
 
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask_caching import Cache
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from werkzeug.serving import run_simple
 from werkzeug.exceptions import NotFound
 from flask_redis import FlaskRedis
 
+from app.cache import cache
 from app.config import config
 from app.util import getLdMachineUser
 from app.ld import LaunchDarklyApi
@@ -27,15 +27,8 @@ from app.db import db
 migrate = Migrate()
 bootstrap =  Bootstrap()
 login = LoginManager()
-cache = Cache()
 
-# Operational Feature Flags
-CACHE_TIMEOUT = lambda : ldclient.get().variation('cache-timeout', getLdMachineUser(), 50)
 PROJECT_NAME = 'support-service'
-
-class CachingDisabled:
-    def __call__(self):
-        return ldclient.get().variation('disable-caching', getLdMachineUser(), True)
 
 class SubdomainDispatcher(object):
 

@@ -11,7 +11,8 @@ from flask import (abort, Blueprint, current_app, flash, redirect, render_templa
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
-from app.factory import CACHE_TIMEOUT, CachingDisabled, cache, db
+from app.cache import CachingDisabled, CACHE_TIMEOUT, cache
+from app.factory import db
 from app.ld import LaunchDarklyApi
 from app.models import User, Plan
 from app.util import artifical_delay
