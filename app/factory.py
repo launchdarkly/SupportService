@@ -39,14 +39,9 @@ class SubdomainDispatcher(object):
         self.config_name= config_name
         if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
             self.rclient = redis.Redis(host=os.environ.get('REDIS_HOST'))
-            self.project = self.ld.get_project(PROJECT_NAME)
-            project_pick = pickle.dumps(self.project)
-            self.rclient.set(PROJECT_NAME, project_pick)
         else:
             import fakeredis
             self.rclient = fakeredis.FakeStrictRedis()
-            self.project = {}
-
 
     def get_application(self, host):
         host = host.split(':')[0]
@@ -56,7 +51,7 @@ class SubdomainDispatcher(object):
         with self.lock:
             app = self.instances.get(subdomain)
             if app is None:
-                app = make_app(self.ld, self.rclient, subdomain, self.project, self.config_name)
+                app = make_app(self.ld, self.rclient, subdomain, self.config_name)
                 self.instances[subdomain] = app
             return app
 
@@ -131,8 +126,15 @@ def create_app(env_id, env_api_key, config_name):
 
     return app
 
-def make_app(ld, rclient, subdomain, project, config_name):
-    project = pickle.loads(rclient.get(PROJECT_NAME))
+def make_app(ld, rclient, subdomain, config_name):
+    load_project = rclient.get(PROJECT_NAME)
+    if load_project is None:
+        project = ld.get_project(PROJECT_NAME)
+        rclient.set(PROJECT_NAME, pickle.dumps(project))
+    else:
+        project = pickle.loads(load_project)
+
+
     for env in project.environments:
         if env.key == subdomain:
             return create_app(env.id, env.api_key, config_name)
