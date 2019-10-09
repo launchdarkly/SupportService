@@ -4,9 +4,9 @@
 
 SupportService is a simple application built in flask, that can be used to
 demonstrate the use of feature flags in action. All of the source code can be
-downloaded from github and run locally your machine. The following are
+downloaded from GitHub and run locally your machine. The following are
 instructions on how to install the application and how to configure it so you
-can run the demo environment on your local machinge.
+can run the demo environment on your local machine.
 
 Please refer to the [wiki](https://github.com/launchdarkly/SupportService/wiki)
 for more information on specific feature flags and use cases.
@@ -37,8 +37,7 @@ for more information on specific feature flags and use cases.
 
 ### Logging in
 
-The app should now be running on
-[localhost:5000](http://<YOUR-LD-ENV>.localhost:5000). You should be able to log
+The app should now be running on [your-LD-env.localhost:5000](http://<YOUR-LD-ENV>.localhost:5000). You should be able to log
 in with the username `test@tester.com` and password `test`. Alternatively,
 register a new user - it won't send you any email.
 
