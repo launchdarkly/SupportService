@@ -3,6 +3,7 @@ services:
   supportservice:
     hostname: supportservice
     image: levlaz/supportservice:{{ env("CIRCLE_SHA1") }}
+    restart: always
     environment:
       - FLASK_APP=app.factory:create_app('12345','12345','production')
       - DATABASE_URL=postgresql://supportService:supportService@db/supportService
@@ -25,6 +26,7 @@ services:
 
   db:
     image: postgres:11-alpine
+    restart: always
     environment:
       - POSTGRES_USER=supportService
       - POSTGRES_PASSWORD=supportService
@@ -36,11 +38,16 @@ services:
 
   cache:
     image: redis:alpine
+    restart: always
+    command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "6379:6379"
+      - 6379:6379
+    volumes:
+      - ./redis-data:/data
 
   datadog-agent:
     image: datadog/agent:latest
+    restart: always
     environment:
       - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
       - DD_APM_ENABLED=true
