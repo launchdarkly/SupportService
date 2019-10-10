@@ -18,7 +18,7 @@ services:
       - DD_AGENT_HOST=datadog-agent
       - DD_AGENT_PORT=8126
     ports:
-      - "8001:8001"
+      - 127.0.0.1:8001:8001
     command: ["./scripts/start.sh", "8001"]
     depends_on:
       - db
@@ -34,14 +34,14 @@ services:
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - 127.0.0.1:5432:5432
 
   cache:
     image: redis:alpine
     restart: always
     command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - 6379:6379
+      - 127.0.0.1:6379:6379
     volumes:
       - ./redis-data:/data
 
@@ -54,6 +54,6 @@ services:
       - DD_APM_NON_LOCAL_TRAFFIC=true
       - DD_API_KEY={{ env("DD_API_KEY") }}
     ports:
-      - 8126:8126
+      - 127.0.0.1:8126:8126
     links:
       - supportservice
