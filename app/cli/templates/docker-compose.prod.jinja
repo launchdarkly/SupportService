@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
   supportservice:
     hostname: supportservice
@@ -25,6 +25,12 @@ services:
         delay: 30s
         parallelism: 1
         failure_action: rollback
+        order: start-first
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     command: ["./scripts/start.sh", "8001"]
     depends_on:
       - db
@@ -37,6 +43,12 @@ services:
       - POSTGRES_USER=supportService
       - POSTGRES_PASSWORD=supportService
     command: ["-c", "max_connections=10000"]
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:
@@ -46,6 +58,12 @@ services:
     image: redis:alpine
     restart: always
     command: ["redis-server", "--appendonly", "yes"]
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     ports:
       - 6379:6379
     volumes:
@@ -53,13 +71,16 @@ services:
 
   datadog-agent:
     image: datadog/agent:latest
-    restart: always
     environment:
       - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
       - DD_APM_ENABLED=true
       - DD_APM_NON_LOCAL_TRAFFIC=true
       - DD_API_KEY={{ env("DD_API_KEY") }}
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 120s
     ports:
       - 8126:8126
-    links:
-      - supportservice
