@@ -7,4 +7,4 @@ done
 
 >&2 echo "Postgres is up, starting SupportService"
 flask db upgrade > /dev/null 2>&1
-ddtrace-run gunicorn "app.factory:application" -w 5 -b 0.0.0.0:$1
+ddtrace-run gunicorn "app.factory:application" -w 3 -b 0.0.0.0:$1

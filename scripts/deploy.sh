@@ -21,7 +21,4 @@ scp -o StrictHostKeyChecking=no docker-compose.prod.yml $PRODUCTION_SERVER:/var/
 ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'docker system prune --force --volumes'
 
 # Log into Production Server, Pull and Restart Docker
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose pull'
-#ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose build'
-#ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose down --remove-orphans'
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose up -d --build'
+ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker stack deploy --prune -c docker-compose.yml support-service'
