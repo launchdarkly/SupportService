@@ -77,6 +77,7 @@ class User(UserMixin, db.Model):
 
 
 class AnonymousUser(AnonymousUserMixin):
+    path = 'default'
 
     def __init__(self):
         super(AnonymousUserMixin, self).__init__()
