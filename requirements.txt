@@ -20,7 +20,7 @@ redis==3.2.1
 flask-redis==0.4.0
 
 # Vendor Dependencies
-ldclient-py==6.9.1
+launchdarkly-server-sdk==6.*
 launchdarkly-api==2.0.15
 
 # Runtime
