@@ -45,13 +45,6 @@ class Config(object):
     REDIS_URL = os.environ.get('REDIS_URL')
     CACHE_CONFIG = {'CACHE_TYPE': 'simple'}
 
-    AWS_QUICKSIGHT_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_ACCESS_KEY_ID')
-    AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID')
-    AWS_ACCOUNT_ID = os.environ.get('AWS_ACCOUNT_ID')
-    AWS_QUICKSIGHT_DASHBOARD_ID = os.environ.get('AWS_QUICKSIGHT_DASHBOARD_ID')
-    AWS_QUICKSIGHT_SESSION_LIFE = 100
-    AWS_QUICKSIGHT_REGION = "us-west-2"
-
     root = logging.getLogger()
     root.setLevel(logging.INFO)
 
@@ -63,7 +56,6 @@ class DevelopmentConfig(Config):
     """Configuration used for local development."""
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///supportservice.db"
-
 
     @staticmethod
     def init_app(app):
