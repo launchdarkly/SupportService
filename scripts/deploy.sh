@@ -12,17 +12,23 @@
 
 SERVER="ubuntu@$1.ldsolutions.org"
 
-until bash -c "ssh -o StrictHostKeyChecking=no $SERVER 'docker ps'"; do
-    >&2 echo "Server is not ready - sleeping"
-    sleep 10
-done
+if [ -z "$SERVER" ]
+then 
+	until bash -c "ssh -o StrictHostKeyChecking=no $SERVER 'docker ps'"; do
+	    >&2 echo "Server is not ready - sleeping"
+	    sleep 10
+	done
 
-# Send Latest Scripts to Production Server
-rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $SERVER:/var/www/app/scripts/
-scp -o StrictHostKeyChecking=no docker-compose.prod.yml $SERVER:/var/www/app/docker-compose.yml
+	# Send Latest Scripts to Production Server
+	rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $SERVER:/var/www/app/scripts/
+	scp -o StrictHostKeyChecking=no docker-compose.prod.yml $SERVER:/var/www/app/docker-compose.yml
 
-# Clean up old images
-ssh -o StrictHostKeyChecking=no $SERVER 'docker system prune -a --force --volumes'
+	# Clean up old images
+	ssh -o StrictHostKeyChecking=no $SERVER 'docker system prune -a --force --volumes'
 
-# Log into Production Server, Pull and Restart Docker
-ssh -o StrictHostKeyChecking=no $SERVER 'cd /var/www/app && docker stack deploy --prune -c docker-compose.yml support-service'
+	# Log into Production Server, Pull and Restart Docker
+	ssh -o StrictHostKeyChecking=no $SERVER 'cd /var/www/app && docker stack deploy --prune -c docker-compose.yml support-service'
+else
+	echo "\$SERVER is empty, please provide an environment"
+	exit 1
+fi
