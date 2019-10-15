@@ -18,7 +18,7 @@ rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $PRODUCTION_SERVER:/var
 scp -o StrictHostKeyChecking=no docker-compose.prod.yml $PRODUCTION_SERVER:/var/www/app/docker-compose.yml
 
 # Clean up old images
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'docker system prune --force --volumes'
+ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'docker system prune -a --force --volumes'
 
 # Log into Production Server, Pull and Restart Docker
 ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker stack deploy --prune -c docker-compose.yml support-service'
