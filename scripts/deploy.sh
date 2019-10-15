@@ -15,17 +15,10 @@ done
 
 # Send Latest Scripts to Production Server
 rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $PRODUCTION_SERVER:/var/www/app/scripts/
-scp -o StrictHostKeyChecking=no nginx.conf $PRODUCTION_SERVER:/etc/nginx/nginx.conf
 scp -o StrictHostKeyChecking=no docker-compose.prod.yml $PRODUCTION_SERVER:/var/www/app/docker-compose.yml
 
 # Clean up old images
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'docker system prune --force --volumes'
+ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'docker system prune -a --force --volumes'
 
 # Log into Production Server, Pull and Restart Docker
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose pull'
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose build'
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose down --remove-orphans'
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose up -d'
-
-# Restart Nginx 
-ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'sudo nginx -s reload'
+ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker stack deploy --prune -c docker-compose.yml support-service'

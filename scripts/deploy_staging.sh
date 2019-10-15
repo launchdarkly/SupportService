@@ -15,17 +15,13 @@ done
 
 # Send Latest Scripts to Production Server
 rsync -e "ssh -o StrictHostKeyChecking=no" -avz scripts/ $STAGING_SERVER:/var/www/app/scripts/
-scp -o StrictHostKeyChecking=no nginx.conf $STAGING_SERVER:/etc/nginx/nginx.conf
 scp -o StrictHostKeyChecking=no docker-compose.prod.yml $STAGING_SERVER:/var/www/app/docker-compose.yml
 
 # Clean up old images
 ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'docker system prune --force --volumes'
 
-# Log into Production Server, Pull and Restart Docker
-ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose pull'
-ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose build'
-ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose down --remove-orphans'
-ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose up -d'
-
-# Restart Nginx 
-ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'sudo nginx -s reload'
+# Log into Staging Server, Pull and Restart Docker
+ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker stack deploy -c docker-compose.yml support-service'
+#ssh -o StrictHostKeyChecking=no $STAGING_SERVER 'cd /var/www/app && docker-compose build'
+#ssh -o StrictHostKeyChecking=no $PRODUCTION_SERVER 'cd /var/www/app && docker-compose down --remove-orphans'
+#ssh -o StrictHostKeyChecking=no $PSTAGING_SERVER 'cd /var/www/app && docker-compose up --no-deps -d app'
