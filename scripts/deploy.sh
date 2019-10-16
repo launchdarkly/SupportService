@@ -12,7 +12,7 @@
 
 if [ -z "$1" ]
   then 
-  	echo "Warning: no environment argument supplied"
+  	echo "ERROR: no environment argument supplied"
   	exit 1
   else
   	SERVER="ubuntu@$1.ldsolutions.org"
