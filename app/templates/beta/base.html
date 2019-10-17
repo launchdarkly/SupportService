@@ -1,7 +1,7 @@
 {% extends 'bootstrap/base.html' %}
 
 {% block head %}
-    <script crossorigin="anonymous" src="https://app.launchdarkly.com/snippet/ldclient.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>
     <script>
             var ldclient = LDClient.initialize("{{ LD_FRONTEND_KEY }}", {{ current_user.get_ld_user() | safe }}, options = {
                 bootstrap: {{ all_flags | safe }}                
