@@ -9,4 +9,3 @@
  * seen in package.json. Using browserify and uglify, we create a minified
  * bundle in the app/static/shared/js/bundle.min.js file.
  */
-global.QuickSightEmbedding = require('amazon-quicksight-embedding-sdk');

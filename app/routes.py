@@ -111,7 +111,6 @@ def operational():
 @core.route('/dataexport')
 def dataexport():
 
-    embed_url = None
     theme = request.args.get("theme")
 
     if theme:
@@ -120,27 +119,11 @@ def dataexport():
     user = current_user.get_ld_user()
     session['ld_user'] = user
 
-    # if AWS creds are not set, don't show the dashboard
-    try:
-
-        embed_url = fetch_aws_embed_url()
-
-    except botocore.exceptions.NoCredentialsError as e:
-
-        current_app.logger.debug(e)
-
-    show_data_export = ldclient.get().variation(
-        'data-export',
-        user,
-        False)
-
     set_theme = '{0}/dataexport.html'.format(current_user.set_path)
 
     return render_template (
         set_theme,
-        title='dataexport',
-        embed_url=embed_url,
-        show_data_export=show_data_export
+        title='dataexport'
     )
 
 @core.route('/release')
@@ -254,28 +237,6 @@ def upgrade():
 
     return redirect(request.referrer)
 
-def fetch_aws_embed_url():
-    """
-    This function is used to generate a new embedded url
-    key each time the data export page is requested
-    """
-    client = boto3.client(
-        'quicksight',
-        region_name = current_app.config['AWS_QUICKSIGHT_REGION'],
-        aws_access_key_id = current_app.config['AWS_QUICKSIGHT_ACCESS_KEY_ID'],
-        aws_secret_access_key = current_app.config['AWS_QUICKSIGHT_SECRET_ACCESS_KEY_ID']
-    )
-
-    response = client.get_dashboard_embed_url(
-        AwsAccountId = current_app.config['AWS_ACCOUNT_ID'],
-        DashboardId = current_app.config['AWS_QUICKSIGHT_DASHBOARD_ID'],
-        IdentityType='IAM',
-        SessionLifetimeInMinutes = current_app.config['AWS_QUICKSIGHT_SESSION_LIFE'],
-        UndoRedoDisabled = True,
-        ResetDisabled = True
-    )
-    embedUrl = response.get('EmbedUrl')
-    return embedUrl
 
 @core.route('/environments')
 def environments():
