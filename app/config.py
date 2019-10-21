@@ -61,12 +61,13 @@ class DevelopmentConfig(Config):
     def init_app(app):
         Config.init_app(app)
         with app.app_context():
+            setup_ld_client(app)
+
             from app.db import db
             from app.models import User
             from app.models import Plan
 
             db.init_app(app)
-            setup_ld_client(app)
             db.create_all()
 
             # check if plans exist

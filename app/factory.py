@@ -19,7 +19,6 @@ from app.config import config
 from app.util import getLdMachineUser
 from app.ld import LaunchDarklyApi
 from app.cli.generators import ConfigGenerator
-from app.models import User
 from app.db import db
 
 
@@ -59,6 +58,7 @@ class SubdomainDispatcher(object):
         app = self.get_application(environ['HTTP_HOST'])
         @login.user_loader
         def load_user(id):
+            from app.models import User
             return User.query.get(id)
         return app(environ, start_response)
 
