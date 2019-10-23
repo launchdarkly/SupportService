@@ -66,7 +66,6 @@ class DevelopmentConfig(Config):
             from app.models import Plan
 
             db.init_app(app)
-            setup_ld_client(app)
             db.create_all()
 
             # check if plans exist
@@ -153,6 +152,7 @@ config = {
 
 def setup_ld_client(app):
     # define and set required env vars
+    new_client = ldclient.LDClient()
     LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", app.config['LD_CLIENT_KEY'], required=True)
     LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", app.config['LD_FRONTEND_KEY'], required=True)
 
@@ -166,6 +166,8 @@ def setup_ld_client(app):
             events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
             stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
         )
-        ldclient.set_config(config)
+        new_client.set_config(config)
     else:
-        ldclient.set_sdk_key(LD_CLIENT_KEY)
+        new_client.set_sdk_key(LD_CLIENT_KEY)
+
+    return new_client

@@ -4,6 +4,8 @@ from threading import Lock
 import pickle
 
 import ldclient
+from ldclient import Config as LdConfig
+
 import redis
 
 from flask import Flask
@@ -13,7 +15,6 @@ from flask_migrate import Migrate
 from werkzeug.serving import run_simple
 from werkzeug.exceptions import NotFound
 from flask_redis import FlaskRedis
-
 from app.cache import cache
 from app.config import config
 from app.util import getLdMachineUser
@@ -21,8 +22,6 @@ from app.ld import LaunchDarklyApi
 from app.cli.generators import ConfigGenerator
 from app.models import User
 from app.db import db
-
-
 
 migrate = Migrate()
 bootstrap =  Bootstrap()
@@ -82,8 +81,7 @@ def create_app(env_id, env_api_key, config_name):
         logging.info(env_id)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
-
-    #app.ld = ld
+    app.ldclient = setup_ld_client(app)
     app.logger.info("APP VERSION: " + app.config['VERSION'])
 
     bootstrap.init_app(app)
@@ -113,7 +111,7 @@ def create_app(env_id, env_api_key, config_name):
         This is an operational feature flag.
         """
         from flask import request
-        logLevel = ldclient.get().variation("set-logging-level", getLdMachineUser(request), logging.INFO)
+        logLevel = app.ldclient.variation("set-logging-level", getLdMachineUser(request), logging.INFO)
 
         app.logger.info("Log level is {0}".format(logLevel))
 
@@ -123,6 +121,7 @@ def create_app(env_id, env_api_key, config_name):
         logging.getLogger('werkzeug').setLevel(logLevel)
         # set root
         logging.getLogger().setLevel(logLevel)
+
 
     return app
 
@@ -141,12 +140,40 @@ def make_app(ld, rclient, subdomain, config_name):
 
     return NotFound()
 
+def setup_ld_client(app):
+    # define and set required env vars
+    LD_CLIENT_KEY = app.config['LD_CLIENT_KEY']
+    LD_FRONTEND_KEY = app.config['LD_FRONTEND_KEY']
+    ld_config = LdConfig(
+        sdk_key = LD_CLIENT_KEY,
+        connect_timeout = 30,
+        read_timeout = 30
+    )
+
+    # LaunchDarkly Config
+    # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
+    if "LD_RELAY_URL" in os.environ:
+        base_uri = os.environ.get("LD_RELAY_URL")
+        config = LdConfig(
+            sdk_key = app.config.LD_CLIENT_KEY,
+            base_uri = base_uri,
+            events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
+            stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
+        )
+        ld_config = ld_config(**config)
+
+    new_client = ldclient.LDClient(config=ld_config)
+
+    return new_client
+
 def build_environment(app):
     if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
         app.redis_client = FlaskRedis(app)
 
     return app
 
+def CachingDisabled(app):
+    return app.ldclient.variation('disable-caching', getLdMachineUser(), True)
 
 def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
     """
