@@ -7,11 +7,11 @@
 # the latest docker image and restarts docker-compose.
 #
 # We have two enrivonments: production and staging. Please specify which host target
-# you wish to deploy when executing the script. For example, to deploy to production, 
+# you wish to deploy when executing the script. For example, to deploy to production,
 # execute "deploy.sh production".
 
 if [ -z "$1" ]
-  then 
+  then
   	echo "ERROR: no environment argument supplied"
   	exit 1
   else
@@ -31,5 +31,4 @@ scp -o StrictHostKeyChecking=no docker-compose.prod.yml $SERVER:/var/www/app/doc
 ssh -o StrictHostKeyChecking=no $SERVER 'docker system prune -a --force --volumes'
 
 # Log into Production Server, Pull and Restart Docker
-ssh -o StrictHostKeyChecking=no $SERVER 'cd /var/www/app && docker stack deploy --prune -c docker-compose.yml support-service'
-
+ssh -o StrictHostKeyChecking=no $SERVER 'cd /var/www/app && docker stack deploy --resolve-image always --prune -c docker-compose.yml support-service'

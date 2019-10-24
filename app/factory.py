@@ -5,6 +5,8 @@ import pickle
 
 import ldclient
 from ldclient import Config as LdConfig
+from ldclient.feature_store import CacheConfig
+from ldclient.integrations import Redis
 
 import redis
 
@@ -142,12 +144,17 @@ def make_app(ld, rclient, subdomain, config_name):
 
 def setup_ld_client(app):
     # define and set required env vars
+    redis_prefix = app.config['LD_FRONTEND_KEY'] + "-featurestore"
+    store = Redis.new_feature_store(url="redis:/" + app.config['REDIS_HOST'],
+    prefix=redis_prefix, caching=CacheConfig(expiration=0))
+
     LD_CLIENT_KEY = app.config['LD_CLIENT_KEY']
     LD_FRONTEND_KEY = app.config['LD_FRONTEND_KEY']
     ld_config = LdConfig(
         sdk_key = LD_CLIENT_KEY,
         connect_timeout = 30,
-        read_timeout = 30
+        read_timeout = 30,
+        feature_store = store
     )
 
     # LaunchDarkly Config

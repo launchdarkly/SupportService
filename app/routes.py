@@ -240,6 +240,7 @@ def upgrade():
 @core.route('/environments')
 def environments():
     webhook = current_app.ldclient.variation('environments-webhook', current_user.get_ld_user(), False)
+
     if webhook:
         try:
             ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
