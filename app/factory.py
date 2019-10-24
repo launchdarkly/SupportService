@@ -53,6 +53,8 @@ class SubdomainDispatcher(object):
             app = self.instances.get(subdomain)
             if app is None:
                 app = make_app(self.ld, self.rclient, subdomain, self.config_name)
+                if app is None:
+                    return NotFound()
                 self.instances[subdomain] = app
             return app
 
@@ -140,7 +142,7 @@ def make_app(ld, rclient, subdomain, config_name):
         if env.key == subdomain:
             return create_app(env.id, env.api_key, config_name)
 
-    return NotFound()
+    return None
 
 def setup_ld_client(app):
     # define and set required env vars
