@@ -74,7 +74,6 @@ def create_app(env_id, env_api_key, config_name):
     :returns: a flask application
     """
     app = Flask(__name__)
-    app = build_environment(app)
     if env_api_key:
         app.config['LD_CLIENT_KEY'] = env_api_key
         logging.info(env_api_key)
@@ -83,6 +82,7 @@ def create_app(env_id, env_api_key, config_name):
         logging.info(env_id)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
+    app = build_environment(app)
     app.ldclient = setup_ld_client(app)
     app.logger.info("APP VERSION: " + app.config['VERSION'])
 
@@ -182,7 +182,6 @@ def setup_ld_client(app):
 def build_environment(app):
     if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
         app.redis_client = FlaskRedis(app)
-
     return app
 
 def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):

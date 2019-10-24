@@ -42,7 +42,7 @@ class Config(object):
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
     REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
     CACHE_REDIS_HOST = REDIS_HOST
-    REDIS_URL = os.environ.get('REDIS_URL')
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
     CACHE_CONFIG = {'CACHE_TYPE': 'simple'}
 
     root = logging.getLogger()
