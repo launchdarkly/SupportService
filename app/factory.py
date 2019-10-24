@@ -145,8 +145,9 @@ def make_app(ld, rclient, subdomain, config_name):
 def setup_ld_client(app):
     # define and set required env vars
     redis_prefix = app.config['LD_FRONTEND_KEY'] + "-featurestore"
+    redis_conn = "redis://" + app.config['REDIS_HOST'] + ":6379"
     if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
-        store = Redis.new_feature_store(url="redis:/" + app.config['REDIS_HOST'],
+        store = Redis.new_feature_store(url=redis_conn,
             prefix=redis_prefix, caching=CacheConfig(expiration=0))
     elif os.environ.get('FLASK_ENV') == "default":
         store = InMemoryFeatureStore()
