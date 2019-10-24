@@ -118,7 +118,6 @@ class StagingConfig(Config):
     @staticmethod
     def init_app(app):
         Config.init_app(app)
-        setup_ld_client(app)
         with app.app_context():
             from app.db import db
             from app.models import User
@@ -134,7 +133,6 @@ class ProductionConfig(Config):
     @staticmethod
     def init_app(app):
         Config.init_app(app)
-        setup_ld_client(app)
         with app.app_context():
             from app.db import db
             from app.models import User
@@ -149,25 +147,3 @@ config = {
     'staging': StagingConfig,
     'default': DevelopmentConfig
 }
-
-def setup_ld_client(app):
-    # define and set required env vars
-    new_client = ldclient.LDClient()
-    LD_CLIENT_KEY = env_var("LD_CLIENT_KEY", app.config['LD_CLIENT_KEY'], required=True)
-    LD_FRONTEND_KEY = env_var("LD_FRONTEND_KEY", app.config['LD_FRONTEND_KEY'], required=True)
-
-    # LaunchDarkly Config
-    # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
-    if "LD_RELAY_URL" in os.environ:
-        base_uri = os.environ.get("LD_RELAY_URL")
-        config = LdConfig(
-            sdk_key = app.config.LD_CLIENT_KEY,
-            base_uri = base_uri,
-            events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
-            stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
-        )
-        new_client.set_config(config)
-    else:
-        new_client.set_sdk_key(LD_CLIENT_KEY)
-
-    return new_client
