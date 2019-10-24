@@ -248,7 +248,8 @@ def environments():
             project_pick = pickle.dumps(project)
             current_app.redis_client.set(PROJECT_NAME, project_pick)
             return jsonify({'response': 200})
-        except:
+        except Exception as e:
+            current_app.logger.error(e)
             return jsonify({'response': 400})
     else:
         abort(404)

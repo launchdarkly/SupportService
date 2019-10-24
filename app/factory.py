@@ -148,7 +148,7 @@ def setup_ld_client(app):
     redis_conn = "redis://" + app.config['REDIS_HOST'] + ":6379"
     if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
         store = Redis.new_feature_store(url=redis_conn,
-            prefix=redis_prefix, caching=CacheConfig(expiration=0))
+            prefix=redis_prefix, caching=CacheConfig.disabled())
     elif os.environ.get('FLASK_ENV') == "default":
         store = InMemoryFeatureStore()
     else:
