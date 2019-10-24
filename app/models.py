@@ -8,6 +8,7 @@ from flask import current_app
 from flask_login import AnonymousUserMixin, UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from app.cache import cache, caching_disabled, CACHE_TIMEOUT
 from app.db import db
 
 fake = Faker()
@@ -43,6 +44,7 @@ class User(UserMixin, db.Model):
     def get_email_hash(self):
         return hashlib.md5(self.email.encode()).hexdigest()
 
+    @cache.cached(timeout=CACHE_TIMEOUT(), unless=caching_disabled(), key_prefix='-users')
     def get_ld_user(self):
         app_version = current_app.config['VERSION']
         milliseconds = int(round(time.time() * 1000))

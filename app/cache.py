@@ -1,11 +1,12 @@
-from flask import current_app as app
+
 from flask_caching import Cache
 
+from app.admin_ldclient import admin_ldclient
 from app.util import getLdMachineUser
 
 cache = Cache()
-#with app.app_context():
-#    CACHE_TIMEOUT = lambda : app.ldclient.variation('cache-timeout', getLdMachineUser(), 50)
 
-#def CachingDisabled(app):
-#    return app.ldclient.variation('disable-caching', getLdMachineUser(), True)
+CACHE_TIMEOUT = lambda : admin_ldclient.variation('cache-timeout', getLdMachineUser(), 50)
+
+def caching_disabled():
+    return admin_ldclient.variation('disable-caching', getLdMachineUser(), True)

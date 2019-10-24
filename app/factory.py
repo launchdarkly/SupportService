@@ -172,9 +172,6 @@ def build_environment(app):
 
     return app
 
-def CachingDisabled(app):
-    return app.ldclient.variation('disable-caching', getLdMachineUser(), True)
-
 def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
     """
     Modified from `flask.Flask.run`

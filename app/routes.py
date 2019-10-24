@@ -5,12 +5,12 @@ import botocore
 import os
 import time
 import pickle
-#import ldclient
 from flask import (abort, Blueprint, current_app, flash, redirect, render_template,
                    request, url_for, session, jsonify)
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
+from app.cache import cache, CACHE_TIMEOUT, caching_disabled
 from app.factory import db, PROJECT_NAME
 from app.ld import LaunchDarklyApi
 from app.models import User, Plan
@@ -203,8 +203,7 @@ def profile():
     )
 
 @core.route('/people')
-#@cache.cached(timeout=cache_time, unless=cache_disabled)
-#@cache.cached(unless=current_app.CachingDisabled())
+@cache.cached(timeout=CACHE_TIMEOUT(), unless=caching_disabled())
 @login_required
 def people():
     page = request.args.get('page', 1, type=int)
