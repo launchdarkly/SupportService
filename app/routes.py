@@ -5,13 +5,12 @@ import botocore
 import os
 import time
 import pickle
-import ldclient
 from flask import (abort, Blueprint, current_app, flash, redirect, render_template,
                    request, url_for, session, jsonify)
 from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
-from app.cache import CachingDisabled, CACHE_TIMEOUT, cache
+from app.cache import cache, CACHE_TIMEOUT, caching_disabled
 from app.factory import db, PROJECT_NAME
 from app.ld import LaunchDarklyApi
 from app.models import User, Plan
@@ -36,7 +35,7 @@ def index():
     session['ld_user'] = user
 
     flag_name = 'trial-duration'
-    trial_duration = ldclient.get().variation_detail(
+    trial_duration = current_app.ldclient.variation_detail(
         flag_name,
         user,
         False)
@@ -52,7 +51,7 @@ def index():
         'variation': trial_duration.variation_index,
         'time': end_time,
     }
-    ldclient.get().track('trial-rendering', user, data_export)
+    current_app.ldclient.track('trial-rendering', user, data_export)
 
     session['trial_duration'] = trial_duration.value
 
@@ -65,7 +64,7 @@ def dashboard():
     if theme:
         updateTheme(theme)
 
-    beta_features = ldclient.get().variation('dark-theme', current_user.get_ld_user(), False)
+    beta_features = current_app.ldclient.variation('dark-theme', current_user.get_ld_user(), False)
 
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
@@ -94,7 +93,7 @@ def experiments():
 
     random_user = current_user.get_random_ld_user()
 
-    show_nps = ldclient.get().variation('show-nps-survery', random_user, False)
+    show_nps = current_app.ldclient.variation('show-nps-survery', random_user, False)
 
     return render_template(set_theme, title='Experiments', show_nps=show_nps, random_user=random_user)
 
@@ -142,7 +141,7 @@ def register():
     # page by clicking a link on the home page (where they saw the ab test)
     if session.get('ld_user'):
         current_app.logger.info("Sending track event for {0}".format(session.get('ld_user')))
-        ldclient.get().track('started-registration', session['ld_user'])
+        current_app.ldclient.track('started-registration', session['ld_user'])
 
     if current_user.is_authenticated:
         return redirect(url_for('core.dashboard'))
@@ -167,7 +166,7 @@ def register():
         # page by clicking a link on the home page (where they saw the ab test)
         if session.get('ld_user'):
             current_app.logger.info("Sending track event for {0}".format(session.get('ld_user')))
-            ldclient.get().track('registered', session['ld_user'])
+            current_app.ldclient.track('registered', session['ld_user'])
 
         login_user(user)
         return redirect(url_for('core.dashboard'))
@@ -204,7 +203,7 @@ def profile():
     )
 
 @core.route('/people')
-@cache.cached(timeout=CACHE_TIMEOUT(), unless=CachingDisabled())
+@cache.cached(timeout=CACHE_TIMEOUT(), unless=caching_disabled())
 @login_required
 def people():
     page = request.args.get('page', 1, type=int)
@@ -240,7 +239,8 @@ def upgrade():
 
 @core.route('/environments')
 def environments():
-    webhook = ldclient.get().variation('environments-webhook', current_user.get_ld_user(), False)
+    webhook = current_app.ldclient.variation('environments-webhook', current_user.get_ld_user(), False)
+
     if webhook:
         try:
             ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
@@ -248,7 +248,8 @@ def environments():
             project_pick = pickle.dumps(project)
             current_app.redis_client.set(PROJECT_NAME, project_pick)
             return jsonify({'response': 200})
-        except:
+        except Exception as e:
+            current_app.logger.error(e)
             return jsonify({'response': 400})
     else:
         abort(404)

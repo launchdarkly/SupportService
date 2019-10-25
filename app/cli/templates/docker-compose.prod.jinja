@@ -10,6 +10,7 @@ services:
       - FLASK_ENV=production
       - LD_API_KEY={{ env("LD_API_KEY") }}
       - REDIS_HOST=cache
+      - REDIS_URL=redis://cache:6379/0
       - AWS_ACCOUNT_ID={{ env("AWS_ACCOUNT_ID") }}
       - DATADOG_HOST=datadog-agent
       - DD_AGENT_HOST=datadog-agent

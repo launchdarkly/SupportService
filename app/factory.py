@@ -4,6 +4,10 @@ from threading import Lock
 import pickle
 
 import ldclient
+from ldclient import Config as LdConfig
+from ldclient.feature_store import CacheConfig, InMemoryFeatureStore
+from ldclient.integrations import Redis
+
 import redis
 
 from flask import Flask
@@ -13,15 +17,12 @@ from flask_migrate import Migrate
 from werkzeug.serving import run_simple
 from werkzeug.exceptions import NotFound
 from flask_redis import FlaskRedis
-
 from app.cache import cache
 from app.config import config
 from app.util import getLdMachineUser
 from app.ld import LaunchDarklyApi
 from app.cli.generators import ConfigGenerator
 from app.db import db
-
-
 
 migrate = Migrate()
 bootstrap =  Bootstrap()
@@ -51,6 +52,8 @@ class SubdomainDispatcher(object):
             app = self.instances.get(subdomain)
             if app is None:
                 app = make_app(self.ld, self.rclient, subdomain, self.config_name)
+                if app is None:
+                    return NotFound()
                 self.instances[subdomain] = app
             return app
 
@@ -73,7 +76,6 @@ def create_app(env_id, env_api_key, config_name):
     :returns: a flask application
     """
     app = Flask(__name__)
-    app = build_environment(app)
     if env_api_key:
         app.config['LD_CLIENT_KEY'] = env_api_key
         logging.info(env_api_key)
@@ -82,8 +84,8 @@ def create_app(env_id, env_api_key, config_name):
         logging.info(env_id)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
-
-    #app.ld = ld
+    app = build_environment(app)
+    app.ldclient = setup_ld_client(app)
     app.logger.info("APP VERSION: " + app.config['VERSION'])
 
     bootstrap.init_app(app)
@@ -113,7 +115,7 @@ def create_app(env_id, env_api_key, config_name):
         This is an operational feature flag.
         """
         from flask import request
-        logLevel = ldclient.get().variation("set-logging-level", getLdMachineUser(request), logging.INFO)
+        logLevel = app.ldclient.variation("set-logging-level", getLdMachineUser(request), logging.INFO)
 
         app.logger.info("Log level is {0}".format(logLevel))
 
@@ -123,6 +125,7 @@ def create_app(env_id, env_api_key, config_name):
         logging.getLogger('werkzeug').setLevel(logLevel)
         # set root
         logging.getLogger().setLevel(logLevel)
+
 
     return app
 
@@ -139,14 +142,49 @@ def make_app(ld, rclient, subdomain, config_name):
         if env.key == subdomain:
             return create_app(env.id, env.api_key, config_name)
 
-    return NotFound()
+    return None
+
+def setup_ld_client(app):
+    # define and set required env vars
+    redis_prefix = app.config['LD_FRONTEND_KEY'] + "-featurestore"
+    redis_conn = "redis://" + app.config['REDIS_HOST'] + ":6379"
+    if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
+        store = Redis.new_feature_store(url=redis_conn,
+            prefix=redis_prefix, caching=CacheConfig.disabled())
+    elif os.environ.get('FLASK_ENV') == "default":
+        store = InMemoryFeatureStore()
+    else:
+        store = InMemoryFeatureStore()
+
+    LD_CLIENT_KEY = app.config['LD_CLIENT_KEY']
+    LD_FRONTEND_KEY = app.config['LD_FRONTEND_KEY']
+    ld_config = LdConfig(
+        sdk_key = LD_CLIENT_KEY,
+        connect_timeout = 30,
+        read_timeout = 30,
+        feature_store = store
+    )
+
+    # LaunchDarkly Config
+    # If $LD_RELAY_URL is set, client will be pointed to a relay instance.
+    if "LD_RELAY_URL" in os.environ:
+        base_uri = os.environ.get("LD_RELAY_URL")
+        config = LdConfig(
+            sdk_key = app.config.LD_CLIENT_KEY,
+            base_uri = base_uri,
+            events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
+            stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
+        )
+        ld_config = ld_config(**config)
+
+    new_client = ldclient.LDClient(config=ld_config)
+
+    return new_client
 
 def build_environment(app):
     if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
         app.redis_client = FlaskRedis(app)
-
     return app
-
 
 def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
     """
