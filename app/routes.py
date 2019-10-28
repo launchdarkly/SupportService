@@ -242,18 +242,16 @@ def environments():
     webhook = current_app.ldclient.variation('environments-webhook', current_user.get_ld_user(), False)
     url = url_parse(request.url)
     subdomain = url.host.split('.')[0]
-    if subdomain == 'admin':
-        if webhook:
-            try:
-                ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
-                project = ld.get_project(PROJECT_NAME)
-                project_pick = pickle.dumps(project)
-                current_app.redis_client.set(PROJECT_NAME, project_pick)
-                return jsonify({'response': 200})
-            except Exception as e:
-                current_app.logger.error(e)
-                return jsonify({'response': 400})
-        else:
-            abort(404)
+
+    if subdomain == 'admin' and webhook:
+        try:
+            ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
+            project = ld.get_project(PROJECT_NAME)
+            project_pick = pickle.dumps(project)
+            current_app.redis_client.set(PROJECT_NAME, project_pick)
+            return jsonify({'response': 200})
+        except Exception as e:
+            current_app.logger.error(e)
+            abort(500)
     else:
-        return "NO ACCESS"
+        abort(403)
