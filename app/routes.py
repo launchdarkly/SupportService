@@ -240,8 +240,10 @@ def upgrade():
 @core.route('/environments')
 def environments():
     webhook = current_app.ldclient.variation('environments-webhook', current_user.get_ld_user(), False)
+    url = url_parse(request.url)
+    subdomain = url.host.split('.')[0]
 
-    if webhook:
+    if subdomain == 'admin' and webhook:
         try:
             ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
             project = ld.get_project(PROJECT_NAME)
@@ -250,6 +252,6 @@ def environments():
             return jsonify({'response': 200})
         except Exception as e:
             current_app.logger.error(e)
-            return jsonify({'response': 400})
+            abort(500)
     else:
-        abort(404)
+        abort(403)
