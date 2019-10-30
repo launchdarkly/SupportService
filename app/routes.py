@@ -233,6 +233,8 @@ def settings():
 def upgrade():
     current_user.plan_id = request.args.get('plan')
     db.session.commit()
+    with current_app.app_context():
+        cache.clear()
 
     return redirect(request.referrer)
 

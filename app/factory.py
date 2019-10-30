@@ -89,7 +89,8 @@ def create_app(env_id, env_api_key, config_name):
     app.logger.info("APP VERSION: " + app.config['VERSION'])
 
     bootstrap.init_app(app)
-    cache_config = { **app.config['CACHE_CONFIG'], 'CACHE_KEY_PREFIX': env_id }
+    flask_cache_key = env_id + "-flask-"
+    cache_config = { **app.config['CACHE_CONFIG'], 'CACHE_KEY_PREFIX': flask_cache_key }
     cache.init_app(app, config=cache_config)
     login.init_app(app)
 
