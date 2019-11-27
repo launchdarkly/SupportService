@@ -25,28 +25,29 @@ from app.cli.generators import ConfigGenerator
 from app.db import db
 
 migrate = Migrate()
-bootstrap =  Bootstrap()
+bootstrap = Bootstrap()
 login = LoginManager()
 
-PROJECT_NAME = 'support-service'
+PROJECT_NAME = "support-service"
+
 
 class SubdomainDispatcher(object):
-
-    def __init__(self, debug=False, config_name='default'):
+    def __init__(self, debug=False, config_name="default"):
         self.lock = Lock()
         self.instances = {}
-        self.ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
-        self.config_name= config_name
-        if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
-            self.rclient = redis.Redis(host=os.environ.get('REDIS_HOST'))
+        self.ld = LaunchDarklyApi(os.environ.get("LD_API_KEY"))
+        self.config_name = config_name
+        if os.environ.get("TESTING") is None or os.environ.get("TESTING") == False:
+            self.rclient = redis.Redis(host=os.environ.get("REDIS_HOST"))
         else:
             import fakeredis
+
             self.rclient = fakeredis.FakeStrictRedis()
 
     def get_application(self, host):
-        host = host.split(':')[0]
+        host = host.split(":")[0]
         logging.info(host)
-        subdomain = host.split('.')[0]
+        subdomain = host.split(".")[0]
 
         with self.lock:
             app = self.instances.get(subdomain)
@@ -58,11 +59,14 @@ class SubdomainDispatcher(object):
             return app
 
     def __call__(self, environ, start_response):
-        app = self.get_application(environ['HTTP_HOST'])
+        app = self.get_application(environ["HTTP_HOST"])
+
         @login.user_loader
         def load_user(id):
             from app.models import User
+
             return User.query.get(id)
+
         return app(environ, start_response)
 
 
@@ -77,29 +81,31 @@ def create_app(env_id, env_api_key, config_name):
     """
     app = Flask(__name__)
     if env_api_key:
-        app.config['LD_CLIENT_KEY'] = env_api_key
+        app.config["LD_CLIENT_KEY"] = env_api_key
         logging.info(env_api_key)
     if env_id:
-        app.config['LD_FRONTEND_KEY'] = env_id
+        app.config["LD_FRONTEND_KEY"] = env_id
         logging.info(env_id)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     app = build_environment(app)
     app.ldclient = setup_ld_client(app)
-    app.logger.info("APP VERSION: " + app.config['VERSION'])
+    app.logger.info("APP VERSION: " + app.config["VERSION"])
 
     bootstrap.init_app(app)
     flask_cache_key = env_id + "-flask-"
-    cache_config = { **app.config['CACHE_CONFIG'], 'CACHE_KEY_PREFIX': flask_cache_key }
+    cache_config = {**app.config["CACHE_CONFIG"], "CACHE_KEY_PREFIX": flask_cache_key}
     cache.init_app(app, config=cache_config)
     login.init_app(app)
 
-    login.login_view = 'core.login'
+    login.login_view = "core.login"
     from app.models import AnonymousUser
+
     login.anonymous_user = AnonymousUser
     migrate.init_app(app, db)
 
     from app.routes import core
+
     app.register_blueprint(core)
 
     @app.before_request
@@ -116,19 +122,22 @@ def create_app(env_id, env_api_key, config_name):
         This is an operational feature flag.
         """
         from flask import request
-        logLevel = app.ldclient.variation("set-logging-level", getLdMachineUser(request), logging.INFO)
+
+        logLevel = app.ldclient.variation(
+            "set-logging-level", getLdMachineUser(request), logging.INFO
+        )
 
         app.logger.info("Log level is {0}".format(logLevel))
 
         # set app
         app.logger.setLevel(logLevel)
         # set werkzeug
-        logging.getLogger('werkzeug').setLevel(logLevel)
+        logging.getLogger("werkzeug").setLevel(logLevel)
         # set root
         logging.getLogger().setLevel(logLevel)
 
-
     return app
+
 
 def make_app(ld, rclient, subdomain, config_name):
     load_project = rclient.get(PROJECT_NAME)
@@ -138,32 +147,30 @@ def make_app(ld, rclient, subdomain, config_name):
     else:
         project = pickle.loads(load_project)
 
-
     for env in project.environments:
         if env.key == subdomain:
             return create_app(env.id, env.api_key, config_name)
 
     return None
 
+
 def setup_ld_client(app):
     # define and set required env vars
-    redis_prefix = app.config['LD_FRONTEND_KEY'] + "-featurestore"
-    redis_conn = "redis://" + app.config['REDIS_HOST'] + ":6379"
-    if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
-        store = Redis.new_feature_store(url=redis_conn,
-            prefix=redis_prefix, caching=CacheConfig.disabled())
-    elif os.environ.get('FLASK_ENV') == "default":
+    redis_prefix = app.config["LD_FRONTEND_KEY"] + "-featurestore"
+    redis_conn = "redis://" + app.config["REDIS_HOST"] + ":6379"
+    if os.environ.get("TESTING") is None or os.environ.get("TESTING") == False:
+        store = Redis.new_feature_store(
+            url=redis_conn, prefix=redis_prefix, caching=CacheConfig.disabled()
+        )
+    elif os.environ.get("FLASK_ENV") == "default":
         store = InMemoryFeatureStore()
     else:
         store = InMemoryFeatureStore()
 
-    LD_CLIENT_KEY = app.config['LD_CLIENT_KEY']
-    LD_FRONTEND_KEY = app.config['LD_FRONTEND_KEY']
+    LD_CLIENT_KEY = app.config["LD_CLIENT_KEY"]
+    LD_FRONTEND_KEY = app.config["LD_FRONTEND_KEY"]
     ld_config = LdConfig(
-        sdk_key = LD_CLIENT_KEY,
-        connect_timeout = 30,
-        read_timeout = 30,
-        feature_store = store
+        sdk_key=LD_CLIENT_KEY, connect_timeout=30, read_timeout=30, feature_store=store
     )
 
     # LaunchDarkly Config
@@ -171,10 +178,10 @@ def setup_ld_client(app):
     if "LD_RELAY_URL" in os.environ:
         base_uri = os.environ.get("LD_RELAY_URL")
         config = LdConfig(
-            sdk_key = app.config.LD_CLIENT_KEY,
-            base_uri = base_uri,
-            events_uri = os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
-            stream_uri = os.environ.get("LD_RELAY_STREAM_URL", base_uri)
+            sdk_key=app.config.LD_CLIENT_KEY,
+            base_uri=base_uri,
+            events_uri=os.environ.get("LD_RELAY_EVENTS_URL", base_uri),
+            stream_uri=os.environ.get("LD_RELAY_STREAM_URL", base_uri),
         )
         ld_config = ld_config(**config)
 
@@ -182,12 +189,14 @@ def setup_ld_client(app):
 
     return new_client
 
+
 def build_environment(app):
-    if os.environ.get('TESTING') is None or os.environ.get('TESTING') == False:
+    if os.environ.get("TESTING") is None or os.environ.get("TESTING") == False:
         app.redis_client = FlaskRedis(app)
     return app
 
-def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
+
+def rundevserver(host="0.0.0.0", port=5000, domain="localhost", **options):
     """
     Modified from `flask.Flask.run`
     Runs the application on a local development server.
@@ -203,16 +212,16 @@ def rundevserver(host='0.0.0.0', port=5000, domain='localhost', **options):
     """
     from werkzeug.serving import run_simple
 
-    options.setdefault('use_reloader', True)
-    options.setdefault('use_debugger', True)
+    options.setdefault("use_reloader", True)
+    options.setdefault("use_debugger", True)
 
-    app = SubdomainDispatcher(config_name=os.environ.get('FLASK_ENV', 'default'))
+    app = SubdomainDispatcher(config_name=os.environ.get("FLASK_ENV", "default"))
 
     run_simple(host, port, app, **options)
 
 
-application = SubdomainDispatcher(config_name=os.environ.get('FLASK_ENV', 'default'))
+application = SubdomainDispatcher(config_name=os.environ.get("FLASK_ENV", "default"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     rundevserver(host="0.0.0.0")
