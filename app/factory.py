@@ -50,12 +50,16 @@ class SubdomainDispatcher(object):
         subdomain = host.split(".")[0]
 
         with self.lock:
+            # Check if flask already has instance in memory
             app = self.instances.get(subdomain)
+            # If not, make new instance
             if app is None:
                 app = make_app(self.ld, self.rclient, subdomain, self.config_name)
+                # If environment does not exist in Redis
                 if app is None:
                     return NotFound()
-                self.instances[subdomain] = app
+                else:
+                    self.instances[subdomain] = app
             return app
 
     def __call__(self, environ, start_response):
@@ -73,12 +77,21 @@ class SubdomainDispatcher(object):
 def create_app(env_id, env_api_key, config_name):
     """Flask application factory.
 
+    :param env_id: LD Environment SDK Key
+
+    :type env_id: string
+
+    :param env_api_key: LD Environment Client ID
+
+    :type env_api_key: string
+
     :param config_name: Flask Configuration
 
     :type config_name: app.config class
 
     :returns: a flask application
     """
+
     app = Flask(__name__)
     if env_api_key:
         app.config["LD_CLIENT_KEY"] = env_api_key
@@ -140,6 +153,25 @@ def create_app(env_id, env_api_key, config_name):
 
 
 def make_app(ld, rclient, subdomain, config_name):
+    """Check for LD Environment and build app
+    :param ld: Launchdarkly API Client
+
+    :type ld: launchdarkly_api class
+
+    :param rclient: Redis client
+
+    :type rclient: Redis client
+
+    :param subdomain: URL subdomain
+
+    :type subdomain: string
+
+    :param config_name: Flask Configuration
+
+    :type config_name: app.config class
+
+    :returns: Flask application
+    """
     load_project = rclient.get(PROJECT_NAME)
     if load_project is None:
         project = ld.get_project(PROJECT_NAME)
