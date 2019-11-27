@@ -39,7 +39,9 @@
 
     <script crossorigin="anonymous" src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>
     <script>
-            var ldclient = LDClient.initialize("{{ config['LD_FRONTEND_KEY'] }}", {{ current_user.get_ld_user() | safe }} );
+            var ldclient = LDClient.initialize("{{ config['LD_FRONTEND_KEY'] }}", {{ current_user.get_ld_user() | safe }}, options = {
+                bootstrap: {{ all_flags | safe }}
+            });
     </script>
 {% endblock headerJS %}
 

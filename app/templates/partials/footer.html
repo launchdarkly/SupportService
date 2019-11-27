@@ -1,6 +1,6 @@
 {% block footer %}
     <!-- ** *Note* LaunchDarkly is initialized in the header ** -->
-    
+
     <small>Support Service Version: {{ config['VERSION'] }}</small>
     <!-- Bootstrap Core JavaScript -->
     <script src="{{ url_for('static', filename='light/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -21,7 +21,7 @@
        var displayWidget = document.getElementById('widgets');
        var renderButton = function() {
            var showFeature = ldclient.variation("show-widgets", false);
-   
+
            if (showFeature) {
                displayWidget.style.display = "block";
            } else {
@@ -51,9 +51,9 @@
                         $chatbox.on('transitionend', function() {
                             if ($chatbox.hasClass('chatbox--closed')) $chatbox.slideDown();
                         });
-                        setTimeout(function(){ $chatboxTitle.trigger('click'); }, 700); 
+                        setTimeout(function(){ $chatboxTitle.trigger('click'); }, 700);
                     });
-                })(jQuery);       
+                })(jQuery);
            } else {
             $('.chatbox').hide();
             console.log('see ya')
@@ -61,13 +61,13 @@
        }
 
        // LD Client Rendering
-       ldclient.on('ready', function() {
-           console.log("It's now safe to request feature flags");
-           console.log(ldclient);
-           renderButton();
-           renderChatbox();
-       });
-   
+       ldclient.waitForInitialization().then(function() {
+            console.log("It's now safe to request feature flags");
+            console.log(ldclient);
+            renderButton();
+            renderChatbox();
+       })
+
        ldclient.on('change', function() {
            console.log('this should change')
            renderButton();
@@ -75,4 +75,4 @@
        });
 
    </script>
-{% endblock %}  
+{% endblock %}

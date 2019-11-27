@@ -4,10 +4,10 @@
     <script crossorigin="anonymous" src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>
     <script>
             var ldclient = LDClient.initialize("{{ LD_FRONTEND_KEY }}", {{ current_user.get_ld_user() | safe }}, options = {
-                bootstrap: {{ all_flags | safe }}                
+                bootstrap: {{ all_flags | safe }}
             });
     </script>
-    
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -33,11 +33,11 @@
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-    
+
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-              <a class="nav-link" href="{{ url_for('core.dashboard') }}"> 
+              <a class="nav-link" href="{{ url_for('core.dashboard') }}">
                 <i class="fa fa-fw fa-dashboard"></i>
                 <span class="nav-link-text">Dashboard</span>
               </a>
@@ -159,7 +159,7 @@
                     <span class="badge badge-pill badge-warning">6 New</span>
                   </span>
                   <span class="indicator text-warning d-none d-lg-block">
-                   
+
                   </span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="alertsDropdown">

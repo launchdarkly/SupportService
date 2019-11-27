@@ -66,9 +66,11 @@ def dashboard():
 
     beta_features = current_app.ldclient.variation('dark-theme', current_user.get_ld_user(), False)
 
+    bootstrap = current_app.ldclient.all_flags_state(current_user.get_ld_user())
+
     set_theme = '{0}/index.html'.format(current_user.set_path)
 
-    return render_template(set_theme, title='Home', show_beta=beta_features)
+    return render_template(set_theme, title='Home', show_beta=beta_features, all_flags=bootstrap.to_json_string())
 
 def updateTheme(theme):
 
