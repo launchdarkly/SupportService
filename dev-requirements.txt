@@ -7,3 +7,4 @@ unittest-xml-reporting
 codecov
 python-dotenv
 fakeredis
+black==19.10b0
