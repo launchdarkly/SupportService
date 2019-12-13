@@ -43,6 +43,9 @@ def index():
         return redirect(url_for("core.dashboard"))
 
     user = current_user.get_ld_user()
+    req_headers = request.user_agent
+    current_app.logger.error(req_headers)
+    user['browser'] = req_headers.browser
     session["ld_user"] = user
 
     flag_name = "trial-duration"
@@ -50,7 +53,8 @@ def index():
 
     start_time = time.time()
 
-    artifical_delay(trial_duration.value)
+    if current_app.ldclient.variation('artificial-delay', user, False):
+        artifical_delay(trial_duration.value)
 
     # Calculate the server processing time based on flag evaluation
     end_time = time.time() - start_time
@@ -62,22 +66,30 @@ def index():
     current_app.ldclient.track("trial-rendering", user, data_export)
 
     session["trial_duration"] = trial_duration.value
+    bootstrap = current_app.ldclient.all_flags_state(user)
+    user_template = json.dumps(user)
+    broken_release = current_app.ldclient.variation("accessibility-styling", user, False)
+    register_color = current_app.ldclient.variation("registration-button-color", user, "#28A745")
 
-    return render_template("home.html", trial_duration=trial_duration.value)
+    return render_template("home.html", all_flags=bootstrap.to_json_string(), register_color=register_color, broken_release=broken_release, user_template=user_template, trial_duration=trial_duration.value)
 
 
 @core.route("/dashboard")
 @login_required
 def dashboard():
     theme = request.args.get("theme")
+    user = current_user.get_ld_user()
+    user['agent'] = request.headers.get('User-Agent')
+
     if theme:
         updateTheme(theme)
 
     beta_features = current_app.ldclient.variation(
-        "dark-theme", current_user.get_ld_user(), False
+        "dark-theme", user, False
     )
 
-    bootstrap = current_app.ldclient.all_flags_state(current_user.get_ld_user())
+    user_template = json.dumps(user)
+    bootstrap = current_app.ldclient.all_flags_state(user)
 
     set_theme = "{0}/index.html".format(current_user.set_path)
 
@@ -85,9 +97,9 @@ def dashboard():
         set_theme,
         title="Home",
         show_beta=beta_features,
+        user_template=user_template,
         all_flags=bootstrap.to_json_string(),
     )
-
 
 def updateTheme(theme):
 
@@ -112,9 +124,11 @@ def experiments():
 
     set_theme = "{0}/exp.html".format(current_user.set_path)
 
+    user = current_user.get_ld_user()
     random_user = current_user.get_random_ld_user()
 
-    bootstrap = current_app.ldclient.all_flags_state(current_user.get_ld_user())
+    user_template = json.dumps(user)
+    bootstrap = current_app.ldclient.all_flags_state(user)
 
     show_nps = current_app.ldclient.variation("show-nps-survery", random_user, False)
 
@@ -123,6 +137,7 @@ def experiments():
         title="Experiments",
         show_nps=show_nps,
         random_user=random_user,
+        user_template=user_template,
         all_flags=bootstrap.to_json_string(),
     )
 
