@@ -45,7 +45,7 @@ def index():
     user = current_user.get_ld_user()
     req_headers = request.user_agent
     current_app.logger.error(req_headers)
-    user['browser'] = req_headers.browser
+    user['custom']['browser'] = req_headers.browser
     session["ld_user"] = user
 
     flag_name = "trial-duration"
