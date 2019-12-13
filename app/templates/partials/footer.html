@@ -83,9 +83,14 @@
             checkExists = document.cookie.indexOf('force_reload=');
             if (reload && checkExists == -1) {
                 console.log("Reloading")
+                var now = new Date();
+                var time = now.getTime();
+                time += 3600 * 1000;
+                now.setTime(time);
                 location.reload();
                 // Write cookie so we don't keep reloading forever
-                document.cookie = "force_reload=" + Date.now().toString()
+                document.cookie = 'force_reload=' + Date.now().toString() + '; expires=' + now.toUTCString() +
+'; path=/';
             }
        }
        // LD Client Rendering
