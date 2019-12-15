@@ -89,7 +89,7 @@ class AnonymousUser(AnonymousUserMixin):
             "custom": {
                 "app_version": app_version
             },
-            "anomymous": True
+            "anonymous": True
         }
 
         return user

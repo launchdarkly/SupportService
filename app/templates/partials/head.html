@@ -1,1 +1,9 @@
+{% block header %}
 <!-- Header scripts could go here -->
+<script crossorigin="anonymous" src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>
+<script>
+        var ldclient = LDClient.initialize("{{ config['LD_FRONTEND_KEY'] }}", {{ user_template | safe }}, options = {
+            bootstrap: {{ all_flags | safe }}
+        });
+</script>
+{% endblock %}

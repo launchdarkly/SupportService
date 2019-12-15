@@ -20,13 +20,18 @@
        // Show Widgets Code
        var displayWidget = document.getElementById('widgets');
        var renderButton = function() {
-           var showFeature = ldclient.variation("show-widgets", false);
+            var showFeature = ldclient.variation("show-widgets", false);
+            var displayWidget = document.getElementById('widgets');
 
-           if (showFeature) {
-               displayWidget.style.display = "block";
-           } else {
-               displayWidget.style.display = "none";
-           }
+            if (displayWidget) {
+                if (showFeature) {
+                    displayWidget.style.display = "block";
+                } else {
+                    displayWidget.style.display = "none";
+                }
+            }
+
+
        }
 
        // ChatBox Code
@@ -60,19 +65,50 @@
            }
        }
 
+        // a11y code
+        var a11y = function(){
+            console.log("Updating Accessibility")
+            var register_link = document.getElementsByClassName("register_link");
+            var brand_flag = ldclient.variationDetail("registration-button-color", "#28A745");
+            console.log(brand_flag)
+            if(register_link){
+                for (var i=0, len=register_link.length|0; i<len; i=i+1|0) {
+                    register_link[i].style.backgroundColor = brand_flag.value;
+                }
+            }
+       }
+
+       var checkReload = function(){
+            var reload = ldclient.variation("force-page-reload", false)
+            checkExists = document.cookie.indexOf('force_reload=');
+            if (reload && checkExists == -1) {
+                console.log("Reloading")
+                var now = new Date();
+                var time = now.getTime();
+                time += 3600 * 1000;
+                now.setTime(time);
+                location.reload();
+                // Write cookie so we don't keep reloading forever
+                document.cookie = 'force_reload=' + Date.now().toString() + '; expires=' + now.toUTCString() +
+'; path=/';
+            }
+       }
        // LD Client Rendering
        ldclient.waitForInitialization().then(function() {
             console.log("It's now safe to request feature flags");
             console.log(ldclient);
             renderButton();
             renderChatbox();
+            a11y();
        })
 
        ldclient.on('change', function() {
            console.log('this should change')
            renderButton();
            renderChatbox();
+           a11y();
+           checkReload();
        });
 
-   </script>
+</script>
 {% endblock %}
