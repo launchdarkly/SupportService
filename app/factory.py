@@ -28,7 +28,7 @@ migrate = Migrate()
 bootstrap = Bootstrap()
 login = LoginManager()
 
-PROJECT_NAME = "support-service"
+PROJECT_NAME = os.environ.get("LD_PROJECT_NAME", "support-service")
 
 
 class SubdomainDispatcher(object):
