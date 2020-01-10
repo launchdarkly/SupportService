@@ -5,7 +5,7 @@ from app.ld import LaunchDarklyApi
 
 
 class AdminClient:
-    PROJECT_NAME = 'support-service'
+    PROJECT_NAME = os.environ.get("LD_PROJECT_NAME", "support-service")
 
     def __init__(self):
         self.ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
