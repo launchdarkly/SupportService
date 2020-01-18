@@ -112,7 +112,7 @@ jobs:
           command: |
             . venv/bin/activate
             make generate
-            ./scripts/deploy.sh staging
+            ./scripts/deploy.sh ${STAGING_SERVER}
   deploy:
     docker:
       - image: circleci/python:3.6
@@ -139,7 +139,7 @@ jobs:
           command: |
             . venv/bin/activate
             make generate
-            ./scripts/deploy.sh production
+            ./scripts/deploy.sh ${PRODUCTION_SERVER}
   simulate:
     docker:
       - image: circleci/openjdk:11-node-browsers
