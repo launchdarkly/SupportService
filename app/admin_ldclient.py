@@ -5,7 +5,7 @@ from app.ld import LaunchDarklyApi
 
 
 class AdminClient:
-    PROJECT_NAME = 'support-service'
+    PROJECT_NAME = os.environ.get("LD_PROJECT_NAME", "support-service")
 
     def __init__(self):
         self.ld = LaunchDarklyApi(os.environ.get('LD_API_KEY'))
@@ -14,7 +14,7 @@ class AdminClient:
 
     def admin_ldclient(self):
         for env in self.project.environments:
-            if env.name == 'admin':
+            if env.key == 'admin':
                 admin_env = env
                 break
 

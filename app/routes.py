@@ -261,7 +261,6 @@ def profile():
 
 
 @core.route("/people")
-@cache.cached(timeout=CACHE_TIMEOUT(), unless=caching_disabled())
 @login_required
 def people():
     bootstrap = current_app.ldclient.all_flags_state(current_user.get_ld_user())
