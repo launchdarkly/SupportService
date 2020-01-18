@@ -15,7 +15,7 @@ if [ -z "$1" ]
   	echo "ERROR: no environment argument supplied"
   	exit 1
   else
-  	SERVER="ubuntu@$1.ldsolutions.org"
+  	SERVER="ubuntu@$1"
 fi
 
 until bash -c "ssh -o StrictHostKeyChecking=no $SERVER 'docker ps'"; do
