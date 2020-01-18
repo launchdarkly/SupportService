@@ -14,7 +14,7 @@ class AdminClient:
 
     def admin_ldclient(self):
         for env in self.project.environments:
-            if env.name == 'admin':
+            if env.key == 'admin':
                 admin_env = env
                 break
 
