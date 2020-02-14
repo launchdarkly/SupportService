@@ -52,8 +52,9 @@ jobs:
             - v9-machine-dependencies-{{ checksum "setup.py" }}
             - v9-machine-dependencies-
       - run:
-        name: "Set Python Version"
-        command: pyenv global 3.7.0
+          name: "Set Python Version"
+          command: |
+            pyenv global 3.7.0
       - run:
           name: install dependencies
           command: |
