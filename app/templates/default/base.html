@@ -60,7 +60,7 @@
         <ul class="nav navbar-top-links navbar-right">
             <!-- 
             {# 
-                {% if show_beta %}
+                {% if dark_theme %}
                 <li>
                     <a href="{{ url_for('updateTheme') }}">
                         <i class="fa fa-adjust fa-fw"></i>
@@ -267,7 +267,7 @@
                 <ul class="dropdown-menu dropdown-user">
                     <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
                     </li> 
-                    {% if show_beta %}
+                    {% if dark_theme %}
                     <li><a href="{{ url_for('core.dashboard', theme='dark') }}"><i class="fa fa-adjust fa-fw"></i> Dark Theme</a>
                     </li>
                     {% endif %}

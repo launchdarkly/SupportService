@@ -84,7 +84,7 @@ def dashboard():
     if theme:
         updateTheme(theme)
 
-    beta_features = current_app.ldclient.variation(
+    dark_theme = current_app.ldclient.variation(
         "dark-theme", user, False
     )
 
@@ -96,7 +96,7 @@ def dashboard():
     return render_template(
         set_theme,
         title="Home",
-        show_beta=beta_features,
+        dark_theme=dark_theme,
         user_template=user_template,
         all_flags=bootstrap.to_json_string(),
     )
