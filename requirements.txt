@@ -9,7 +9,7 @@ flask-caching==1.7.1
 flask-fixtures==0.3.8
 
 # Libraries
-faker==1.0.7
+faker>=1.0.7
 
 # Aws
 boto3==1.9.156

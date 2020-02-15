@@ -71,7 +71,7 @@ public class Simulator implements Runnable {
 
                 if (randomizer.getShouldView()) {
                     logger.info(email + " is viewing the registration page");
-                    driver.findElement(By.id("register_link")).click();
+                    driver.findElement(By.className("register_link")).click();
 
                     if (randomizer.getShouldConvert()) {
 
@@ -83,20 +83,20 @@ public class Simulator implements Runnable {
                         element = driver.findElement(By.name("confirmPassword"));
                         element.sendKeys("testing");
                         element.submit();
-        
+
                         logger.info("Doing Random things with " + email + " for " + this.baseUrl + " " + this.iterations + " times.");
-        
+
                         for (int j = MIN; j <= this.iterations; j++) {
                             driver.get(this.operationalUrl);
                             driver.get(this.releaseUrl);
                         }
-        
+
                         for (int k = MIN; k <= this.iterations; k++) {
                             driver.get(this.baseUrl);
                         }
-        
+
                         driver.get(this.experimentationUrl);
-        
+
                         if (randomizer.getShouldView()) {
                             if (!driver.findElements(By.xpath("//*[@id=\"page-wrapper\"]/button")).isEmpty()) {
                                 logger.info("Showing NPS to " + email);
@@ -136,14 +136,14 @@ public class Simulator implements Runnable {
                         } else {
                             logger.info(email + " will not see NPS survey.");
                         }
-        
+
                         logger.info("Logging Out of " + this.baseUrl);
                         driver.get(this.logoutUrl);
                         Thread.sleep(1000);
                     } else {
                         logger.info(email + " will not complete registration");
                     }
-                    
+
                 } else {
                     logger.info(email + " will not register at all.");
                 }

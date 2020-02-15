@@ -52,9 +52,17 @@ jobs:
             - v9-machine-dependencies-{{ checksum "setup.py" }}
             - v9-machine-dependencies-
       - run:
+          name: "Install latest Python"
+          command: |
+            pyenv install --skip-existing $(pyenv install --list | grep -v - | grep -v b | tail -1)
+      - run:
+          name: "Set Python Version"
+          command: |
+            pyenv global $(pyenv install --list | grep -v - | grep -v b | tail -1)
+      - run:
           name: install dependencies
           command: |
-            pip install -e .
+            python -m pip install -e .
       - save_cache:
           paths:
             - /opt/circleci/.pyenv
@@ -76,6 +84,7 @@ jobs:
       - run:
           name: Test Production Stack
           command: |
+            pip install -r dev-requirements.txt
             make generate
             docker-compose -f docker-compose.prod.yml up -d
       - run:

@@ -9,11 +9,9 @@ from app.db import db
 class BasicTestCase(unittest.TestCase):
     def setUp(self):
         #self.app = SubdomainDispatcher('localhost','default')
-        env = {
-            'LD_CLIENT_KEY': '12345',
-            'LD_FRONTEND_KEY': '12345'
-        }
-        self.app = create_app('testing', env, config_name='testing')
+        env_id = '123456'
+        env_api_key = '123456'
+        self.app = create_app(env_id, env_api_key, config_name='testing')
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
