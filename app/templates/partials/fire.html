@@ -1,0 +1,78 @@
+{% block chatbox %}
+
+<!-- Sites on Fire Pop Up --> 
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      /* The Modal (background) */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+      }
+
+      /* Modal Content */
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border-radius: 20px;
+        max-width: 50%;
+        max-height: 80%;
+        justify-content: center;
+        align-content: center;
+      }
+
+      /* The Close Button */
+      .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    </style>
+    <title>Fire</title>
+<!--   <script src="https://unpkg.com/launchdarkly-js-client-sdk@2"></script>-->
+  </head>
+  <body>
+    <div>
+      <!-- The Modal -->
+      <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>THE SITES ON FIRE</h2>
+          <p>
+            Quick Toggle something off!
+          </p>
+          <img
+            src="./fire-giphy.gif"
+            style="max-width:250px;max-height:250px"
+          />
+        </div>
+      </div>
+
+
+{% endblock %}
+
