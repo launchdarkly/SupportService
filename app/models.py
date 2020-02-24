@@ -64,7 +64,7 @@ class User(UserMixin, db.Model):
             'privateAttributeNames': ['account_type', 'state'],
         }
 
-        return ldclient.get(user)
+        return user
 
     def get_random_ld_user(self):
         user = {
