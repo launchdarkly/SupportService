@@ -18,7 +18,6 @@ from werkzeug.serving import run_simple
 from werkzeug.exceptions import NotFound
 from flask_redis import FlaskRedis
 from flask_caching import Cache
-from app.cache import cache
 from app.config import config
 from app.util import getLdMachineUser
 from app.ld import LaunchDarklyApi
