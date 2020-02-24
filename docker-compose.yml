@@ -1,5 +1,12 @@
 version: "3.7"
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "8000:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
   app:
     build:
       context: .
@@ -17,6 +24,8 @@ services:
       - DATADOG_HOST=datadog-agent
       - DD_AGENT_HOST=datadog-agent
       - DD_AGENT_PORT=8126
+      - VIRTUAL_HOST=*.localhost
+      - LD_PROJECT_NAME=demo-dan-013120
     volumes:
       - .:/usr/src/app
     ports:
