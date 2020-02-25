@@ -8,7 +8,6 @@ from flask import current_app
 from flask_login import AnonymousUserMixin, UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.cache import cache, caching_disabled, CACHE_TIMEOUT
 from app.db import db
 
 fake = Faker()

@@ -17,7 +17,7 @@ from flask_migrate import Migrate
 from werkzeug.serving import run_simple
 from werkzeug.exceptions import NotFound
 from flask_redis import FlaskRedis
-from app.cache import cache
+from flask_caching import Cache
 from app.config import config
 from app.util import getLdMachineUser
 from app.ld import LaunchDarklyApi
@@ -27,6 +27,7 @@ from app.db import db
 migrate = Migrate()
 bootstrap = Bootstrap()
 login = LoginManager()
+cache = Cache()
 
 PROJECT_NAME = os.environ.get("LD_PROJECT_NAME", "support-service")
 
