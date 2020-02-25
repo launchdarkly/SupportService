@@ -25,7 +25,6 @@ services:
       - DD_AGENT_HOST=datadog-agent
       - DD_AGENT_PORT=8126
       - VIRTUAL_HOST=*.localhost
-      - LD_PROJECT_NAME=demo-dan-013120
     volumes:
       - .:/usr/src/app
     ports:
