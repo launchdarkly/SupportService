@@ -16,13 +16,13 @@
     <!-- Custom Theme JavaScript -->
     <script src="{{ url_for('static', filename='light/dist/js/sb-admin-2.js') }}"></script>
    <script>
-
        // Show Widgets Code
+       var loadTime = 0
        var displayWidget = document.getElementById('widgets');
+
        var renderButton = function() {
             var showFeature = ldclient.variation("show-widgets", false);
             var displayWidget = document.getElementById('widgets');
-
             if (displayWidget) {
                 if (showFeature) {
                     displayWidget.style.display = "block";
@@ -93,6 +93,19 @@
 '; path=/';
             }
        }
+
+        // function to calculate load time for the page
+        function CalculatePageLoadTime() {
+            var calculatedTime = window.performance.timing.domContentLoadedEventEnd-window.performance.timing.navigationStart;
+            console.log('Page load time is '+ calculatedTime + ' milliseconds')
+            loadTime = calculatedTime
+        }
+
+        // track load time function
+        var ldTrackLoadTime = function() {
+            ldclient.track("PageLoadtime", null, loadTime)
+        }
+
        // LD Client Rendering
        ldclient.waitForInitialization().then(function() {
             console.log("It's now safe to request feature flags");
@@ -108,6 +121,8 @@
            renderChatbox();
            a11y();
            checkReload();
+           CalculatePageLoadTime();
+           ldTrackLoadTime()
        });
 
 </script>
