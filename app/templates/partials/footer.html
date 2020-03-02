@@ -17,9 +17,7 @@
     <script src="{{ url_for('static', filename='light/dist/js/sb-admin-2.js') }}"></script>
    <script>
        // Show Widgets Code
-       var loadTime = 0
        var displayWidget = document.getElementById('widgets');
-
        var renderButton = function() {
             var showFeature = ldclient.variation("show-widgets", false);
             var displayWidget = document.getElementById('widgets');
@@ -94,15 +92,10 @@
             }
        }
 
-        // function to calculate load time for the page
-        function CalculatePageLoadTime() {
-            var calculatedTime = window.performance.timing.domContentLoadedEventEnd-window.performance.timing.navigationStart;
-            console.log('Page load time is '+ calculatedTime + ' milliseconds')
-            loadTime = calculatedTime
-        }
-
-        // track load time function
-        var ldTrackLoadTime = function() {
+       // Track page loadtime on page refresh and call LD track
+        window.onload = function () {
+            var loadTime = window.performance.timing.domContentLoadedEventEnd-window.performance.timing.navigationStart; 
+            console.log('Page load time is '+ loadTime);
             ldclient.track("PageLoadtime", null, loadTime)
         }
 
@@ -121,8 +114,6 @@
            renderChatbox();
            a11y();
            checkReload();
-           CalculatePageLoadTime();
-           ldTrackLoadTime()
        });
 
 </script>
