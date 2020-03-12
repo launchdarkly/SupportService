@@ -203,7 +203,7 @@ def setup_ld_client(app):
     LD_CLIENT_KEY = app.config["LD_CLIENT_KEY"]
     LD_FRONTEND_KEY = app.config["LD_FRONTEND_KEY"]
     ld_config = LdConfig(
-        sdk_key=LD_CLIENT_KEY, connect_timeout=30, read_timeout=30, feature_store=store
+        sdk_key=LD_CLIENT_KEY, connect_timeout=30, read_timeout=30, feature_store=store, inline_users_in_events=True
     )
 
     # LaunchDarkly Config
