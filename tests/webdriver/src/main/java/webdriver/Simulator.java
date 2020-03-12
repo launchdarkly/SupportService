@@ -71,7 +71,7 @@ public class Simulator implements Runnable {
 
                 if (randomizer.getShouldView()) {
                     logger.info(email + " is viewing the registration page");
-                    driver.findElement(By.id("register_link")).click();
+                    driver.findElement(By.className("register_link")).click();
 
                     if (randomizer.getShouldConvert()) {
 
