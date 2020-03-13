@@ -16,13 +16,11 @@
     <!-- Custom Theme JavaScript -->
     <script src="{{ url_for('static', filename='light/dist/js/sb-admin-2.js') }}"></script>
    <script>
-
        // Show Widgets Code
        var displayWidget = document.getElementById('widgets');
        var renderButton = function() {
             var showFeature = ldclient.variation("show-widgets", false);
             var displayWidget = document.getElementById('widgets');
-
             if (displayWidget) {
                 if (showFeature) {
                     displayWidget.style.display = "block";
@@ -93,6 +91,14 @@
 '; path=/';
             }
        }
+
+       // Track page loadtime on page refresh and call LD track
+        window.onload = function () {
+            var loadTime = window.performance.timing.domContentLoadedEventEnd-window.performance.timing.navigationStart; 
+            console.log('Page load time is '+ loadTime);
+            ldclient.track("PageLoadtime", null, loadTime)
+        }
+
        // LD Client Rendering
        ldclient.waitForInitialization().then(function() {
             console.log("It's now safe to request feature flags");
