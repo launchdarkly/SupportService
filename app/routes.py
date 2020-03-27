@@ -76,12 +76,12 @@ def index():
 @core.route("/dashboard")
 @login_required
 def dashboard():
-    theme = request.args.get("theme")
     user = current_user.get_ld_user()
     user['agent'] = request.headers.get('User-Agent')
-
-    if theme:
-        updateTheme(theme)
+    beta_theme = current_app.ldclient.variation(
+        "beta-ui", user, False
+    )
+    updateTheme(user, beta_theme)
 
     dark_theme = current_app.ldclient.variation(
         "dark-theme", user, False
@@ -100,9 +100,11 @@ def dashboard():
         all_flags=bootstrap.to_json_string(),
     )
 
-def updateTheme(theme):
+def updateTheme(user, beta_theme):
 
-    if theme == "dark":
+    theme = request.args.get("theme")
+
+    if beta_theme and theme != "light":
         current_user.set_path = "beta"
     else:
         current_user.set_path = "default"

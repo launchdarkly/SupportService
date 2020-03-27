@@ -21,7 +21,6 @@ from flask_caching import Cache
 from app.config import config
 from app.util import getLdMachineUser
 from app.ld import LaunchDarklyApi
-from app.cli.generators import ConfigGenerator
 from app.db import db
 
 migrate = Migrate()
