@@ -21,7 +21,7 @@ class User(UserMixin, db.Model):
     account_type = db.Column(db.String(120), default='Business')
     user_type = db.Column(db.String(120), default='Beta')
     state = db.Column(db.String(120), default=fake.state_abbr())
-    zip_code = db.Column(db.Integer, default=fake.zipcode())
+    #zip_code = db.Column(db.Integer, default=fake.zipcode())
     country = db.Column(db.String(120), default=fake.country_code(representation="alpha-2"))
     set_path = db.Column(db.String(120), default='default')
     company = db.Column(db.String(255), default=fake.company())
@@ -57,7 +57,6 @@ class User(UserMixin, db.Model):
                 'user_type': self.user_type,
                 'state': self.state,
                 'country': self.country,
-                'zip_code': self.zip_code,
                 'app_version': app_version,
                 'company': self.company or 'None',
                 'date': milliseconds,
