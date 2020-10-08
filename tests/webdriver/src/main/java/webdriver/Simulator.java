@@ -152,8 +152,8 @@ public class Simulator implements Runnable {
             driver.quit();
         } catch (Exception e) {
             logger.error("Error: " + e);
-        } catch (NoSuchElementException) {
-            logger.error("Element not found")
+        } catch (NoSuchElementException e) {
+            logger.error("Element not found: " + e)
         } finally {
             driver.quit();
         }
