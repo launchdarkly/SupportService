@@ -74,7 +74,9 @@ public class Simulator implements Runnable {
                     if (!elementExists(driver, "register_link")) {
                         driver.quit();
                     } else {
-                        driver.findElement(By.id("register_link")).click();
+                        new WebDriverWait(driver, 100).until(ExpectedConditions.elementToBeClickable(By.id("register_link")));
+                        WebElement registerLink = driver.findElement(By.id("register_link"));
+                        registerLink.click();
 
                         if (randomizer.getShouldConvert()) {
 
