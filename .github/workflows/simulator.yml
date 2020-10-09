@@ -3,6 +3,9 @@ name: Simulator
 on:
   schedule:
     - cron: '0 */1 * * *'
+  workflow_dispatch:
+    inputs:
+    
 
 jobs:
   simulate:
