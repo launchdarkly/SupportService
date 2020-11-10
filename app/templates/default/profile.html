@@ -16,10 +16,10 @@
                     <div class="panel-body">
                         <p>Here is all the information that we know about you.</p>
                     </div>
+                    
                     <ul class="list-group">
                         <li class="list-group-item">
                             Email: {{ user.email }}
-                            {{current_user.get_email_hash()}}
                         </li>
                         <li class="list-group-item">
                             Type: {{ user.user_type }}
