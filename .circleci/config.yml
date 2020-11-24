@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@6.14.0
 jobs:
   test:
     docker:
@@ -191,3 +193,6 @@ workflows:
           filters:
             branches:
               only: master
+      - aws-ecr/build-and-push-image:
+          repo: "${AWS_ECR_REPO}"
+          dockerfile: Dockerfile.ecr

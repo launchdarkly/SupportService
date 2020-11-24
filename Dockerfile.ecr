@@ -1,0 +1,23 @@
+FROM python:3.6-alpine
+
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev bash git libffi-dev make
+
+ENV FLASK_ENV=production
+ENV REDIS_URL=redis://support-service-redis.be4fj4.ng.0001.usw2.cache.amazonaws.com:6379
+ENV REDIS_HOST=support-service-redis.be4fj4.ng.0001.usw2.cache.amazonaws.com
+ENV DATABASE_URL=host.docker.internal:5432
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN pip install -r requirements.txt
+RUN pip install --upgrade -e .
+
+EXPOSE 5000
+EXPOSE 80
+
+ENTRYPOINT [ "python3" ]
+
+CMD [ "app/factory.py"]
+
