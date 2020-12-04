@@ -31,7 +31,18 @@ services:
       - 5000:5000
     command: ["ddtrace-run", "python3", "app/factory.py", "--host=0.0.0.0"]
     depends_on:
+      - db
       - cache
+
+  db:
+    image: postgres:11-alpine
+    environment:
+      - POSTGRES_USER=supportService
+      - POSTGRES_PASSWORD=supportService
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   cache:
     image: redis:alpine

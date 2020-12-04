@@ -16,6 +16,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from werkzeug.serving import run_simple
 from werkzeug.exceptions import NotFound
+from werkzeug.wrappers import Response
 from flask_redis import FlaskRedis
 from flask_caching import Cache
 from app.config import config
@@ -58,7 +59,7 @@ class SubdomainDispatcher(object):
                 app = make_app(self.ld, self.rclient, subdomain, self.config_name)
                 # If environment does not exist in Redis
                 if app is None:
-                    return NotFound()
+                    return Response("This is root, please specify a subdomain, v0")
                 else:
                     self.instances[subdomain] = app
             return app

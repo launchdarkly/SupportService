@@ -12,7 +12,7 @@ flask-fixtures==0.3.8
 faker>=1.0.7
 
 # Aws
-boto3==1.9.156
+boto3==1.16.24
 
 # Database
 psycopg2-binary==2.8.3
