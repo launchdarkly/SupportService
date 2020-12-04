@@ -30,6 +30,7 @@ test-reports/
 venv/
 *.env
 *.zip
+*.rdb
 .vscode/*
 !.vscode/extensions.json
 

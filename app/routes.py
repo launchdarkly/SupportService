@@ -48,7 +48,7 @@ def index():
     session["ld_user"] = user
 
     flag_name = "trial-duration"
-    trial_duration = current_app.ldclient.variation_detail(flag_name, user, "15")
+    trial_duration = current_app.ldclient.variation_detail(flag_name, user, "14")
 
     start_time = time.time()
 
