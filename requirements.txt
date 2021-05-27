@@ -8,6 +8,9 @@ flask-wtf==0.14.2
 flask-caching==1.7.1
 flask-fixtures==0.3.8
 
+# Werkzeug
+Werkzeug==1.0.1
+
 # Libraries
 faker>=1.0.7
 
