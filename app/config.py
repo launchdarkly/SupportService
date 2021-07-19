@@ -109,7 +109,7 @@ class TestingConfig(Config):
             db.create_all()
 
             from ldclient.config import Config as __config
-            ldclient.set_config(__config(offline=True))
+            ldclient.set_config(__config(offline=True, sdk_key="test"))
 
 
 class StagingConfig(Config):
