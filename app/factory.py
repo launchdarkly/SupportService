@@ -7,6 +7,7 @@ import ldclient
 from ldclient import Config as LdConfig
 from ldclient.feature_store import CacheConfig, InMemoryFeatureStore
 from ldclient.integrations import Redis
+from ldclient.client import HTTPConfig
 
 import redis
 
@@ -204,7 +205,7 @@ def setup_ld_client(app):
     LD_CLIENT_KEY = app.config["LD_CLIENT_KEY"]
     LD_FRONTEND_KEY = app.config["LD_FRONTEND_KEY"]
     ld_config = LdConfig(
-        sdk_key=LD_CLIENT_KEY, connect_timeout=30, read_timeout=30, feature_store=store, inline_users_in_events=True
+        sdk_key=LD_CLIENT_KEY, http = HTTPConfig(connect_timeout=30, read_timeout=30), feature_store=store, inline_users_in_events=True
     )
 
     # LaunchDarkly Config
