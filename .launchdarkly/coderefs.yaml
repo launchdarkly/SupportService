@@ -1,5 +1,0 @@
-aliases:
-  - type: literal
-    flags:
-      chatbox:
-        - showFeature
