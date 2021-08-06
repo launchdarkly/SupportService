@@ -1,0 +1,18 @@
+html
+	head
+		title #{feature}
+		script(crossorigin="anonymous" src="https://unpkg.com/launchdarkly-js-client-sdk@2.19.2/dist/ldclient.min.js")
+		script(type='text/javascript'). 
+			var context = !{context}
+			var launchdarkly = LDClient.initialize(process.env.CLIENT_SDK_KEY, context);
+			function listen(){
+				launchdarkly.track("More Clicks");
+					console.log('Clicks sent');
+				launchdarkly.flush();
+				return false;
+			}
+		link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous")
+	body
+	div.jumbotron
+		a(href="#" class='linky' onClick='listen()')
+			h1 Hello #{feature}!
