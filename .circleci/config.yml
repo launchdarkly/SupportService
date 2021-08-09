@@ -24,7 +24,7 @@ jobs:
       - save_cache:
           paths:
             - ./venv
-          key: v4-dependencies-{{ checksum "setup.py" }}
+          key: v4-dependencies-{{ checksum "setup.py" }}-v2
       - run:
           name: run tests
           command: |
@@ -66,7 +66,7 @@ jobs:
       - save_cache:
           paths:
             - /opt/circleci/.pyenv
-          key: v9-machine-dependencies-{{ checksum "setup.py" }}
+          key: v9-machine-dependencies-{{ checksum "setup.py" }}-v2
       - run:
           name: Install Docker Compose
           command: sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
