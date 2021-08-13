@@ -1,5 +1,6 @@
 -r requirements.txt
 
+pathlib2
 coverage
 flake8
 pylint
