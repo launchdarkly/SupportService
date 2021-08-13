@@ -71,7 +71,7 @@ jobs:
       - run:
           name: Test Production Stack
           command: |
-            pip install -r dev-requirements.txt
+            python3 -m pip install -r dev-requirements.txt
             make generate
             docker-compose -f docker-compose.prod.yml up -d
       - run:
