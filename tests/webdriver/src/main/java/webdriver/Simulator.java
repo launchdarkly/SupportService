@@ -71,77 +71,83 @@ public class Simulator implements Runnable {
 
                 if (randomizer.getShouldView()) {
                     logger.info(email + " is viewing the registration page");
-                    driver.findElement(By.id("register_link")).click();
+                    if (!elementExists(driver, "register_link")) {
+                        driver.quit();
+                    } else {
+                        new WebDriverWait(driver, 100).until(ExpectedConditions.elementToBeClickable(By.id("register_link")));
+                        WebElement registerLink = driver.findElement(By.id("register_link"));
+                        registerLink.click();
 
-                    if (randomizer.getShouldConvert()) {
+                        if (randomizer.getShouldConvert()) {
 
-                        logger.info("Registering " + email + " for " + this.baseUrl);
-                        WebElement element = driver.findElement(By.name("userEmail"));
-                        element.sendKeys(email);
-                        element = driver.findElement(By.name("inputPassword"));
-                        element.sendKeys("testing");
-                        element = driver.findElement(By.name("confirmPassword"));
-                        element.sendKeys("testing");
-                        element.submit();
+                            logger.info("Registering " + email + " for " + this.baseUrl);
+                            WebElement element = driver.findElement(By.name("userEmail"));
+                            element.sendKeys(email);
+                            element = driver.findElement(By.name("inputPassword"));
+                            element.sendKeys("testing");
+                            element = driver.findElement(By.name("confirmPassword"));
+                            element.sendKeys("testing");
+                            element.submit();
 
-                        logger.info("Doing Random things with " + email + " for " + this.baseUrl + " " + this.iterations + " times.");
+                            logger.info("Doing Random things with " + email + " for " + this.baseUrl + " " + this.iterations + " times.");
 
-                        for (int j = MIN; j <= this.iterations; j++) {
-                            driver.get(this.operationalUrl);
-                            driver.get(this.releaseUrl);
-                        }
-
-                        for (int k = MIN; k <= this.iterations; k++) {
-                            driver.get(this.baseUrl);
-                        }
-
-                        driver.get(this.experimentationUrl);
-
-                        if (randomizer.getShouldView()) {
-                            if (!driver.findElements(By.xpath("//*[@id=\"page-wrapper\"]/button")).isEmpty()) {
-                                logger.info("Showing NPS to " + email);
-                                driver.findElement(By.xpath("//*[@id=\"page-wrapper\"]/button")).click();
+                            for (int j = MIN; j <= this.iterations; j++) {
+                                driver.get(this.operationalUrl);
+                                driver.get(this.releaseUrl);
                             }
-                            if (randomizer.getShouldConvert()) {
-                                logger.info("Converting NPS for " + email);
-                                if (elementExists(driver, "style_a")) {
-                                    new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.id("style_a")));
-                                    new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.id("style_a")));
-                                    WebElement styleAButton = driver.findElement(By.id("style_a"));
-                                    logger.info("Converting Style A for " + email);
-                                    styleAButton.click();
+
+                            for (int k = MIN; k <= this.iterations; k++) {
+                                driver.get(this.baseUrl);
+                            }
+
+                            driver.get(this.experimentationUrl);
+
+                            if (randomizer.getShouldView()) {
+                                if (!driver.findElements(By.xpath("//*[@id=\"page-wrapper\"]/button")).isEmpty()) {
+                                    logger.info("Showing NPS to " + email);
+                                    driver.findElement(By.xpath("//*[@id=\"page-wrapper\"]/button")).click();
                                 }
-                                if (elementExists(driver, "nextButton")) {
-                                    while (elementExists(driver, "nextButton")) {
-                                        try {
-                                            logger.info("Clicking Next");
-                                            new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.id("nextButton")));
-                                            new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.id("nextButton")));
-                                            WebElement nextButton = driver.findElement(By.id("nextButton"));
-                                            nextButton.click();
-                                        } catch (Exception e) {
-                                            logger.info("Reached Last Button.");
-                                            break;
-                                        }
+                                if (randomizer.getShouldConvert()) {
+                                    logger.info("Converting NPS for " + email);
+                                    if (elementExists(driver, "style_a")) {
+                                        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.id("style_a")));
+                                        new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.id("style_a")));
+                                        WebElement styleAButton = driver.findElement(By.id("style_a"));
+                                        logger.info("Converting Style A for " + email);
+                                        styleAButton.click();
                                     }
-                                    logger.info("Converting Style B for " + email);
-                                    new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.id("style_b")));
-                                    new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.id("style_b")));
-                                    WebElement styleBButton = driver.findElement(By.id("style_b"));
-                                    styleBButton.click();
+                                    if (elementExists(driver, "nextButton")) {
+                                        while (elementExists(driver, "nextButton")) {
+                                            try {
+                                                logger.info("Clicking Next");
+                                                new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.id("nextButton")));
+                                                new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.id("nextButton")));
+                                                WebElement nextButton = driver.findElement(By.id("nextButton"));
+                                                nextButton.click();
+                                            } catch (Exception e) {
+                                                logger.info("Reached Last Button.");
+                                                break;
+                                            }
+                                        }
+                                        logger.info("Converting Style B for " + email);
+                                        new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(By.id("style_b")));
+                                        new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(By.id("style_b")));
+                                        WebElement styleBButton = driver.findElement(By.id("style_b"));
+                                        styleBButton.click();
+                                    }
+                                } else {
+                                    logger.info(email + " will not convert.");
                                 }
                             } else {
-                                logger.info(email + " will not convert.");
+                                logger.info(email + " will not see NPS survey.");
                             }
-                        } else {
-                            logger.info(email + " will not see NPS survey.");
-                        }
 
-                        logger.info("Logging Out of " + this.baseUrl);
-                        driver.get(this.logoutUrl);
-                        Thread.sleep(1000);
-                    } else {
-                        logger.info(email + " will not complete registration");
+                            logger.info("Logging Out of " + this.baseUrl);
+                            driver.get(this.logoutUrl);
+                            Thread.sleep(1000);
+                        } else {
+                            logger.info(email + " will not complete registration");
+                        }
                     }
 
                 } else {
@@ -152,8 +158,6 @@ public class Simulator implements Runnable {
             driver.quit();
         } catch (Exception e) {
             logger.error("Error: " + e);
-        } catch (NoSuchElementException e) {
-            logger.error("Element not found: " + e);
         } finally {
             driver.quit();
         }
