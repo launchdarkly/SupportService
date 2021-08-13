@@ -55,22 +55,6 @@ jobs:
             - v9-machine-dependencies-{{ checksum "setup.py" }}
             - v9-machine-dependencies-
       - run:
-          name: "Install latest Python"
-          command: |
-            pyenv install --skip-existing $(pyenv install --list | grep -v - | grep -v b | tail -1)
-      - run:
-          name: "Set Python Version"
-          command: |
-            pyenv global $(pyenv install --list | grep -v - | grep -v b | tail -1)
-      - run:
-          name: install dependencies
-          command: |
-            python -m pip install -e .
-      - save_cache:
-          paths:
-            - /opt/circleci/.pyenv
-          key: v9-machine-dependencies-{{ checksum "requirements.txt" }}-v2
-      - run:
           name: Install Docker Compose
           command: sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
       - run:
