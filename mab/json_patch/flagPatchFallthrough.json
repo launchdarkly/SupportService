@@ -1,0 +1,8 @@
+{
+    "comment": "This is an Automated MABs allocation",
+    "patch": [{ 
+        "op": "replace",
+        "path": "/environments/production/fallthrough/rollout/experimentAllocation/defaultVariation",
+        "value": 0
+    }]
+}

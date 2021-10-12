@@ -1,0 +1,32 @@
+name: Multi-Armed Bandit
+
+on:
+  schedule:
+    - cron: '* */1 * * *'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    environment: experimentation
+    steps:
+      - uses: actions/checkout@v2
+      - name: Multi-Armed Bandit in Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '15.x'
+          cache: 'npm'
+      - run: npm install
+        working-directory: ./mab
+      - name: Run App
+        working-directory: ./mab
+        env:
+          API_TOKEN: ${{ secrets.LD_EXP_TOKEN }}
+          CLIENT_SDK_KEY: ${{ secrets.EXP_CLIENT_SDK_KEY }}
+          SDK_KEY: ${{ secrets.EXP_SDK_KEY }}
+          FLAG: trial-duration
+          PROJECT: support-service
+          ENV: rneal
+          METRIC_KEY: started-registration
+          PORT: 8087
+        run: node app

@@ -21,7 +21,6 @@ setup(
         'click',
         'click-log',
         'launchdarkly-api',
-        'boto3',
         'j2cli'
     ]
 )
