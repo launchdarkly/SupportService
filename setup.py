@@ -15,7 +15,6 @@ setup(
         'flask-fixtures',
         'psycopg2-binary',
         'redis',
-        'ldclient-py',
         'gunicorn',
         'faker',
         'click',

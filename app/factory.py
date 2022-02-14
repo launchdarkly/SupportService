@@ -7,6 +7,7 @@ import ldclient
 from ldclient import Config as LdConfig
 from ldclient.feature_store import CacheConfig, InMemoryFeatureStore
 from ldclient.integrations import Redis
+from ldclient.client import HTTPConfig
 
 import redis
 
@@ -204,7 +205,7 @@ def setup_ld_client(app):
     LD_CLIENT_KEY = app.config["LD_CLIENT_KEY"]
     LD_FRONTEND_KEY = app.config["LD_FRONTEND_KEY"]
     ld_config = LdConfig(
-        sdk_key=LD_CLIENT_KEY, connect_timeout=30, read_timeout=30, feature_store=store, inline_users_in_events=True
+        sdk_key=LD_CLIENT_KEY, http = HTTPConfig(connect_timeout=30, read_timeout=30), feature_store=store, inline_users_in_events=True
     )
 
     # LaunchDarkly Config
@@ -229,7 +230,7 @@ def build_environment(app):
     return app
 
 
-def rundevserver(host="0.0.0.0", port=5000, domain="localhost", **options):
+def rundevserver(host="0.0.0.0", port=8080, domain="localhost", **options):
     """
     Modified from `flask.Flask.run`
     Runs the application on a local development server.

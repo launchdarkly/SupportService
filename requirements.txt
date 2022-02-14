@@ -1,12 +1,16 @@
 # Flask and Extensions
 flask==1.0.3
-flask-sqlalchemy==2.4.1
+flask-sqlalchemy==2.5.1
 flask-migrate==2.5.2
 flask-login==0.4.1
 flask-bootstrap==3.3.7.1
 flask-wtf==0.14.2
 flask-caching==1.7.1
 flask-fixtures==0.3.8
+Werkzeug==1.0.1
+
+# Werkzeug
+Werkzeug==1.0.1
 
 # Libraries
 faker>=1.0.7
@@ -15,12 +19,12 @@ faker>=1.0.7
 boto3==1.16.24
 
 # Database
-psycopg2-binary==2.8.3
+psycopg2-binary==2.9.3
 redis==3.2.1
 flask-redis==0.4.0
 
 # Vendor Dependencies
-launchdarkly-server-sdk==6.*
+launchdarkly-server-sdk==7.*
 launchdarkly-api==2.0.15
 
 # Runtime

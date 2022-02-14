@@ -1,6 +1,6 @@
 FROM python:3.6-alpine
 
-RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev bash git libffi-dev make
+RUN apk update && apk add postgresql-dev gcc g++ python3-dev musl-dev bash git libffi-dev make
 
 ENV FLASK_ENV=production
 
@@ -13,8 +13,6 @@ RUN pip install --upgrade -e .
 
 EXPOSE 5000
 EXPOSE 80
+EXPOSE 8001
 
-ENTRYPOINT [ "python3" ]
-
-CMD [ "app/factory.py"]
-
+CMD [ "gunicorn", "app.factory:application", "-w", "4", "-b", "0.0.0.0:8001" ]
