@@ -32,12 +32,13 @@ for more information on specific feature flags and use cases.
 
 - Ensure that you have [`python3`](https://www.python.org/downloads/) and
   [PostgreSQL](https://www.postgresql.org/download/) installed
+- Ensure that [Redis](https://redis.io/topics/quickstart) is installed and it is running
 - Run `make dev` to create a virtualenv and install all dependencies.
 - Run `make run` to start the application
 
 ### Logging in
 
-The app should now be running on [your-LD-env.localhost:5000](http://<YOUR-LD-ENV>.localhost:5000). You should be able to log
+The app should now be running on [your-LD-env.localhost:8080](http://<YOUR-LD-ENV>.localhost:8080). You should be able to log
 in with the username `test@tester.com` and password `test`. Alternatively,
 register a new user - it won't send you any email.
 

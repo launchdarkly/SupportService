@@ -230,7 +230,7 @@ def build_environment(app):
     return app
 
 
-def rundevserver(host="0.0.0.0", port=5000, domain="localhost", **options):
+def rundevserver(host="0.0.0.0", port=8080, domain="localhost", **options):
     """
     Modified from `flask.Flask.run`
     Runs the application on a local development server.

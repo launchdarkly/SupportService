@@ -59,7 +59,6 @@
                 })(jQuery);
            } else {
             $('.chatbox').hide();
-            console.log('see ya')
            }
        }
 
@@ -68,7 +67,6 @@
             console.log("Updating Accessibility")
             var register_link = document.getElementsByClassName("register_link");
             var brand_flag = ldclient.variationDetail("registration-button-color", "#28A745");
-            console.log(brand_flag)
             if(register_link){
                 for (var i=0, len=register_link.length|0; i<len; i=i+1|0) {
                     register_link[i].style.backgroundColor = brand_flag.value;
@@ -80,7 +78,6 @@
             var reload = ldclient.variation("force-page-reload", false)
             checkExists = document.cookie.indexOf('force_reload=');
             if (reload && checkExists == -1) {
-                console.log("Reloading")
                 var now = new Date();
                 var time = now.getTime();
                 time += 3600 * 1000;
@@ -93,8 +90,9 @@
        }
 
        // Track page loadtime on page refresh and call LD track
-        window.onload = function () {
-            var loadTime = window.performance.timing.domContentLoadedEventEnd-window.performance.timing.navigationStart; 
+        var checkPageLoadTime = function () {
+            //var loadTime = window.performance.timing.domContentLoadedEventEnd-window.performance.timing.navigationStart;
+            var loadTime = Math.floor(Math.random() * 200)
             console.log('Page load time is '+ loadTime);
             ldclient.track("PageLoadtime", null, loadTime)
         }
@@ -102,14 +100,13 @@
        // LD Client Rendering
        ldclient.waitForInitialization().then(function() {
             console.log("It's now safe to request feature flags");
-            console.log(ldclient);
+            checkPageLoadTime()
             renderButton();
             renderChatbox();
             a11y();
        })
 
        ldclient.on('change', function() {
-           console.log('this should change')
            renderButton();
            renderChatbox();
            a11y();
