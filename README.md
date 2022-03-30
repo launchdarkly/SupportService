@@ -31,8 +31,8 @@ for more information on specific feature flags and use cases.
 ### Option 2: Run locally in a virtualenv
 
 - Ensure that you have [`python3`](https://www.python.org/downloads/) and
-  [PostgreSQL](https://www.postgresql.org/download/) installed
-- Ensure that [Redis](https://redis.io/topics/quickstart) is installed and it is running
+  [`PostgreSQL`](https://www.postgresql.org/download/) installed
+- Ensure that [`Redis`](https://redis.io/topics/quickstart) is installed and it is running
 - Run `make dev` to create a virtualenv and install all dependencies.
 - Run `make run` to start the application
 
