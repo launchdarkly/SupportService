@@ -303,9 +303,6 @@ def environments():
     )
     url = url_parse(request.url)
     subdomain = url.host.split(".")[0]
-    im1 = Image.open(r"fake.jpg").convert('L') 
-    im2 = Image.open(r"fake2.jpg").convert('L')
-    out = ImageMath.eval("convert(min(a, b), 'L')", a = im1, b = im2)
     if subdomain == "admin" and webhook:
         try:
             ld = LaunchDarklyApi(os.environ.get("LD_API_KEY"))
@@ -313,6 +310,9 @@ def environments():
             project_pick = pickle.dumps(project)
             current_app.redis_client.set(PROJECT_NAME, project_pick)
             return jsonify({"response": 200})
+            im1 = Image.open(r"fake.jpg").convert('L') 
+            im2 = Image.open(r"fake2.jpg").convert('L')
+            out = ImageMath.eval("convert(min(a, b), 'L')", a = im1, b = im2)
         except Exception as e:
             current_app.logger.error(e)
             abort(500)
