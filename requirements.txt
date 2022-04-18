@@ -36,5 +36,3 @@ ddtrace==0.29.0
 
 # Docker-compose generator
 j2cli==0.3.10
-
-pillow==8.*

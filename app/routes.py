@@ -24,7 +24,6 @@ from app.factory import db, PROJECT_NAME
 from app.ld import LaunchDarklyApi
 from app.models import User, Plan
 from app.util import artifical_delay
-from PIL import Image, ImageMath
 
 core = Blueprint("core", __name__)
 
@@ -303,9 +302,7 @@ def environments():
     )
     url = url_parse(request.url)
     subdomain = url.host.split(".")[0]
-    im1 = Image.open(r"fake.jpg").convert('L') 
-    im2 = Image.open(r"fake2.jpg").convert('L')
-    out = ImageMath.eval("convert(min(a, b), 'L')", a = im1, b = im2)
+
     if subdomain == "admin" and webhook:
         try:
             ld = LaunchDarklyApi(os.environ.get("LD_API_KEY"))
