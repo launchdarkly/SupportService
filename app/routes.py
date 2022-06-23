@@ -48,7 +48,8 @@ def index():
     session["ld_user"] = user
 
     flag_name = "trial-duration"
-    trial_duration = current_app.ldclient.variation_detail(flag_name, user, "14")
+    trial_duration = current_app.ldclient.variation_detail(
+        flag_name, user, "14")
 
     start_time = time.time()
 
@@ -67,8 +68,16 @@ def index():
     session["trial_duration"] = trial_duration.value
     bootstrap = current_app.ldclient.all_flags_state(user)
     user_template = json.dumps(user)
-    broken_release = current_app.ldclient.variation("accessibility-styling", user, False)
-    register_color = current_app.ldclient.variation("registration-button-color", user, "#28A745")
+    broken_release = current_app.ldclient.variation(
+        "accessibility-styling", user, False)
+    register_color = current_app.ldclient.variation(
+        "registration-button-color", user, "#28A745")
+    log_user_context = current_app.ldclient.variation(
+        "log-user-context", user, False)
+
+    if log_user_context:
+        print("This is user context.")
+        print(user)
 
     return render_template("home.html", all_flags=bootstrap.to_json_string(), register_color=register_color, broken_release=broken_release, user_template=user_template, trial_duration=trial_duration.value)
 
@@ -100,6 +109,7 @@ def dashboard():
         all_flags=bootstrap.to_json_string(),
     )
 
+
 def updateTheme(theme):
 
     if theme == "dark":
@@ -129,7 +139,8 @@ def experiments():
     user_template = json.dumps(user)
     bootstrap = current_app.ldclient.all_flags_state(user)
 
-    show_nps = current_app.ldclient.variation("show-nps-survery", random_user, False)
+    show_nps = current_app.ldclient.variation(
+        "show-nps-survery", random_user, False)
 
     return render_template(
         set_theme,
@@ -149,7 +160,8 @@ def operational():
 
     set_theme = "{0}/operation.html".format(current_user.set_path)
 
-    bootstrap = current_app.ldclient.all_flags_state(current_user.get_ld_user())
+    bootstrap = current_app.ldclient.all_flags_state(
+        current_user.get_ld_user())
 
     return render_template(
         set_theme, title="Operational", all_flags=bootstrap.to_json_string()
@@ -251,7 +263,8 @@ def logout():
 @core.route("/profile")
 @login_required
 def profile():
-    bootstrap = current_app.ldclient.all_flags_state(current_user.get_ld_user())
+    bootstrap = current_app.ldclient.all_flags_state(
+        current_user.get_ld_user())
 
     user = User.query.filter_by(id=current_user.id).first()
     return render_template(
@@ -262,11 +275,14 @@ def profile():
 @core.route("/people")
 @login_required
 def people():
-    bootstrap = current_app.ldclient.all_flags_state(current_user.get_ld_user())
+    bootstrap = current_app.ldclient.all_flags_state(
+        current_user.get_ld_user())
     page = request.args.get("page", 1, type=int)
     users = User.query.order_by(User.id).paginate(page, 15, False)
-    next_url = url_for("core.people", page=users.next_num) if users.has_next else None
-    prev_url = url_for("core.people", page=users.prev_num) if users.has_prev else None
+    next_url = url_for(
+        "core.people", page=users.next_num) if users.has_next else None
+    prev_url = url_for(
+        "core.people", page=users.prev_num) if users.has_prev else None
     return render_template(
         "default/people.html",
         users=users.items,
@@ -279,7 +295,8 @@ def people():
 @core.route("/settings")
 @login_required
 def settings():
-    bootstrap = current_app.ldclient.all_flags_state(current_user.get_ld_user())
+    bootstrap = current_app.ldclient.all_flags_state(
+        current_user.get_ld_user())
     plans = Plan.query.all()
     return render_template(
         "default/settings.html", plans=plans, all_flags=bootstrap.to_json_string()
@@ -305,7 +322,7 @@ def environments():
 
     if subdomain == "admin" and webhook:
         try:
-            ld = LaunchDarklyApi(os.environ.get("LD_API_KEY"))
+            ld = LaunchDarklyApi(os.getenv('LD_API_KEY'))
             project = ld.get_project(PROJECT_NAME)
             project_pick = pickle.dumps(project)
             current_app.redis_client.set(PROJECT_NAME, project_pick)
