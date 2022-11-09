@@ -75,9 +75,9 @@
        }
 
        var checkReload = function(){
-            var reload = ldclient.variation("force-page-reload", false)
+            var forcePageReload = ldclient.variation("force-page-reload", false)
             checkExists = document.cookie.indexOf('force_reload=');
-            if (reload && checkExists == -1) {
+            if (forcePageReload && checkExists == -1) {
                 var now = new Date();
                 var time = now.getTime();
                 time += 3600 * 1000;
