@@ -297,13 +297,13 @@ def upgrade():
 
 @core.route("/environments")
 def environments():
-    webhook = current_app.ldclient.variation(
+    environments_webhook = current_app.ldclient.variation(
         "environments-webhook", current_user.get_ld_user(), False
     )
     url = url_parse(request.url)
     subdomain = url.host.split(".")[0]
 
-    if subdomain == "admin" and webhook:
+    if subdomain == "admin" and environments_webhook:
         try:
             ld = LaunchDarklyApi(os.environ.get("LD_API_KEY"))
             project = ld.get_project(PROJECT_NAME)
