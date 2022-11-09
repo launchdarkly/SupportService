@@ -66,10 +66,10 @@
         var a11y = function(){
             console.log("Updating Accessibility")
             var register_link = document.getElementsByClassName("register_link");
-            var brand_flag = ldclient.variationDetail("registration-button-color", "#28A745");
+            var registrationButtonColor = ldclient.variationDetail("registration-button-color", "#28A745");
             if(register_link){
                 for (var i=0, len=register_link.length|0; i<len; i=i+1|0) {
-                    register_link[i].style.backgroundColor = brand_flag.value;
+                    register_link[i].style.backgroundColor = registrationButtonColor.value;
                 }
             }
        }
