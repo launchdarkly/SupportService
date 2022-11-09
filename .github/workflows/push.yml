@@ -14,3 +14,4 @@ jobs:
         projKey: support-service
         debug: true
         ignoreServiceErrors: true
+        contextLines: 0
