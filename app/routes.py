@@ -68,9 +68,9 @@ def index():
     bootstrap = current_app.ldclient.all_flags_state(user)
     user_template = json.dumps(user)
     broken_release = current_app.ldclient.variation("accessibility-styling", user, False)
-    register_color = current_app.ldclient.variation("registration-button-color", user, "#28A745")
+    registration_button_color = current_app.ldclient.variation("registration-button-color", user, "#28A745")
 
-    return render_template("home.html", all_flags=bootstrap.to_json_string(), register_color=register_color, broken_release=broken_release, user_template=user_template, trial_duration=trial_duration.value)
+    return render_template("home.html", all_flags=bootstrap.to_json_string(), register_color=registration_button_color, broken_release=broken_release, user_template=user_template, trial_duration=trial_duration.value)
 
 
 @core.route("/dashboard")
@@ -297,13 +297,13 @@ def upgrade():
 
 @core.route("/environments")
 def environments():
-    webhook = current_app.ldclient.variation(
+    environments_webhook = current_app.ldclient.variation(
         "environments-webhook", current_user.get_ld_user(), False
     )
     url = url_parse(request.url)
     subdomain = url.host.split(".")[0]
 
-    if subdomain == "admin" and webhook:
+    if subdomain == "admin" and environments_webhook:
         try:
             ld = LaunchDarklyApi(os.environ.get("LD_API_KEY"))
             project = ld.get_project(PROJECT_NAME)
