@@ -1,4 +1,4 @@
-contextLine: 1
+contextLines: 1
 aliases:
   - type: camelcase
   - type: snakecase
