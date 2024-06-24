@@ -16,7 +16,8 @@ for more information on specific feature flags and use cases.
 ### Initial setup
 
 - Clone the repo locally `git clone https://github.com/launchdarkly/SupportService.git`
-- Copy `.env.example` to `.env` and fill in the correct values, without quotes:
+- Create a new file called `.env`
+- Copy the contents of `.env.example` to `.env` and fill in the correct values, without quotes:
 
         LD_CLIENT_KEY=$YOUR_SDK_KEY
         LD_FRONTEND_KEY=$YOUR_FRONTEND_ID
