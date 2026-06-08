@@ -6,7 +6,7 @@
   "dependencies": {
     "jquery": "^3.5.0",
     "startbootstrap-sb-admin-2": "^4.0.3",
-    "lodash": ">=4.17.19"
+    "lodash": ">=4.17.21"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
